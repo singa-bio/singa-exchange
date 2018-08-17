@@ -47,6 +47,10 @@ public abstract class FeatureRepresentation {
         }
     }
 
+    public static Feature to(FeatureRepresentation representation) {
+        return FeatureFactory.create(representation);
+    }
+
     public String getName() {
         return name;
     }

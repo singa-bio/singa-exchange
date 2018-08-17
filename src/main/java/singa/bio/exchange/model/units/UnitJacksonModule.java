@@ -1,4 +1,3 @@
-
 /*
  *  Units of Measurement Jackson Library for JSON support
  *  Copyright (c) 2012-2018, Werner Keil and others
@@ -15,7 +14,7 @@
  *    and the following disclaimer in the documentation and/or other materials provided with the distribution.
  *
  * 3. Neither the name of JSR-363, Units of Measurement nor the names of their contributors may be used to endorse or promote products
- *    derived from this software without specific prior written permission.
+ *    derived getEntityDatasetFrom this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
@@ -46,8 +45,7 @@ import javax.measure.spi.ServiceProvider;
 import java.io.IOException;
 
 /**
- * Configures Jackson to (de)serialize JSR 363 Unit objects using their UCUM representation, since the actual objects don't
- * translate well into JSON.
+ * Configures Jackson to (de)serialize JSR 363 Unit objects using their ascii representation.
  */
 public class UnitJacksonModule extends SimpleModule {
 
@@ -56,7 +54,6 @@ public class UnitJacksonModule extends SimpleModule {
     public UnitJacksonModule() {
         super("UnitJsonSerializationModule", new Version(1, 3, 3, null,
                 UnitJacksonModule.class.getPackage().getName(), "uom-lib-jackson"));
-
         addSerializer(Unit.class, new UnitJsonSerializer());
         addDeserializer(Unit.class, new UnitJsonDeserializer());
     }
@@ -75,7 +72,6 @@ public class UnitJacksonModule extends SimpleModule {
             if (unit == null) {
                 jgen.writeNull();
             } else {
-
                 String formattedUnit = ServiceProvider.current().getUnitFormatService().getUnitFormat("ASCII").format(unit, new StringBuilder()).toString();
                 jgen.writeString(formattedUnit);
             }
@@ -98,8 +94,7 @@ public class UnitJacksonModule extends SimpleModule {
                 return ServiceProvider.current().getUnitFormatService().getUnitFormat("ASCII").parse(jsonParser.getText());
             }
             throw deserializationContext.wrongTokenException(jsonParser,
-                    JsonToken.VALUE_STRING,
-                    "Expected unit value in String format");
+                    JsonToken.VALUE_STRING, "Expected unit value in String format");
         }
     }
 }

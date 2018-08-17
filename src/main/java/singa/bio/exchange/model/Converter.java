@@ -1,31 +1,48 @@
 package singa.bio.exchange.model;
 
+import bio.singa.chemistry.annotations.Annotation;
+import bio.singa.chemistry.annotations.AnnotationType;
 import bio.singa.chemistry.entities.*;
 import bio.singa.chemistry.features.reactions.RateConstant;
 import bio.singa.features.identifiers.ChEBIIdentifier;
 import bio.singa.features.identifiers.UniProtIdentifier;
 import bio.singa.features.model.FeatureOrigin;
+import bio.singa.simulation.features.endocytosis.*;
+import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.modules.concentration.imlementations.ComplexBuildingReaction;
 import bio.singa.simulation.model.modules.concentration.imlementations.NthOrderReaction;
 import bio.singa.simulation.model.modules.concentration.imlementations.ReversibleReaction;
+import bio.singa.simulation.model.modules.displacement.implementations.EndocytosisActinBoost;
+import bio.singa.simulation.model.modules.displacement.implementations.VesicleDiffusion;
+import bio.singa.simulation.model.modules.displacement.implementations.VesicleTransport;
+import bio.singa.simulation.model.modules.qualitative.implementations.ClathrinMediatedEndocytosis;
+import bio.singa.simulation.model.modules.qualitative.implementations.VesicleAttachment;
+import bio.singa.simulation.model.modules.qualitative.implementations.VesicleFusion;
 import bio.singa.simulation.model.sections.CellRegion;
 import bio.singa.simulation.model.sections.CellSubsection;
 import bio.singa.simulation.model.sections.CellTopology;
 import bio.singa.simulation.model.simulation.Simulation;
 import bio.singa.structure.features.molarmass.MolarMass;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import singa.bio.exchange.model.entities.EntityDataset;
 import singa.bio.exchange.model.entities.EntityRepresentation;
-import tec.uom.se.AbstractUnit;
+import singa.bio.exchange.model.modules.ModuleDataset;
+import singa.bio.exchange.model.modules.ModuleRepresentation;
+import singa.bio.exchange.model.units.UnitJacksonModule;
 import tec.uom.se.quantity.Quantities;
+import tec.uom.se.unit.ProductUnit;
 
-import javax.measure.Unit;
-import javax.measure.quantity.Dimensionless;
-import java.util.Comparator;
+import javax.measure.quantity.Area;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
+import static bio.singa.features.model.FeatureOrigin.MANUALLY_ANNOTATED;
 import static bio.singa.features.units.UnitProvider.MOLE_PER_LITRE;
 import static bio.singa.simulation.model.sections.CellTopology.*;
 import static tec.uom.se.unit.MetricPrefix.NANO;
+import static tec.uom.se.unit.Units.METRE;
 import static tec.uom.se.unit.Units.SECOND;
 
 /**
@@ -33,18 +50,33 @@ import static tec.uom.se.unit.Units.SECOND;
  */
 public class Converter {
 
-    private static final FeatureOrigin BUSH2016 = FeatureOrigin.MANUALLY_ANNOTATED;
+    static final FeatureOrigin BUSH2016 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Bush 2016", "Bush, Alan, et al. \"Yeast GPCR signaling reflects the fraction of occupied receptors, not the number.\" Molecular systems biology 12.12 (2016): 898.");
 
-    public static EntityDataset from(Simulation simulation) {
+
+    public static EntityDataset getEntityDatasetFrom(Simulation simulation) {
         EntityDataset dataset = new EntityDataset();
-        for (ChemicalEntity chemicalEntity : simulation.getChemicalEntities()) {
+        List<ChemicalEntity> sortedEntities = ChemicalEntities.sortByComplexDependencies(new ArrayList<>(simulation.getAllChemicalEntities()));
+        for (ChemicalEntity chemicalEntity : sortedEntities) {
             dataset.addEntity(EntityRepresentation.of(chemicalEntity));
         }
         return dataset;
     }
 
-    public static void main(String[] args) {
+    public static ModuleDataset getModuleDatasetFrom(Simulation simulation) {
+        ModuleDataset dataset = new ModuleDataset();
+        for (UpdateModule module : simulation.getModules()) {
+            dataset.addModule(ModuleRepresentation.of(module));
+        }
+        return dataset;
+    }
 
+    public static List<ChemicalEntity> getEntityDatasetFrom(String entitySetJasonString) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new UnitJacksonModule());
+        return EntityDataset.to(mapper.readValue(entitySetJasonString, EntityDataset.class));
+    }
+
+    public static void main(String[] args) {
 
         Simulation simulation = new Simulation();
         simulation.setMaximalTimeStep(Quantities.getQuantity(0.001, SECOND));
@@ -128,7 +160,7 @@ public class Converter {
                 .origin(BUSH2016)
                 .build();
 
-        // transformed from static receptor parameter in original model
+        // transformed getEntityDatasetFrom static receptor parameter in original model
         RateConstant kOn_LR = RateConstant.create(1.7857e-4)
                 .forward().secondOrder()
                 .concentrationUnit(NANO(MOLE_PER_LITRE))
@@ -407,21 +439,128 @@ public class Converter {
                 .formingComplex(alphaGTPReceptorLigandComplex)
                 .build();
 
-        System.out.println();
-        System.out.println("--- Entities ---");
-        System.out.println();
-        simulation.getChemicalEntities().stream()
-                .sorted(Comparator.comparing(entity -> entity.getIdentifier().getIdentifier()))
-                .forEach(entity -> System.out.println(entity.getStringForProtocol() + System.lineSeparator()));
+        // setup species for clathrin decay
+        ChemicalEntity clathrinHeavyChain = new Protein.Builder("Clathrin heavy chain")
+                .assignFeature(new UniProtIdentifier("Q00610"))
+                .build();
 
-        Unit<Dimensionless> one = AbstractUnit.ONE;
-        EntityDataset entityDataset = Converter.from(simulation);
+        ChemicalEntity clathrinLightChain = new Protein.Builder("Clathrin light chain")
+                .assignFeature(new UniProtIdentifier("P09496"))
+                .build();
+
+        ComplexedChemicalEntity clathrinTriskelion = ComplexedChemicalEntity.create("Clathrin Triskelion")
+                .addAssociatedPart(clathrinHeavyChain, 3)
+                .addAssociatedPart(clathrinLightChain, 3)
+                .build();
+
+        // setup snares for fusion
+        Protein vamp2 = new Protein.Builder("VAMP2")
+                .assignFeature(new UniProtIdentifier("Q15836"))
+                .annotation(new Annotation<>(AnnotationType.NOTE, "SNARE type", "R-SNARE"))
+                .build();
+
+        Protein vamp3 = new Protein.Builder("VAMP3")
+                .assignFeature(new UniProtIdentifier("P63027"))
+                .annotation(new Annotation<>(AnnotationType.NOTE, "SNARE type", "R-SNARE"))
+                .build();
+
+        Protein syntaxin3 = new Protein.Builder("Syntaxin 3")
+                .assignFeature(new UniProtIdentifier("Q13277"))
+                .annotation(new Annotation<>(AnnotationType.NOTE, "SNARE type", "Qa-SNARE"))
+                .build();
+
+        Protein syntaxin4 = new Protein.Builder("Syntaxin 4")
+                .assignFeature(new UniProtIdentifier("Q12846"))
+                .annotation(new Annotation<>(AnnotationType.NOTE, "SNARE type", "Qa-SNARE"))
+                .build();
+
+        Protein snap23 = new Protein.Builder("SNAP23")
+                .assignFeature(new UniProtIdentifier("O00161"))
+                .annotation(new Annotation<>(AnnotationType.NOTE, "SNARE type", "Qbc-SNARE"))
+                .build();
+
+        ComplexedChemicalEntity snareComplex1 = ComplexedChemicalEntity.create(syntaxin3.getIdentifier().getIdentifier() + ":" + snap23.getIdentifier().getIdentifier())
+                .addAssociatedPart(syntaxin3)
+                .addAssociatedPart(snap23)
+                .annotation(new Annotation<>(AnnotationType.NOTE, "SNARE type", "Qabc-SNARE"))
+                .build();
+
+        ComplexedChemicalEntity snareComplex2 = ComplexedChemicalEntity.create(syntaxin4.getIdentifier().getIdentifier() + ":" + snap23.getIdentifier().getIdentifier())
+                .addAssociatedPart(syntaxin4)
+                .addAssociatedPart(snap23)
+                .annotation(new Annotation<>(AnnotationType.NOTE, "SNARE type", "Qabc-SNARE"))
+                .build();
+
+        // setup endocytosis budding
+        ClathrinMediatedEndocytosis budding = new ClathrinMediatedEndocytosis();
+        budding.setSimulation(simulation);
+        budding.addMembraneCargo(Quantities.getQuantity(31415.93, new ProductUnit<Area>(NANO(METRE).pow(2))), 60.0, clathrinTriskelion);
+        budding.addMembraneCargo(Quantities.getQuantity(10000, new ProductUnit<Area>(NANO(METRE).pow(2))), 10, vamp3);
+        budding.setFeature(BuddingRate.DEFAULT_BUDDING_RATE);
+        budding.setFeature(VesicleRadius.DEFAULT_VESICLE_RADIUS);
+        budding.setFeature(MaturationTime.DEFAULT_MATURATION_TIME);
+        simulation.getModules().add(budding);
+
+        // setup vesicle diffusion
+        VesicleDiffusion diffusion = new VesicleDiffusion();
+        diffusion.useLiteratureDiffusivity();
+        diffusion.setSimulation(simulation);
+        simulation.getModules().add(diffusion);
+
+        // setup actin boost
+        EndocytosisActinBoost boost = new EndocytosisActinBoost();
+        boost.setFeature(new DecayingEntity(clathrinTriskelion, MANUALLY_ANNOTATED));
+        boost.setFeature(ActinBoostVelocity.DEFAULT_ACTIN_VELOCITY);
+        boost.setSimulation(simulation);
+        simulation.getModules().add(boost);
+
+        // setup attachment
+        VesicleAttachment attachment = new VesicleAttachment();
+        attachment.setFeature(AttachmentDistance.DEFAULT_DYNEIN_ATTACHMENT_DISTANCE);
+        attachment.setSimulation(simulation);
+        simulation.getModules().add(attachment);
+
+        // setup transport
+        VesicleTransport transport = new VesicleTransport();
+        transport.setFeature(MotorMovementVelocity.DEFAULT_MOTOR_VELOCITY);
+        transport.setSimulation(simulation);
+        simulation.getModules().add(transport);
+
+        // setup tethering and fusion
+        VesicleFusion fusion = new VesicleFusion();
+        HashSet<ChemicalEntity> qSnareEntities = new HashSet<>();
+        qSnareEntities.add(snareComplex1);
+        qSnareEntities.add(snareComplex2);
+        MatchingQSnares qSnares = new MatchingQSnares(qSnareEntities, MANUALLY_ANNOTATED);
+        fusion.setFeature(qSnares);
+
+        HashSet<ChemicalEntity> rSnareEntities = new HashSet<>();
+        rSnareEntities.add(vamp2);
+        rSnareEntities.add(vamp3);
+        MatchingRSnares rSnares = new MatchingRSnares(rSnareEntities, MANUALLY_ANNOTATED);
+        fusion.setFeature(rSnares);
+
+        fusion.setFeature(rSnares);
+        fusion.initializeComplexes();
+        fusion.setFeature(new FusionPairs(3, MANUALLY_ANNOTATED));
+        fusion.setFeature(TetheringTime.DEFAULT_TETHERING_TIME);
+        fusion.setFeature(AttachmentDistance.DEFAULT_DYNEIN_ATTACHMENT_DISTANCE);
+        fusion.setSimulation(simulation);
+        simulation.getModules().add(fusion);
+
+        EntityDataset entityDataset = Converter.getEntityDatasetFrom(simulation);
+        ModuleDataset moduleDataset = Converter.getModuleDatasetFrom(simulation);
+
         try {
-            System.out.println(entityDataset.toJson());
-        } catch (JsonProcessingException e) {
+            String entityJson = entityDataset.toJson();
+            System.out.println(entityJson);
+            String moduleJson = moduleDataset.toJson();
+            System.out.println(moduleJson);
+//            List<ChemicalEntity> entities = Converter.getEntityDatasetFrom(entityJson);
+//            System.out.println(entities);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
 
     }
 

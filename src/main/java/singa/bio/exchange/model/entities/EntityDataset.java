@@ -1,9 +1,11 @@
 package singa.bio.exchange.model.entities;
 
+import bio.singa.chemistry.entities.ChemicalEntity;
 import singa.bio.exchange.model.Jasonizable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author cl
@@ -14,6 +16,12 @@ public class EntityDataset implements Jasonizable {
 
     public EntityDataset() {
         entities = new ArrayList<>();
+    }
+
+    public static List<ChemicalEntity> to(EntityDataset entites) {
+        return entites.getEntities().stream()
+                .map(EntityRepresentation::to)
+                .collect(Collectors.toList());
     }
 
     public List<EntityRepresentation> getEntities() {
