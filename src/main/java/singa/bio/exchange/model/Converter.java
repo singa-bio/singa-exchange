@@ -3,15 +3,19 @@ package singa.bio.exchange.model;
 import bio.singa.chemistry.annotations.Annotation;
 import bio.singa.chemistry.annotations.AnnotationType;
 import bio.singa.chemistry.entities.*;
+import bio.singa.chemistry.features.diffusivity.Diffusivity;
+import bio.singa.chemistry.features.permeability.MembranePermeability;
+import bio.singa.chemistry.features.permeability.OsmoticPermeability;
 import bio.singa.chemistry.features.reactions.RateConstant;
 import bio.singa.features.identifiers.ChEBIIdentifier;
 import bio.singa.features.identifiers.UniProtIdentifier;
 import bio.singa.features.model.FeatureOrigin;
-import bio.singa.simulation.features.endocytosis.*;
+import bio.singa.simulation.features.*;
 import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.modules.concentration.imlementations.ComplexBuildingReaction;
 import bio.singa.simulation.model.modules.concentration.imlementations.NthOrderReaction;
 import bio.singa.simulation.model.modules.concentration.imlementations.ReversibleReaction;
+import bio.singa.simulation.model.modules.concentration.imlementations.SingleFileChannelMembraneTransport;
 import bio.singa.simulation.model.modules.displacement.implementations.EndocytosisActinBoost;
 import bio.singa.simulation.model.modules.displacement.implementations.VesicleDiffusion;
 import bio.singa.simulation.model.modules.displacement.implementations.VesicleTransport;
@@ -38,9 +42,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import static bio.singa.chemistry.features.diffusivity.Diffusivity.SQUARE_CENTIMETRE_PER_SECOND;
+import static bio.singa.chemistry.features.permeability.MembranePermeability.CENTIMETRE_PER_SECOND;
 import static bio.singa.features.model.FeatureOrigin.MANUALLY_ANNOTATED;
-import static bio.singa.features.units.UnitProvider.MOLE_PER_LITRE;
+import static bio.singa.features.units.UnitProvider.NANO_MOLE_PER_LITRE;
+import static bio.singa.simulation.features.DefaultFeatureSources.BINESH2015;
 import static bio.singa.simulation.model.sections.CellTopology.*;
+import static tec.uom.se.AbstractUnit.ONE;
 import static tec.uom.se.unit.MetricPrefix.NANO;
 import static tec.uom.se.unit.Units.METRE;
 import static tec.uom.se.unit.Units.SECOND;
@@ -50,8 +58,12 @@ import static tec.uom.se.unit.Units.SECOND;
  */
 public class Converter {
 
-    static final FeatureOrigin BUSH2016 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Bush 2016", "Bush, Alan, et al. \"Yeast GPCR signaling reflects the fraction of occupied receptors, not the number.\" Molecular systems biology 12.12 (2016): 898.");
+    public static Simulation current;
 
+    static final FeatureOrigin BUSH2016 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Bush 2016", "Bush, Alan, et al. \"Yeast GPCR signaling reflects the fraction of occupied receptors, not the number.\" Molecular systems biology 12.12 (2016): 898.");
+    static final FeatureOrigin PUTNAM1971 = new FeatureOrigin(FeatureOrigin.OriginType.MANUAL_ANNOTATION, "Putnam 1971", "Putnam, David F. \"Composition and concentrative properties of human urine.\" (1971).");
+    static final FeatureOrigin TOFTS2000 = new FeatureOrigin(FeatureOrigin.OriginType.MANUAL_ANNOTATION, "Tofts 2000", "Tofts, P. S., et al. \"Test liquids for quantitative MRI measurements of self‐diffusion coefficient in vivo.\" Magnetic resonance in medicine 43.3 (2000): 368-374.");
+    static final FeatureOrigin HAINES1994 = new FeatureOrigin(FeatureOrigin.OriginType.MANUAL_ANNOTATION, "Haines 1994", "Haines, Thomas H. \"Water transport across biological membranes.\" FEBS letters 346.1 (1994): 115-122.");
 
     public static EntityDataset getEntityDatasetFrom(Simulation simulation) {
         EntityDataset dataset = new EntityDataset();
@@ -70,10 +82,35 @@ public class Converter {
         return dataset;
     }
 
+    public static SimulationRepresentation getSimulationFrom(Simulation simulation) {
+        ModuleDataset moduleDataset = getModuleDatasetFrom(simulation);
+        EntityDataset entityDataset = getEntityDatasetFrom(simulation);
+        SimulationRepresentation representation = new SimulationRepresentation();
+        representation.setEntities(entityDataset);
+        representation.setModules(moduleDataset);
+        return representation;
+    }
+
     public static List<ChemicalEntity> getEntityDatasetFrom(String entitySetJasonString) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new UnitJacksonModule());
         return EntityDataset.to(mapper.readValue(entitySetJasonString, EntityDataset.class));
+    }
+
+    public static Simulation getSimulationFrom(String json) throws IOException {
+        current = new Simulation();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new UnitJacksonModule());
+        return SimulationRepresentation.to(mapper.readValue(json, SimulationRepresentation.class));
+    }
+
+    public static Simulation getSimulationfromDatasets(EntityDataset entityDataset, ModuleDataset moduleDataset) {
+        current = new Simulation();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new UnitJacksonModule());
+        List<ChemicalEntity> entities = EntityDataset.to(entityDataset);
+        List<UpdateModule> modules = ModuleDataset.to(moduleDataset);
+        return current;
     }
 
     public static void main(String[] args) {
@@ -96,7 +133,7 @@ public class Converter {
         // parameters
         RateConstant kOnR_G = RateConstant.create(4.6111e-3)
                 .forward().secondOrder()
-                .concentrationUnit(NANO(MOLE_PER_LITRE)).timeUnit(SECOND)
+                .concentrationUnit(NANO_MOLE_PER_LITRE).timeUnit(SECOND)
                 .origin(BUSH2016)
                 .build();
 
@@ -126,8 +163,9 @@ public class Converter {
 
         RateConstant kAf_Gd = RateConstant.create(0.2158)
                 .forward().secondOrder()
-                .concentrationUnit(NANO(MOLE_PER_LITRE)).timeUnit(SECOND)
+                .concentrationUnit(NANO_MOLE_PER_LITRE).timeUnit(SECOND)
                 .origin(BUSH2016).build();
+
 
         RateConstant kAr_Gd = RateConstant.create(1.3e-3)
                 .backward().firstOrder()
@@ -163,7 +201,7 @@ public class Converter {
         // transformed getEntityDatasetFrom static receptor parameter in original model
         RateConstant kOn_LR = RateConstant.create(1.7857e-4)
                 .forward().secondOrder()
-                .concentrationUnit(NANO(MOLE_PER_LITRE))
+                .concentrationUnit(NANO_MOLE_PER_LITRE)
                 .timeUnit(SECOND)
                 .origin(BUSH2016)
                 .build();
@@ -491,6 +529,32 @@ public class Converter {
                 .annotation(new Annotation<>(AnnotationType.NOTE, "SNARE type", "Qabc-SNARE"))
                 .build();
 
+
+        SmallMolecule water = SmallMolecule.create("water")
+                .additionalIdentifier(new ChEBIIdentifier("CHEBI:15377"))
+                .assignFeature(new Diffusivity(Quantities.getQuantity(2.6e-6, SQUARE_CENTIMETRE_PER_SECOND), TOFTS2000))
+                .assignFeature(new MembranePermeability(Quantities.getQuantity(3.5e-3 * 0.5, CENTIMETRE_PER_SECOND), HAINES1994))
+                .build();
+
+        // solutes
+        SmallMolecule solute = SmallMolecule.create("solutes")
+                .name("solutes")
+                .assignFeature(new MolarMass(52.0, PUTNAM1971)) // average solute mass
+                .build();
+        solute.setFeature(Diffusivity.class);
+
+        // aqp2
+        Protein aquaporin2 = new Protein.Builder("aqp2")
+                .additionalIdentifier(new UniProtIdentifier("P41181"))
+                .assignFeature(new OsmoticPermeability(5.31e-14, BINESH2015))
+                .build();
+
+        SingleFileChannelMembraneTransport.inSimulation(simulation)
+                .transporter(aquaporin2)
+                .cargo(water)
+                .forSolute(solute)
+                .build();
+
         // setup endocytosis budding
         ClathrinMediatedEndocytosis budding = new ClathrinMediatedEndocytosis();
         budding.setSimulation(simulation);
@@ -542,22 +606,19 @@ public class Converter {
 
         fusion.setFeature(rSnares);
         fusion.initializeComplexes();
-        fusion.setFeature(new FusionPairs(3, MANUALLY_ANNOTATED));
+        fusion.setFeature(new FusionPairs(Quantities.getQuantity(3, ONE), MANUALLY_ANNOTATED));
         fusion.setFeature(TetheringTime.DEFAULT_TETHERING_TIME);
         fusion.setFeature(AttachmentDistance.DEFAULT_DYNEIN_ATTACHMENT_DISTANCE);
         fusion.setSimulation(simulation);
         simulation.getModules().add(fusion);
 
-        EntityDataset entityDataset = Converter.getEntityDatasetFrom(simulation);
-        ModuleDataset moduleDataset = Converter.getModuleDatasetFrom(simulation);
+        SimulationRepresentation representation = getSimulationFrom(simulation);
 
         try {
-            String entityJson = entityDataset.toJson();
-            System.out.println(entityJson);
-            String moduleJson = moduleDataset.toJson();
-            System.out.println(moduleJson);
-//            List<ChemicalEntity> entities = Converter.getEntityDatasetFrom(entityJson);
-//            System.out.println(entities);
+            String json = representation.toJson();
+            System.out.println(json);
+            Simulation reparsedSimulation = Converter.getSimulationFrom(json);
+            System.out.println(simulation);
         } catch (IOException e) {
             e.printStackTrace();
         }

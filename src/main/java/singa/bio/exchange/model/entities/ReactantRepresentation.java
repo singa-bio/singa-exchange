@@ -1,6 +1,7 @@
 package singa.bio.exchange.model.entities;
 
 import bio.singa.simulation.model.modules.concentration.reactants.Reactant;
+import bio.singa.simulation.model.modules.concentration.reactants.ReactantRole;
 import bio.singa.simulation.model.modules.concentration.reactants.StoichiometricReactant;
 import bio.singa.simulation.model.sections.CellTopology;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,14 +31,26 @@ public class ReactantRepresentation {
         representation.setIdentifier(reactant.getEntity().getIdentifier().toString());
         representation.setPreferredTopology(fromType(reactant.getPrefferedTopology()));
         if (reactant instanceof StoichiometricReactant) {
-           representation.setStoichiometricNumber(((StoichiometricReactant) reactant).getStoichiometricNumber());
+            representation.setStoichiometricNumber(((StoichiometricReactant) reactant).getStoichiometricNumber());
         } else {
             representation.setStoichiometricNumber(1.0);
         }
         return representation;
     }
 
-    private static String fromType(CellTopology type) {
+    public static StoichiometricReactant to(ReactantRepresentation representation, boolean isSubstrate) {
+        ReactantRole role;
+        if (isSubstrate) {
+            role = ReactantRole.DECREASING;
+        } else {
+            role = ReactantRole.INCREASING;
+        }
+        StoichiometricReactant reactant = new StoichiometricReactant(EntityCache.get(representation.getIdentifier()), role, representation.getStoichiometricNumber());
+        reactant.setPrefferedTopology(reactant.getPrefferedTopology());
+        return reactant;
+    }
+
+    public static String fromType(CellTopology type) {
         switch (type) {
             case OUTER:
                 return "outer";
@@ -48,7 +61,7 @@ public class ReactantRepresentation {
         }
     }
 
-    private static CellTopology toType(String type) {
+    public static CellTopology toType(String type) {
         switch (type) {
             case "outer":
                 return OUTER;

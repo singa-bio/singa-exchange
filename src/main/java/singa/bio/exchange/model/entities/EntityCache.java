@@ -27,11 +27,11 @@ public class EntityCache {
         cache = new HashMap<>();
     }
 
-    static void add(ChemicalEntity entity) {
+    public static void add(ChemicalEntity entity) {
         getInstance().cache.put(entity.getIdentifier().toString(), entity);
     }
 
-    static ChemicalEntity get(String identifier) {
+    public static ChemicalEntity get(String identifier) {
         return getInstance().cache.get(identifier);
     }
 

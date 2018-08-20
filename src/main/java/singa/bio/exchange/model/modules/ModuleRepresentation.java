@@ -21,7 +21,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = ReactionModuleRepresentation.class, name = "reaction-based"),
         @JsonSubTypes.Type(value = QualitativeModuleRepresentation.class, name = "qualitative")
 })
-public class ModuleRepresentation {
+public abstract class ModuleRepresentation {
 
     @JsonProperty
     private String name;
@@ -39,6 +39,10 @@ public class ModuleRepresentation {
 
     public static ModuleRepresentation of(UpdateModule module) {
         return ModuleFactory.createRepresentation(module);
+    }
+
+    public static UpdateModule to(ModuleRepresentation representation) {
+        return ModuleFactory.createModule(representation);
     }
 
     public String getName() {

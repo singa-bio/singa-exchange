@@ -93,7 +93,6 @@ public abstract class EntityRepresentation {
             for (FeatureRepresentation featureRepresentation : representation.getFeatures()) {
                 Feature feature = FeatureRepresentation.to(featureRepresentation);
                 entity.setFeature(feature);
-                System.out.println(feature);
             }
             EntityCache.add(entity);
             return entity;

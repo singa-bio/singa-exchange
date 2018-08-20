@@ -72,8 +72,7 @@ public class UnitJacksonModule extends SimpleModule {
             if (unit == null) {
                 jgen.writeNull();
             } else {
-                String formattedUnit = ServiceProvider.current().getUnitFormatService().getUnitFormat("ASCII").format(unit, new StringBuilder()).toString();
-                jgen.writeString(formattedUnit);
+                jgen.writeString(ServiceProvider.current().getUnitFormatService().getUnitFormat("EBNF").format(unit, new StringBuilder()).toString());
             }
         }
     }
@@ -91,7 +90,7 @@ public class UnitJacksonModule extends SimpleModule {
         public Unit deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             JsonToken currentToken = jsonParser.getCurrentToken();
             if (currentToken == JsonToken.VALUE_STRING) {
-                return ServiceProvider.current().getUnitFormatService().getUnitFormat("ASCII").parse(jsonParser.getText());
+                return ServiceProvider.current().getUnitFormatService().getUnitFormat("EBNF").parse(jsonParser.getText());
             }
             throw deserializationContext.wrongTokenException(jsonParser,
                     JsonToken.VALUE_STRING, "Expected unit value in String format");
