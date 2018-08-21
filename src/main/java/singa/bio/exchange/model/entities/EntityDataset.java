@@ -20,9 +20,9 @@ public class EntityDataset implements Jasonizable {
         entities = new ArrayList<>();
     }
 
-    public static List<ChemicalEntity> to(EntityDataset entityDataset) {
-        List<ChemicalEntity> entities = entityDataset.getEntities().stream()
-                .map(EntityRepresentation::to)
+    public List<ChemicalEntity> toModel() {
+        List<ChemicalEntity> entities = getEntities().stream()
+                .map(EntityRepresentation::toModel)
                 .collect(Collectors.toList());
         for (ChemicalEntity entity : entities) {
             EntityCache.add(entity);

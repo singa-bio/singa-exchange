@@ -38,14 +38,14 @@ public class ReactantRepresentation {
         return representation;
     }
 
-    public static StoichiometricReactant to(ReactantRepresentation representation, boolean isSubstrate) {
+    public StoichiometricReactant toModel(boolean isSubstrate) {
         ReactantRole role;
         if (isSubstrate) {
             role = ReactantRole.DECREASING;
         } else {
             role = ReactantRole.INCREASING;
         }
-        StoichiometricReactant reactant = new StoichiometricReactant(EntityCache.get(representation.getIdentifier()), role, representation.getStoichiometricNumber());
+        StoichiometricReactant reactant = new StoichiometricReactant(EntityCache.get(getIdentifier()), role, getStoichiometricNumber());
         reactant.setPrefferedTopology(reactant.getPrefferedTopology());
         return reactant;
     }

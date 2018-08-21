@@ -20,9 +20,9 @@ public class ModuleDataset implements Jasonizable {
         modules = new ArrayList<>();
     }
 
-    public static List<UpdateModule> to(ModuleDataset moduleDataset) {
-        return moduleDataset.getModules().stream()
-                .map(ModuleRepresentation::to)
+    public List<UpdateModule> toModel() {
+        return getModules().stream()
+                .map(ModuleRepresentation::toModel)
                 .collect(Collectors.toList());
     }
 

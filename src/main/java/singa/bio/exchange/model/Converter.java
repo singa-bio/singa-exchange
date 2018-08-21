@@ -10,7 +10,16 @@ import bio.singa.chemistry.features.reactions.RateConstant;
 import bio.singa.features.identifiers.ChEBIIdentifier;
 import bio.singa.features.identifiers.UniProtIdentifier;
 import bio.singa.features.model.FeatureOrigin;
+import bio.singa.features.parameters.Environment;
 import bio.singa.simulation.features.*;
+import bio.singa.simulation.model.agents.membranes.Membrane;
+import bio.singa.simulation.model.agents.membranes.MembraneLayer;
+import bio.singa.simulation.model.agents.membranes.MembraneTracer;
+import bio.singa.simulation.model.agents.organelles.Organelle;
+import bio.singa.simulation.model.agents.organelles.OrganelleTypes;
+import bio.singa.simulation.model.graphs.AutomatonGraph;
+import bio.singa.simulation.model.graphs.AutomatonGraphs;
+import bio.singa.simulation.model.graphs.AutomatonNode;
 import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.modules.concentration.imlementations.ComplexBuildingReaction;
 import bio.singa.simulation.model.modules.concentration.imlementations.NthOrderReaction;
@@ -22,21 +31,27 @@ import bio.singa.simulation.model.modules.displacement.implementations.VesicleTr
 import bio.singa.simulation.model.modules.qualitative.implementations.ClathrinMediatedEndocytosis;
 import bio.singa.simulation.model.modules.qualitative.implementations.VesicleAttachment;
 import bio.singa.simulation.model.modules.qualitative.implementations.VesicleFusion;
-import bio.singa.simulation.model.sections.CellRegion;
-import bio.singa.simulation.model.sections.CellSubsection;
-import bio.singa.simulation.model.sections.CellTopology;
+import bio.singa.simulation.model.sections.CellRegions;
 import bio.singa.simulation.model.simulation.Simulation;
 import bio.singa.structure.features.molarmass.MolarMass;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import singa.bio.exchange.model.entities.EntityDataset;
 import singa.bio.exchange.model.entities.EntityRepresentation;
+import singa.bio.exchange.model.graphs.GraphRepresentation;
+import singa.bio.exchange.model.macroscopic.MembraneDataset;
+import singa.bio.exchange.model.macroscopic.MembraneRepresentation;
 import singa.bio.exchange.model.modules.ModuleDataset;
 import singa.bio.exchange.model.modules.ModuleRepresentation;
+import singa.bio.exchange.model.origins.OriginDataset;
+import singa.bio.exchange.model.sections.RegionDataset;
+import singa.bio.exchange.model.sections.SubsectionDataset;
 import singa.bio.exchange.model.units.UnitJacksonModule;
+import tec.uom.se.ComparableQuantity;
 import tec.uom.se.quantity.Quantities;
 import tec.uom.se.unit.ProductUnit;
 
 import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -49,6 +64,7 @@ import static bio.singa.features.units.UnitProvider.NANO_MOLE_PER_LITRE;
 import static bio.singa.simulation.features.DefaultFeatureSources.BINESH2015;
 import static bio.singa.simulation.model.sections.CellTopology.*;
 import static tec.uom.se.AbstractUnit.ONE;
+import static tec.uom.se.unit.MetricPrefix.MICRO;
 import static tec.uom.se.unit.MetricPrefix.NANO;
 import static tec.uom.se.unit.Units.METRE;
 import static tec.uom.se.unit.Units.SECOND;
@@ -61,9 +77,9 @@ public class Converter {
     public static Simulation current;
 
     static final FeatureOrigin BUSH2016 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Bush 2016", "Bush, Alan, et al. \"Yeast GPCR signaling reflects the fraction of occupied receptors, not the number.\" Molecular systems biology 12.12 (2016): 898.");
-    static final FeatureOrigin PUTNAM1971 = new FeatureOrigin(FeatureOrigin.OriginType.MANUAL_ANNOTATION, "Putnam 1971", "Putnam, David F. \"Composition and concentrative properties of human urine.\" (1971).");
-    static final FeatureOrigin TOFTS2000 = new FeatureOrigin(FeatureOrigin.OriginType.MANUAL_ANNOTATION, "Tofts 2000", "Tofts, P. S., et al. \"Test liquids for quantitative MRI measurements of self‐diffusion coefficient in vivo.\" Magnetic resonance in medicine 43.3 (2000): 368-374.");
-    static final FeatureOrigin HAINES1994 = new FeatureOrigin(FeatureOrigin.OriginType.MANUAL_ANNOTATION, "Haines 1994", "Haines, Thomas H. \"Water transport across biological membranes.\" FEBS letters 346.1 (1994): 115-122.");
+    static final FeatureOrigin PUTNAM1971 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Putnam 1971", "Putnam, David F. \"Composition and concentrative properties of human urine.\" (1971).");
+    static final FeatureOrigin TOFTS2000 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Tofts 2000", "Tofts, P. S., et al. \"Test liquids for quantitative MRI measurements of self‐diffusion coefficient in vivo.\" Magnetic resonance in medicine 43.3 (2000): 368-374.");
+    static final FeatureOrigin HAINES1994 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Haines 1994", "Haines, Thomas H. \"Water transport across biological membranes.\" FEBS letters 346.1 (1994): 115-122.");
 
     public static EntityDataset getEntityDatasetFrom(Simulation simulation) {
         EntityDataset dataset = new EntityDataset();
@@ -82,19 +98,35 @@ public class Converter {
         return dataset;
     }
 
+    public static GraphRepresentation getGraphFrom(Simulation simulation) {
+        return GraphRepresentation.of(simulation.getGraph());
+    }
+
+    public static MembraneDataset getMembranesFrom(Simulation simulation) {
+        MembraneDataset dataset = new MembraneDataset();
+        for (Membrane membrane : simulation.getMembraneLayer().getMembranes()) {
+            dataset.addMembrane(MembraneRepresentation.of(membrane));
+        }
+        return dataset;
+    }
+
     public static SimulationRepresentation getSimulationFrom(Simulation simulation) {
         ModuleDataset moduleDataset = getModuleDatasetFrom(simulation);
         EntityDataset entityDataset = getEntityDatasetFrom(simulation);
+        GraphRepresentation graph = getGraphFrom(simulation);
+        MembraneDataset membranes = getMembranesFrom(simulation);
+
         SimulationRepresentation representation = new SimulationRepresentation();
         representation.setEntities(entityDataset);
         representation.setModules(moduleDataset);
-        return representation;
-    }
+        representation.setGraph(graph);
+        representation.setMembranes(membranes);
+        representation.setOrigins(OriginDataset.fromCache());
+        representation.setSubsections(SubsectionDataset.fromCache());
+        representation.setRegions(RegionDataset.fromCache());
+        representation.setEnvironment(EnvironmentRepresentation.fromSingleton());
 
-    public static List<ChemicalEntity> getEntityDatasetFrom(String entitySetJasonString) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new UnitJacksonModule());
-        return EntityDataset.to(mapper.readValue(entitySetJasonString, EntityDataset.class));
+        return representation;
     }
 
     public static Simulation getSimulationFrom(String json) throws IOException {
@@ -104,28 +136,38 @@ public class Converter {
         return SimulationRepresentation.to(mapper.readValue(json, SimulationRepresentation.class));
     }
 
-    public static Simulation getSimulationfromDatasets(EntityDataset entityDataset, ModuleDataset moduleDataset) {
-        current = new Simulation();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new UnitJacksonModule());
-        List<ChemicalEntity> entities = EntityDataset.to(entityDataset);
-        List<UpdateModule> modules = ModuleDataset.to(moduleDataset);
-        return current;
-    }
-
     public static void main(String[] args) {
 
         Simulation simulation = new Simulation();
-        simulation.setMaximalTimeStep(Quantities.getQuantity(0.001, SECOND));
 
-        CellSubsection cytoplasm = new CellSubsection("Cytoplasm");
-        CellSubsection interstitium = new CellSubsection("Interstitium");
-        CellSubsection basolateralMembrane = new CellSubsection("Basolateral membrane");
+        double simulationExtend = 800;
+        int nodesHorizontal = 22;
+        ComparableQuantity<Length> systemExtend = Quantities.getQuantity(22, MICRO(METRE));
+        Environment.setSystemExtend(systemExtend);
+        Environment.setSimulationExtend(simulationExtend);
+        Environment.setNodeSpacingToDiameter(systemExtend, nodesHorizontal);
+        Environment.setTimeStep(Quantities.getQuantity(1, MICRO(SECOND)));
 
-        CellRegion interstitiumMembrane = new CellRegion("Interstitium membrane");
-        interstitiumMembrane.addSubSection(CellTopology.INNER, cytoplasm);
-        interstitiumMembrane.addSubSection(CellTopology.MEMBRANE, basolateralMembrane);
-        interstitiumMembrane.addSubSection(CellTopology.OUTER, interstitium);
+        AutomatonGraph graph = AutomatonGraphs.createRectangularAutomatonGraph(nodesHorizontal, nodesHorizontal);
+        simulation.setGraph(graph);
+
+        // setup spatial representations
+        simulation.initializeSpatialRepresentations();
+        MembraneLayer membraneLayer = new MembraneLayer();
+        simulation.setMembraneLayer(membraneLayer);
+
+        // initialize extracellular space as default
+        for (AutomatonNode automatonNode : graph.getNodes()) {
+            automatonNode.setCellRegion(CellRegions.EXTRACELLULAR_REGION);
+        }
+
+        // initialize cell membrane and nucleus
+        Organelle cell = OrganelleTypes.CELL.create();
+        Organelle nucleus = OrganelleTypes.NUCLEUS.create();
+        Membrane cellMembrane = MembraneTracer.membraneToRegion(cell, graph);
+        membraneLayer.addMembrane(cellMembrane);
+        Membrane nuclearMembrane = MembraneTracer.membraneToRegion(nucleus, graph);
+        membraneLayer.addMembrane(nuclearMembrane);
 
         // reactome https://reactome.org/PathwayBrowser/#/R-HSA-432040&SEL=R-HSA-432197&FLG=O14610)
         // biomodels yeast carrousel https://www.ebi.ac.uk/biomodels-main/BIOMD0000000637
@@ -618,12 +660,11 @@ public class Converter {
             String json = representation.toJson();
             System.out.println(json);
             Simulation reparsedSimulation = Converter.getSimulationFrom(json);
-            System.out.println(simulation);
+            System.out.println(reparsedSimulation);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
-
 
 }

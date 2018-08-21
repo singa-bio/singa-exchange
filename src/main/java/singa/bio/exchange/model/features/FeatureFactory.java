@@ -11,6 +11,7 @@ import bio.singa.features.model.FeatureOrigin;
 import org.reflections.Reflections;
 import singa.bio.exchange.model.IllegalConversionException;
 import singa.bio.exchange.model.entities.EntityCache;
+import singa.bio.exchange.model.origins.OriginCache;
 import tec.uom.se.quantity.Quantities;
 
 import javax.measure.Quantity;
@@ -63,7 +64,7 @@ public class FeatureFactory {
             }
 
             try {
-                return (Feature) constructor.newInstance(chemicalEntity, OriginRepresentation.to(representation.getOrigin()));
+                return (Feature) constructor.newInstance(chemicalEntity, OriginCache.get(representation.getOrigin()));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new IllegalConversionException("Unable to create instance of entity feature " + representation.getName(), e);
             }
@@ -83,7 +84,7 @@ public class FeatureFactory {
             }
 
             try {
-                return (Feature) constructor.newInstance(entities, OriginRepresentation.to(representation.getOrigin()));
+                return (Feature) constructor.newInstance(entities, OriginCache.get(representation.getOrigin()));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new IllegalConversionException("Unable to create instance of multi entity feature " + representation.getName(), e);
             }
@@ -101,7 +102,7 @@ public class FeatureFactory {
                 throw new IllegalConversionException("Unable to get constructor for quantitative feature " + representation.getName(), e);
             }
             try {
-                return (Feature) constructor.newInstance(quantity, OriginRepresentation.to(representation.getOrigin()));
+                return (Feature) constructor.newInstance(quantity, OriginCache.get(representation.getOrigin()));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new IllegalConversionException("Unable to create instance of quantitative feature " + representation.getName(), e);
             }

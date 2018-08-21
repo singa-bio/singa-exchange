@@ -67,31 +67,31 @@ public abstract class EntityRepresentation {
 
     }
 
-    public static ChemicalEntity to(EntityRepresentation representation) {
-        if (representation instanceof SmallMoleculeRepresentation) {
-            SmallMolecule entity = SmallMolecule.create(representation.getPrimaryIdentifier()).build();
-            for (FeatureRepresentation featureRepresentation : representation.getFeatures()) {
-                Feature feature = FeatureRepresentation.to(featureRepresentation);
+    public ChemicalEntity toModel() {
+        if (this instanceof SmallMoleculeRepresentation) {
+            SmallMolecule entity = SmallMolecule.create(getPrimaryIdentifier()).build();
+            for (FeatureRepresentation featureRepresentation : getFeatures()) {
+                Feature feature = featureRepresentation.toModel();
                 entity.setFeature(feature);
             }
             EntityCache.add(entity);
             return entity;
-        } else if (representation instanceof ProteinRepresentation) {
-            Protein entity = new Protein.Builder(representation.getPrimaryIdentifier()).build();
-            for (FeatureRepresentation featureRepresentation : representation.getFeatures()) {
-                Feature feature = FeatureRepresentation.to(featureRepresentation);
+        } else if (this instanceof ProteinRepresentation) {
+            Protein entity = new Protein.Builder(getPrimaryIdentifier()).build();
+            for (FeatureRepresentation featureRepresentation : getFeatures()) {
+                Feature feature = featureRepresentation.toModel();
                 entity.setFeature(feature);
             }
             EntityCache.add(entity);
             return entity;
         } else {
-            ComplexedChemicalEntity.Builder builder = new ComplexedChemicalEntity.Builder(representation.getPrimaryIdentifier());
-            for (Map.Entry<String, Integer> entry : ((ComplexRepresentation) representation).getComponents().entrySet()) {
+            ComplexedChemicalEntity.Builder builder = new ComplexedChemicalEntity.Builder(getPrimaryIdentifier());
+            for (Map.Entry<String, Integer> entry : ((ComplexRepresentation) this).getComponents().entrySet()) {
                 builder.addAssociatedPart(EntityCache.get(entry.getKey()), entry.getValue());
             }
             ComplexedChemicalEntity entity = builder.build();
-            for (FeatureRepresentation featureRepresentation : representation.getFeatures()) {
-                Feature feature = FeatureRepresentation.to(featureRepresentation);
+            for (FeatureRepresentation featureRepresentation : getFeatures()) {
+                Feature feature = featureRepresentation.toModel();
                 entity.setFeature(feature);
             }
             EntityCache.add(entity);

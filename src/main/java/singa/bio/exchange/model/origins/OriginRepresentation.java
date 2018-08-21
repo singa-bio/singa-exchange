@@ -1,4 +1,4 @@
-package singa.bio.exchange.model.features;
+package singa.bio.exchange.model.origins;
 
 import bio.singa.features.model.FeatureOrigin;
 import bio.singa.features.model.FeatureOrigin.OriginType;
@@ -26,16 +26,17 @@ public class OriginRepresentation {
 
     }
 
-    public static OriginRepresentation of(FeatureOrigin orgin) {
+    public static OriginRepresentation of(FeatureOrigin origin) {
         OriginRepresentation representation = new OriginRepresentation();
-        representation.setType(fromType(orgin.getOriginType()));
-        representation.setShortDescriptor(orgin.getName());
-        representation.setDetailedDescriptor(orgin.getPublication());
+        representation.setType(fromType(origin.getOriginType()));
+        representation.setShortDescriptor(origin.getName());
+        representation.setDetailedDescriptor(origin.getPublication());
+        OriginCache.add(origin);
         return representation;
     }
 
-    public static FeatureOrigin to(OriginRepresentation representation) {
-        return new FeatureOrigin(toType(representation.type), representation.shortDescriptor, representation.detailedDescriptor);
+    public FeatureOrigin toModel() {
+        return new FeatureOrigin(toType(getType()), getShortDescriptor(), getDetailedDescriptor());
     }
 
     private static String fromType(OriginType type) {

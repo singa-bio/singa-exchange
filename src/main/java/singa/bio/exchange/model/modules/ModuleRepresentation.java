@@ -41,8 +41,8 @@ public abstract class ModuleRepresentation {
         return ModuleFactory.createRepresentation(module);
     }
 
-    public static UpdateModule to(ModuleRepresentation representation) {
-        return ModuleFactory.createModule(representation);
+    public UpdateModule toModel() {
+        return ModuleFactory.createModule(this);
     }
 
     public String getName() {

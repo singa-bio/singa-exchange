@@ -1,7 +1,6 @@
 package singa.bio.exchange.model.entities;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.features.parameters.Environment;
 
 import java.util.HashMap;
 
@@ -16,7 +15,7 @@ public class EntityCache {
 
     private static EntityCache getInstance() {
         if (instance == null) {
-            synchronized (Environment.class) {
+            synchronized (EntityCache.class) {
                 instance = new EntityCache();
             }
         }

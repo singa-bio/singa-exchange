@@ -159,10 +159,10 @@ public class ModuleFactory {
                 ReactionModuleRepresentation reactionRepresentation = (ReactionModuleRepresentation) representation;
                 // add substrates and products
                 for (ReactantRepresentation substrate : reactionRepresentation.getSubstrates()) {
-                    reaction.addStochiometricReactant(ReactantRepresentation.to(substrate, true));
+                    reaction.addStochiometricReactant(substrate.toModel(true));
                 }
                 for (ReactantRepresentation product : reactionRepresentation.getProducts()) {
-                    reaction.addStochiometricReactant(ReactantRepresentation.to(product, false));
+                    reaction.addStochiometricReactant(product.toModel(false));
                 }
             }
             // complex reactions
@@ -171,11 +171,11 @@ public class ModuleFactory {
                 ReactionModuleRepresentation reactionRepresentation = (ReactionModuleRepresentation) representation;
                 // only one complex product
                 ReactantRepresentation product = reactionRepresentation.getProducts().iterator().next();
-                StoichiometricReactant complex = ReactantRepresentation.to(product, false);
+                StoichiometricReactant complex = product.toModel(false);
                 reaction.setComplex((ComplexedChemicalEntity) complex.getEntity());
                 // substrates
                 for (ReactantRepresentation substrate : reactionRepresentation.getSubstrates()) {
-                    StoichiometricReactant stoichiometricReactant = ReactantRepresentation.to(substrate, true);
+                    StoichiometricReactant stoichiometricReactant = substrate.toModel(true);
                     if (stoichiometricReactant.getPrefferedTopology().equals(complex.getPrefferedTopology())
                             && reaction.getBinderTopology() == null) {
                         reaction.setBinder(stoichiometricReactant.getEntity());
@@ -190,7 +190,7 @@ public class ModuleFactory {
             module.setIdentifier(representation.getIdentifier());
             // features
             for (FeatureRepresentation feature : representation.getFeatures()) {
-                module.setFeature(FeatureRepresentation.to(feature));
+                module.setFeature(feature.toModel());
             }
             return builder.build();
         } else if (DisplacementBasedModule.class.isAssignableFrom(moduleClass)) {
@@ -212,7 +212,7 @@ public class ModuleFactory {
             module.setSimulation(Converter.current);
             // features
             for (FeatureRepresentation feature : representation.getFeatures()) {
-                module.setFeature(FeatureRepresentation.to(feature));
+                module.setFeature(feature.toModel());
             }
             Converter.current.getModules().add(module);
             return module;
@@ -235,7 +235,7 @@ public class ModuleFactory {
             module.setSimulation(Converter.current);
             // features
             for (FeatureRepresentation feature : representation.getFeatures()) {
-                module.setFeature(FeatureRepresentation.to(feature));
+                module.setFeature(feature.toModel());
             }
             Converter.current.getModules().add(module);
             return module;

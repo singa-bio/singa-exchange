@@ -6,6 +6,7 @@ import bio.singa.features.model.Feature;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import singa.bio.exchange.model.origins.OriginRepresentation;
 
 import javax.measure.Quantity;
 
@@ -26,7 +27,7 @@ public abstract class FeatureRepresentation {
     private String name;
 
     @JsonProperty
-    private OriginRepresentation origin;
+    private String origin;
 
     public FeatureRepresentation() {
 
@@ -36,7 +37,7 @@ public abstract class FeatureRepresentation {
         if (feature.getFeatureContent() instanceof Quantity) {
             QuantitativeFeatureRepresentation representation = new QuantitativeFeatureRepresentation();
             representation.setName(feature.getClass().getSimpleName());
-            representation.setOrigin(OriginRepresentation.of(feature.getFeatureOrigin()));
+            representation.setOrigin(OriginRepresentation.of(feature.getFeatureOrigin()).getShortDescriptor());
             Quantity quantity = (Quantity) feature.getFeatureContent();
             representation.setQuantity(quantity.getValue().doubleValue());
             representation.setUnit(quantity.getUnit());
@@ -44,7 +45,7 @@ public abstract class FeatureRepresentation {
         } else if (feature instanceof MultiEntityFeature) {
             MultiEntityFeatureRepresentation representation = new MultiEntityFeatureRepresentation();
             representation.setName(feature.getClass().getSimpleName());
-            representation.setOrigin(OriginRepresentation.of(feature.getFeatureOrigin()));
+            representation.setOrigin(OriginRepresentation.of(feature.getFeatureOrigin()).getShortDescriptor());
             for (ChemicalEntity chemicalEntity : ((MultiEntityFeature) feature).getFeatureContent()) {
                 representation.addEntity(chemicalEntity.getIdentifier().toString());
             }
@@ -52,7 +53,7 @@ public abstract class FeatureRepresentation {
         } else {
             QualitativeFeatureRepresentation representation = new QualitativeFeatureRepresentation();
             representation.setName(feature.getClass().getSimpleName());
-            representation.setOrigin(OriginRepresentation.of(feature.getFeatureOrigin()));
+            representation.setOrigin(OriginRepresentation.of(feature.getFeatureOrigin()).getShortDescriptor());
             // entity feature
             if (feature.getFeatureContent() instanceof ChemicalEntity) {
                 representation.setContent(((ChemicalEntity) feature.getFeatureContent()).getIdentifier().toString());
@@ -63,8 +64,8 @@ public abstract class FeatureRepresentation {
         }
     }
 
-    public static Feature to(FeatureRepresentation representation) {
-        return FeatureFactory.create(representation);
+    public Feature toModel() {
+        return FeatureFactory.create(this);
     }
 
     public String getName() {
@@ -75,11 +76,11 @@ public abstract class FeatureRepresentation {
         this.name = name;
     }
 
-    public OriginRepresentation getOrigin() {
+    public String getOrigin() {
         return origin;
     }
 
-    public void setOrigin(OriginRepresentation origin) {
+    public void setOrigin(String origin) {
         this.origin = origin;
     }
 
