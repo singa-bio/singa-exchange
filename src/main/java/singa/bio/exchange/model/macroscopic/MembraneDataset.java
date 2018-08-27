@@ -22,7 +22,7 @@ public class MembraneDataset implements Jasonizable {
     public List<Membrane> toModel() {
         List<Membrane> modelMembranes = new ArrayList<>();
         for (MembraneRepresentation membrane : membranes) {
-            membrane.toModel();
+            modelMembranes.add(membrane.toModel());
         }
         return modelMembranes;
     }

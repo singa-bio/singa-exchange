@@ -15,7 +15,6 @@ import bio.singa.simulation.features.*;
 import bio.singa.simulation.model.agents.membranes.Membrane;
 import bio.singa.simulation.model.agents.membranes.MembraneLayer;
 import bio.singa.simulation.model.agents.membranes.MembraneTracer;
-import bio.singa.simulation.model.agents.organelles.Organelle;
 import bio.singa.simulation.model.agents.organelles.OrganelleTypes;
 import bio.singa.simulation.model.graphs.AutomatonGraph;
 import bio.singa.simulation.model.graphs.AutomatonGraphs;
@@ -32,7 +31,11 @@ import bio.singa.simulation.model.modules.qualitative.implementations.ClathrinMe
 import bio.singa.simulation.model.modules.qualitative.implementations.VesicleAttachment;
 import bio.singa.simulation.model.modules.qualitative.implementations.VesicleFusion;
 import bio.singa.simulation.model.sections.CellRegions;
+import bio.singa.simulation.model.sections.CellSubsections;
+import bio.singa.simulation.model.sections.ConcentrationInitializer;
+import bio.singa.simulation.model.sections.InitialConcentration;
 import bio.singa.simulation.model.simulation.Simulation;
+import bio.singa.simulation.parser.organelles.OrganelleTemplate;
 import bio.singa.structure.features.molarmass.MolarMass;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import singa.bio.exchange.model.entities.EntityDataset;
@@ -43,6 +46,8 @@ import singa.bio.exchange.model.macroscopic.MembraneRepresentation;
 import singa.bio.exchange.model.modules.ModuleDataset;
 import singa.bio.exchange.model.modules.ModuleRepresentation;
 import singa.bio.exchange.model.origins.OriginDataset;
+import singa.bio.exchange.model.sections.InitialConcentrationDataset;
+import singa.bio.exchange.model.sections.InitialConcentrationRepresentation;
 import singa.bio.exchange.model.sections.RegionDataset;
 import singa.bio.exchange.model.sections.SubsectionDataset;
 import singa.bio.exchange.model.units.UnitJacksonModule;
@@ -60,6 +65,7 @@ import java.util.List;
 import static bio.singa.chemistry.features.diffusivity.Diffusivity.SQUARE_CENTIMETRE_PER_SECOND;
 import static bio.singa.chemistry.features.permeability.MembranePermeability.CENTIMETRE_PER_SECOND;
 import static bio.singa.features.model.FeatureOrigin.MANUALLY_ANNOTATED;
+import static bio.singa.features.units.UnitProvider.MOLE_PER_LITRE;
 import static bio.singa.features.units.UnitProvider.NANO_MOLE_PER_LITRE;
 import static bio.singa.simulation.features.DefaultFeatureSources.BINESH2015;
 import static bio.singa.simulation.model.sections.CellTopology.*;
@@ -110,11 +116,20 @@ public class Converter {
         return dataset;
     }
 
+    public static InitialConcentrationDataset getConcentrationsFrom(Simulation simulation) {
+        InitialConcentrationDataset dataset = new InitialConcentrationDataset();
+        for (InitialConcentration initialConcentration : simulation.getConcentrationInitializer().getInitialConcentrations()) {
+            dataset.addConcentration(InitialConcentrationRepresentation.of(initialConcentration));
+        }
+        return dataset;
+    }
+
     public static SimulationRepresentation getSimulationFrom(Simulation simulation) {
         ModuleDataset moduleDataset = getModuleDatasetFrom(simulation);
         EntityDataset entityDataset = getEntityDatasetFrom(simulation);
         GraphRepresentation graph = getGraphFrom(simulation);
         MembraneDataset membranes = getMembranesFrom(simulation);
+        InitialConcentrationDataset concentrations = getConcentrationsFrom(simulation);
 
         SimulationRepresentation representation = new SimulationRepresentation();
         representation.setEntities(entityDataset);
@@ -125,7 +140,7 @@ public class Converter {
         representation.setSubsections(SubsectionDataset.fromCache());
         representation.setRegions(RegionDataset.fromCache());
         representation.setEnvironment(EnvironmentRepresentation.fromSingleton());
-
+        representation.setConcentrations(concentrations);
         return representation;
     }
 
@@ -162,10 +177,20 @@ public class Converter {
         }
 
         // initialize cell membrane and nucleus
-        Organelle cell = OrganelleTypes.CELL.create();
-        Organelle nucleus = OrganelleTypes.NUCLEUS.create();
+        OrganelleTemplate cell = OrganelleTypes.CELL.create();
+        // blue is basolateral
+        int green = java.awt.Color.GREEN.getRGB();
+        cell.initializeGroup(green, "basolateral plasma membrane", "GO:0016323");
+        // red is the default region
+        int red = java.awt.Color.RED.getRGB();
+        cell.initializeGroup(red, cell.getMembraneRegion());
+        // green is the
+        int blue = java.awt.Color.BLUE.getRGB();
+        cell.initializeGroup(blue, "apical plasma membrane", "GO:0016324");
         Membrane cellMembrane = MembraneTracer.membraneToRegion(cell, graph);
         membraneLayer.addMembrane(cellMembrane);
+
+        OrganelleTemplate nucleus = OrganelleTypes.NUCLEUS.create();
         Membrane nuclearMembrane = MembraneTracer.membraneToRegion(nucleus, graph);
         membraneLayer.addMembrane(nuclearMembrane);
 
@@ -260,7 +285,7 @@ public class Converter {
                 .additionalIdentifier(new UniProtIdentifier("P30518"))
                 .build();
 
-        vasopressinReceptor.setFeature(MolarMass.class);
+        // vasopressinReceptor.setFeature(MolarMass.class);
 
         // vasopressin
         ChemicalEntity vasopressin = new SmallMolecule.Builder("AVP")
@@ -653,6 +678,12 @@ public class Converter {
         fusion.setFeature(AttachmentDistance.DEFAULT_DYNEIN_ATTACHMENT_DISTANCE);
         fusion.setSimulation(simulation);
         simulation.getModules().add(fusion);
+
+        ConcentrationInitializer ci = new ConcentrationInitializer();
+        ci.addInitialConcentration(CellSubsections.EXTRACELLULAR_REGION, solute, Quantities.getQuantity(0.3, MOLE_PER_LITRE));
+        ci.addInitialConcentration(CellSubsections.EXTRACELLULAR_REGION, water, Quantities.getQuantity(53.61, MOLE_PER_LITRE));
+        ci.initialize(simulation);
+        simulation.setConcentrationInitializer(ci);
 
         SimulationRepresentation representation = getSimulationFrom(simulation);
 

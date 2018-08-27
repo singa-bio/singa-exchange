@@ -1,20 +1,14 @@
 package singa.bio.exchange.model.macroscopic;
 
-import bio.singa.mathematics.geometry.edges.LineSegment;
-import bio.singa.mathematics.geometry.faces.VertexPolygon;
-import bio.singa.mathematics.geometry.model.Polygon;
+import bio.singa.mathematics.vectors.Vector2D;
 import bio.singa.simulation.model.agents.membranes.Membrane;
-import bio.singa.simulation.model.agents.membranes.MembraneSegment;
 import bio.singa.simulation.model.agents.membranes.MembraneTracer;
 import bio.singa.simulation.model.sections.CellRegion;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.Converter;
 import singa.bio.exchange.model.sections.RegionCache;
-import singa.bio.exchange.model.sections.RegionRepresentation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * @author cl
@@ -24,32 +18,52 @@ public class MembraneRepresentation {
     @JsonProperty
     private String identifier;
 
-    @JsonProperty
-    private String region;
+    @JsonProperty("inner-region")
+    private String innerRegion;
+
+    @JsonProperty("membrane-region")
+    private String membraneRegion;
 
     @JsonProperty
-    private List<SegmentRepresentation> segments;
+    private Map<String, List<VectorRepresentation>> regions;
 
     public MembraneRepresentation() {
-        segments = new ArrayList<>();
+        regions = new HashMap<>();
     }
 
     public static MembraneRepresentation of(Membrane membrane) {
         MembraneRepresentation representation = new MembraneRepresentation();
         representation.setIdentifier(membrane.getIdentifier());
-        representation.setRegion(RegionRepresentation.of(membrane.getRepresentativeRegion()).getIdentifier());
-        for (MembraneSegment segment : membrane.getSegments()) {
-            representation.addSegment(SegmentRepresentation.of(segment.getSegment()));
+        representation.setInnerRegion(membrane.getInnerRegion().getIdentifier());
+        representation.setMembraneRegion(membrane.getMembraneRegion().getIdentifier());
+        Map<CellRegion, Set<Vector2D>> regionMap = membrane.getRegionMap();
+        for (Map.Entry<CellRegion, Set<Vector2D>> entry : regionMap.entrySet()) {
+            ArrayList<VectorRepresentation> vectors = new ArrayList<>();
+            for (Vector2D vector : entry.getValue()) {
+                vectors.add(VectorRepresentation.of(vector));
+            }
+            RegionCache.add(entry.getKey());
+            representation.addRegion(entry.getKey().getIdentifier(), vectors);
         }
         return representation;
     }
 
     public Membrane toModel() {
-        CellRegion membraneRegion = RegionCache.get(getRegion());
-        CellRegion innerRegion = RegionCache.getInner(membraneRegion.getInnerSubsection().getIdentifier());
-        List<LineSegment> lineSegments = segments.stream().map(SegmentRepresentation::toModel).collect(Collectors.toList());
-        Polygon polygon = new VertexPolygon(lineSegments);
-        return MembraneTracer.membraneToRegion(membraneRegion, innerRegion, polygon, Converter.current.getGraph());
+        Membrane membrane = new Membrane(identifier);
+        CellRegion innerRegion = RegionCache.get(this.innerRegion);
+        membrane.setInnerRegion(innerRegion);
+        CellRegion membraneRegion = RegionCache.get(this.membraneRegion);
+        membrane.setMembraneRegion(membraneRegion);
+        Map<CellRegion, Set<Vector2D>> regionMap = new HashMap<>();
+        for (Map.Entry<String, List<VectorRepresentation>> entry : regions.entrySet()) {
+            CellRegion region = RegionCache.get(entry.getKey());
+            Set<Vector2D> vectors = new HashSet<>();
+            for (VectorRepresentation vectorRepresentation : entry.getValue()) {
+                vectors.add(vectorRepresentation.toModel());
+            }
+            regionMap.put(region, vectors);
+        }
+        return MembraneTracer.membraneToRegion(innerRegion, membraneRegion, regionMap, Converter.current.getGraph());
     }
 
     public String getIdentifier() {
@@ -60,23 +74,31 @@ public class MembraneRepresentation {
         this.identifier = identifier;
     }
 
-    public String getRegion() {
-        return region;
+    public Map<String, List<VectorRepresentation>> getRegions() {
+        return regions;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setRegions(Map<String, List<VectorRepresentation>> regions) {
+        this.regions = regions;
     }
 
-    public List<SegmentRepresentation> getSegments() {
-        return segments;
+    public void addRegion(String region, List<VectorRepresentation> vectors) {
+        this.regions.put(region, vectors);
     }
 
-    public void setSegments(List<SegmentRepresentation> segments) {
-        this.segments = segments;
-    }
-    public void addSegment(SegmentRepresentation segment) {
-        segments.add(segment);
+    public String getInnerRegion() {
+        return innerRegion;
     }
 
+    public void setInnerRegion(String innerRegion) {
+        this.innerRegion = innerRegion;
+    }
+
+    public String getMembraneRegion() {
+        return membraneRegion;
+    }
+
+    public void setMembraneRegion(String membraneRegion) {
+        this.membraneRegion = membraneRegion;
+    }
 }

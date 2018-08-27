@@ -2,6 +2,7 @@ package singa.bio.exchange.model;
 
 import bio.singa.simulation.model.agents.membranes.MembraneLayer;
 import bio.singa.simulation.model.graphs.AutomatonGraph;
+import bio.singa.simulation.model.sections.ConcentrationInitializer;
 import bio.singa.simulation.model.simulation.Simulation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.entities.EntityDataset;
@@ -9,6 +10,7 @@ import singa.bio.exchange.model.graphs.GraphRepresentation;
 import singa.bio.exchange.model.macroscopic.MembraneDataset;
 import singa.bio.exchange.model.modules.ModuleDataset;
 import singa.bio.exchange.model.origins.OriginDataset;
+import singa.bio.exchange.model.sections.InitialConcentrationDataset;
 import singa.bio.exchange.model.sections.RegionDataset;
 import singa.bio.exchange.model.sections.SubsectionDataset;
 
@@ -41,6 +43,9 @@ public class SimulationRepresentation implements Jasonizable {
     @JsonProperty
     private MembraneDataset membranes;
 
+    @JsonProperty
+    private InitialConcentrationDataset concentrations;
+
     public SimulationRepresentation() {
 
     }
@@ -67,6 +72,9 @@ public class SimulationRepresentation implements Jasonizable {
         MembraneLayer membraneLayer = new MembraneLayer();
         Converter.current.setMembraneLayer(membraneLayer);
         membraneLayer.addMembranes(representation.getMembranes().toModel());
+        // initialize concentration, requires entities, regions, and subsections
+        ConcentrationInitializer initializer = representation.getConcentrations().toModel();
+        Converter.current.setConcentrationInitializer(initializer);
         return Converter.current;
     }
 
@@ -134,4 +142,11 @@ public class SimulationRepresentation implements Jasonizable {
         this.membranes = membranes;
     }
 
+    public InitialConcentrationDataset getConcentrations() {
+        return concentrations;
+    }
+
+    public void setConcentrations(InitialConcentrationDataset concentrations) {
+        this.concentrations = concentrations;
+    }
 }
