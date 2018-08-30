@@ -4,6 +4,7 @@ import bio.singa.chemistry.MultiEntityFeature;
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.features.model.Feature;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import singa.bio.exchange.model.origins.OriginRepresentation;
@@ -21,6 +22,7 @@ import javax.measure.Quantity;
         @JsonSubTypes.Type(value = QualitativeFeatureRepresentation.class, name = "qualitative"),
         @JsonSubTypes.Type(value = MultiEntityFeatureRepresentation.class, name = "qualitative-multi"),
 })
+@JsonPropertyOrder({ "name" })
 public abstract class FeatureRepresentation {
 
     @JsonProperty

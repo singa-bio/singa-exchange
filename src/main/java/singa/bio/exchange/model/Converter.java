@@ -110,8 +110,10 @@ public class Converter {
 
     public static MembraneDataset getMembranesFrom(Simulation simulation) {
         MembraneDataset dataset = new MembraneDataset();
-        for (Membrane membrane : simulation.getMembraneLayer().getMembranes()) {
-            dataset.addMembrane(MembraneRepresentation.of(membrane));
+        if (simulation.getMembraneLayer() != null) {
+            for (Membrane membrane : simulation.getMembraneLayer().getMembranes()) {
+                dataset.addMembrane(MembraneRepresentation.of(membrane));
+            }
         }
         return dataset;
     }
@@ -132,6 +134,7 @@ public class Converter {
         InitialConcentrationDataset concentrations = getConcentrationsFrom(simulation);
 
         SimulationRepresentation representation = new SimulationRepresentation();
+        representation.setMetadata(Metadata.forSinga());
         representation.setEntities(entityDataset);
         representation.setModules(moduleDataset);
         representation.setGraph(graph);

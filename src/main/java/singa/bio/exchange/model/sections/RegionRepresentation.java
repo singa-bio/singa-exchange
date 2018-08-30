@@ -10,9 +10,7 @@ import singa.bio.exchange.model.entities.ReactantRepresentation;
 import java.util.HashMap;
 import java.util.Map;
 
-import static bio.singa.simulation.model.sections.CellTopology.INNER;
-import static bio.singa.simulation.model.sections.CellTopology.MEMBRANE;
-import static bio.singa.simulation.model.sections.CellTopology.OUTER;
+import static bio.singa.simulation.model.sections.CellTopology.*;
 
 /**
  * @author cl
@@ -36,7 +34,9 @@ public class RegionRepresentation {
     public static RegionRepresentation of(CellRegion region) {
         RegionRepresentation representation = new RegionRepresentation();
         representation.setIdentifier(region.getIdentifier());
-        representation.setGoTerm(region.getGoTerm().getIdentifier());
+        if (region.getGoTerm() != null) {
+            representation.setGoTerm(region.getGoTerm().getIdentifier());
+        }
         representation.addSubsection(INNER, region.getInnerSubsection());
         representation.addSubsection(MEMBRANE, region.getMembraneSubsection());
         representation.addSubsection(OUTER, region.getOuterSubsection());

@@ -20,6 +20,9 @@ import singa.bio.exchange.model.sections.SubsectionDataset;
 public class SimulationRepresentation implements Jasonizable {
 
     @JsonProperty
+    private Metadata metadata;
+
+    @JsonProperty
     private EntityDataset entities;
 
     @JsonProperty
@@ -76,6 +79,14 @@ public class SimulationRepresentation implements Jasonizable {
         ConcentrationInitializer initializer = representation.getConcentrations().toModel();
         Converter.current.setConcentrationInitializer(initializer);
         return Converter.current;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
 
     public EntityDataset getEntities() {

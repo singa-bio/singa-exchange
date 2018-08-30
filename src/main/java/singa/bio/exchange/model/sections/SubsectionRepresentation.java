@@ -22,7 +22,9 @@ public class SubsectionRepresentation {
     public static SubsectionRepresentation of(CellSubsection subsection) {
         SubsectionRepresentation representation = new SubsectionRepresentation();
         representation.setIdentifier(subsection.getIdentifier());
-        representation.setGoTerm(subsection.getGoTerm().getIdentifier());
+        if (subsection.getGoTerm() != null) {
+            representation.setGoTerm(subsection.getGoTerm().getIdentifier());
+        }
         return representation;
     }
 

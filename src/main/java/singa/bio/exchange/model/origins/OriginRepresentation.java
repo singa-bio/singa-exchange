@@ -4,9 +4,7 @@ import bio.singa.features.model.FeatureOrigin;
 import bio.singa.features.model.FeatureOrigin.OriginType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import static bio.singa.features.model.FeatureOrigin.OriginType.DATABASE;
-import static bio.singa.features.model.FeatureOrigin.OriginType.LITERATURE;
-import static bio.singa.features.model.FeatureOrigin.OriginType.PREDICTION;
+import static bio.singa.features.model.FeatureOrigin.OriginType.*;
 
 /**
  * @author cl

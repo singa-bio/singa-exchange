@@ -6,6 +6,7 @@ import bio.singa.chemistry.entities.Protein;
 import bio.singa.chemistry.entities.SmallMolecule;
 import bio.singa.features.model.Feature;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import singa.bio.exchange.model.features.FeatureRepresentation;
@@ -25,6 +26,7 @@ import java.util.Map;
         @JsonSubTypes.Type(value = ProteinRepresentation.class, name = "protein"),
         @JsonSubTypes.Type(value = ComplexRepresentation.class, name = "complex")
 })
+@JsonPropertyOrder({ "primary-identifier", "type" })
 public abstract class EntityRepresentation {
 
     @JsonProperty("primary-identifier")
