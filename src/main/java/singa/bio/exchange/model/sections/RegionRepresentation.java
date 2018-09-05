@@ -45,7 +45,12 @@ public class RegionRepresentation {
     }
 
     public CellRegion toModel() {
-        CellRegion region = new CellRegion(getIdentifier(), new GoTerm(getGoTerm()));
+        CellRegion region;
+        if (getGoTerm() != null) {
+            region = new CellRegion(getIdentifier(), new GoTerm(getGoTerm()));
+        } else {
+            region = new CellRegion(getIdentifier());
+        }
         for (Map.Entry<String, String> entry : getSubsections().entrySet()) {
             String topologyString = entry.getKey();
             String subsectionString = entry.getValue();

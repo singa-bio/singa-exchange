@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -21,9 +22,9 @@ public class InitialConcentrationDataset {
     }
 
     public ConcentrationInitializer toModel() {
-        List<InitialConcentration> initialConcentrations = getConcentrations().stream()
+        Set<InitialConcentration> initialConcentrations = getConcentrations().stream()
                 .map(InitialConcentrationRepresentation::toModel)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         return new ConcentrationInitializer(initialConcentrations);
     }
 

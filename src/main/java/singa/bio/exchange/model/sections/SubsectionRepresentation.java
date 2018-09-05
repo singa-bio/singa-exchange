@@ -29,7 +29,11 @@ public class SubsectionRepresentation {
     }
 
     public CellSubsection toModel() {
-        return new CellSubsection(getIdentifier(), new GoTerm(getGoTerm()));
+        if (getGoTerm() != null) {
+            return new CellSubsection(getIdentifier(), new GoTerm(getGoTerm()));
+        } else {
+            return new CellSubsection(getIdentifier());
+        }
     }
 
     public String getIdentifier() {

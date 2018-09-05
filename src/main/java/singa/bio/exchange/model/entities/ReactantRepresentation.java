@@ -46,7 +46,7 @@ public class ReactantRepresentation {
             role = ReactantRole.INCREASING;
         }
         StoichiometricReactant reactant = new StoichiometricReactant(EntityCache.get(getIdentifier()), role, getStoichiometricNumber());
-        reactant.setPrefferedTopology(reactant.getPrefferedTopology());
+        reactant.setPrefferedTopology(toType(getPreferredTopology()));
         return reactant;
     }
 
