@@ -13,6 +13,7 @@ import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.sections.InitialConcentration;
 import bio.singa.simulation.model.simulation.Simulation;
 import bio.singa.simulation.model.simulation.SimulationManager;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.embed.swing.JFXPanel;
 import tec.uom.se.quantity.Quantities;
 
@@ -20,6 +21,7 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Time;
 import javax.swing.*;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,9 +31,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static bio.singa.features.units.UnitProvider.MOLE_PER_LITRE;
+import static bio.singa.features.units.UnitProvider.NANO_MOLE_PER_LITRE;
 import static tec.uom.se.unit.MetricPrefix.MILLI;
-import static tec.uom.se.unit.MetricPrefix.NANO;
 import static tec.uom.se.unit.Units.SECOND;
 
 /**
@@ -39,10 +40,10 @@ import static tec.uom.se.unit.Units.SECOND;
  */
 public class SimulationRunner {
 
-    public static final QuantityFormatter<MolarConcentration> CONCENTRATION_FORMATTER = new QuantityFormatter<>(new DecimalFormat("0.0000E00"), NANO(MOLE_PER_LITRE), false);
+    public static final QuantityFormatter<MolarConcentration> CONCENTRATION_FORMATTER = new QuantityFormatter<>(new DecimalFormat("0.0000E00"), NANO_MOLE_PER_LITRE, false);
     private static QuantityFormatter<Time> TIME_FORMATTER = new QuantityFormatter<>(new DecimalFormat("0.0000E00"), MILLI(SECOND), false);
 
-    public static void run(Path simulationPath, List<RectangularCoordinate> observedNodes) throws IOException, InterruptedException {
+    public static void runMultipleSimulations(Path simulationPath, List<RectangularCoordinate> observedNodes) throws IOException, InterruptedException {
 
         List<Path> simulationFiles = new ArrayList<>();
 
@@ -66,31 +67,36 @@ public class SimulationRunner {
         }
     }
 
-    public static Map<String, Double> runVariations(Path baseSimulation, VariationSet variations, List<RectangularCoordinate> observedNodes, Function<Simulation, Double> valueExtraction) throws IOException, InterruptedException {
+    public static void runSimulationWithVariations(Path baseSimulation, VariationSet variations, List<RectangularCoordinate> observedNodes, Function<Simulation, Double> valueExtraction) throws IOException, InterruptedException {
         List<Set<?>> parameterVariations = variations.generateAllCombinations();
-        String baseStrings = String.join("", Files.readAllLines(baseSimulation));
+        String baseSimulationJson = String.join("", Files.readAllLines(baseSimulation));
+        // remember values from the value extraction function
         Map<String, Double> resultingValues = new HashMap<>();
-        int i = 1;
-        for (Set<?> parameterSet : parameterVariations) {
-            Simulation simulation = Converter.getSimulationFrom(baseStrings);
-            applyParameters(simulation, parameterSet);
-            Path folder = Paths.get("set_" + i);
+        // for each variation set
+        int currentSetIdentifier = 1;
+        for (Set<?> currentVariationSet : parameterVariations) {
+
+            // create simulation
+            Simulation simulation = Converter.getSimulationFrom(baseSimulationJson);
+            // apply variation parameters
+            applyParameters(simulation, currentVariationSet);
+            // create folder for this set
+            Path currentVariationSetPath = baseSimulation.getParent().resolve("set_" + currentSetIdentifier);
+            createFolderForVariationSet(currentVariationSetPath);
             // write variations
-            String collect = parameterSet.stream()
-                    .map(Object::toString)
-                    .collect(Collectors.joining(System.lineSeparator()));
-            Path simulationFolder = baseSimulation.getParent().resolve(folder);
-            if (!Files.exists(simulationFolder)) {
-                Files.createDirectories(simulationFolder);
-            }
-            Files.write(simulationFolder.resolve("variations.log"), collect.getBytes());
-            runSimulation(baseSimulation.getParent(), folder, simulation, observedNodes);
-            resultingValues.put(parameterSet.stream()
+            writeVariationLog(currentVariationSetPath, currentVariationSet);
+            // write json
+            // writeVariationJson(currentVariationSetPath, simulation);
+            // run simulation
+            runSimulation(baseSimulation.getParent(), currentVariationSetPath, simulation, observedNodes);
+            // remember resulting values
+            String identifierString = currentVariationSet.stream()
                     .map(SimulationRunner::getValueString)
-                    .collect(Collectors.joining(",")), valueExtraction.apply(simulation));
-            i++;
+                    .collect(Collectors.joining(","));
+            resultingValues.put(identifierString, valueExtraction.apply(simulation));
+            currentSetIdentifier++;
         }
-        return resultingValues;
+        writeVariationResults(baseSimulation, variations, resultingValues);
     }
 
     private static void applyParameters(Simulation simulation, Set<?> parameterVariations) {
@@ -148,8 +154,61 @@ public class SimulationRunner {
         }
     }
 
+    private static void createFolderForVariationSet(Path currentVariationSetPath) {
+        if (!Files.exists(currentVariationSetPath)) {
+            try {
+                Files.createDirectories(currentVariationSetPath);
+            } catch (IOException e) {
+                throw new UncheckedIOException("Unable to create folder " + currentVariationSetPath + " for current simulation variation.", e);
+            }
+        }
+    }
 
-    private static void runSimulation(Path simulationPath, Path simulationFolder, Simulation simulation, List<RectangularCoordinate> observedNodes) throws IOException, InterruptedException {
+    private static void writeVariationJson(Path currentVariationSetPath, Simulation simulation) {
+        SimulationRepresentation variationRepresentation = Converter.getSimulationFrom(simulation);
+        String json;
+        try {
+            json = variationRepresentation.toJson();
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Unable to create json from the current simulation simulation.", e);
+        }
+        try {
+            Files.write(currentVariationSetPath.resolve("variation_simulation.json"), json.getBytes());
+        } catch (IOException e) {
+            throw new UncheckedIOException("Unable to write variation json to " + currentVariationSetPath + ".", e);
+        }
+    }
+
+    private static void writeVariationLog(Path currentVariationSetPath, Set<?> currentVariationSet) {
+        String collect = currentVariationSet.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(System.lineSeparator()));
+        try {
+            Files.write(currentVariationSetPath.resolve("variations.log"), collect.getBytes());
+        } catch (IOException e) {
+            throw new UncheckedIOException("Unable to write variation log to " + currentVariationSetPath + ".", e);
+        }
+    }
+
+    private static void writeVariationResults(Path baseSimulation, VariationSet variations, Map<String, Double> resultingValues) {
+        StringBuilder result = new StringBuilder();
+        result.append(variations.getAffectedParameters())
+                .append(System.lineSeparator());
+        for (Map.Entry<String, Double> entry : resultingValues.entrySet()) {
+            result.append(entry.getKey())
+                    .append(",")
+                    .append(entry.getValue())
+                    .append(System.lineSeparator());
+        }
+        try {
+            Files.write(baseSimulation.getParent().resolve("variations_results.log"), result.toString().getBytes());
+        } catch (IOException e) {
+            throw new UncheckedIOException("Unable to write variation results to " + baseSimulation + ".", e);
+        }
+    }
+
+    public static void runSimulation(Path simulationPath, Path simulationFolder, Simulation simulation, List<RectangularCoordinate> observedNodes) throws IOException, InterruptedException {
+        simulation.setMaximalTimeStep(Quantities.getQuantity(0.001, SECOND));
         // create writer
         EpochUpdateWriter epochUpdateWriter = EpochUpdateWriter.create()
                 .workspace(simulationPath)
@@ -169,8 +228,8 @@ public class SimulationRunner {
         simulationManager.setTerminationLatch(terminationLatch);
 
         // set termination condition
-        simulationManager.setSimulationTerminationToTime(Quantities.getQuantity(10, SECOND));
-        simulationManager.setUpdateEmissionToTimePassed(Quantities.getQuantity(10, MILLI(SECOND)));
+        simulationManager.setSimulationTerminationToTime(Quantities.getQuantity(100, SECOND));
+        simulationManager.setUpdateEmissionToTimePassed(Quantities.getQuantity(100, MILLI(SECOND)));
 
         // reference nodes to write
         for (RectangularCoordinate coordinate : observedNodes) {
