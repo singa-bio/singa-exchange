@@ -7,8 +7,9 @@ import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.modules.concentration.ConcentrationBasedModule;
 import bio.singa.simulation.model.modules.concentration.ModuleBuilder;
 import bio.singa.simulation.model.modules.concentration.imlementations.ComplexBuildingReaction;
+import bio.singa.simulation.model.modules.concentration.imlementations.DynamicReaction;
 import bio.singa.simulation.model.modules.concentration.imlementations.Reaction;
-import bio.singa.simulation.model.modules.concentration.reactants.StoichiometricReactant;
+import bio.singa.simulation.model.modules.concentration.reactants.Reactant;
 import bio.singa.simulation.model.modules.displacement.DisplacementBasedModule;
 import bio.singa.simulation.model.modules.qualitative.QualitativeModule;
 import bio.singa.simulation.model.simulation.Simulation;
@@ -22,6 +23,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.Set;
+
+import static bio.singa.simulation.model.modules.concentration.reactants.ReactantRole.PRODUCT;
+import static bio.singa.simulation.model.modules.concentration.reactants.ReactantRole.SUBSTRATE;
 
 /**
  * @author cl
@@ -58,10 +62,10 @@ public class ModuleFactory {
             }
             Reaction reaction = (Reaction) module;
             representation.setReaction(reaction.getReactionString());
-            for (StoichiometricReactant substrate : reaction.getSubstrates()) {
+            for (Reactant substrate : reaction.getSubstrates()) {
                 representation.addSubstrate(ReactantRepresentation.of(substrate));
             }
-            for (StoichiometricReactant product : reaction.getProducts()) {
+            for (Reactant product : reaction.getProducts()) {
                 representation.addProduct(ReactantRepresentation.of(product));
             }
             return representation;
@@ -159,10 +163,10 @@ public class ModuleFactory {
                 ReactionModuleRepresentation reactionRepresentation = (ReactionModuleRepresentation) representation;
                 // add substrates and products
                 for (ReactantRepresentation substrate : reactionRepresentation.getSubstrates()) {
-                    reaction.addStochiometricReactant(substrate.toModel(true));
+                    reaction.addStochiometricReactant(substrate.toModel(SUBSTRATE));
                 }
                 for (ReactantRepresentation product : reactionRepresentation.getProducts()) {
-                    reaction.addStochiometricReactant(product.toModel(false));
+                    reaction.addStochiometricReactant(product.toModel(PRODUCT));
                 }
             }
             // complex reactions
@@ -171,20 +175,29 @@ public class ModuleFactory {
                 ReactionModuleRepresentation reactionRepresentation = (ReactionModuleRepresentation) representation;
                 // only one complex product
                 ReactantRepresentation product = reactionRepresentation.getProducts().iterator().next();
-                StoichiometricReactant complex = product.toModel(false);
+                Reactant complex = product.toModel(PRODUCT);
                 reaction.setComplex((ComplexedChemicalEntity) complex.getEntity());
                 // substrates
                 for (ReactantRepresentation substrate : reactionRepresentation.getSubstrates()) {
-                    StoichiometricReactant stoichiometricReactant = substrate.toModel(true);
-                    if (stoichiometricReactant.getPrefferedTopology().equals(complex.getPrefferedTopology())
+                    Reactant stoichiometricReactant = substrate.toModel(SUBSTRATE);
+                    if (stoichiometricReactant.getPreferredTopology().equals(complex.getPreferredTopology())
                             && reaction.getBinderTopology() == null) {
                         reaction.setBinder(stoichiometricReactant.getEntity());
-                        reaction.setBinderTopology(complex.getPrefferedTopology());
+                        reaction.setBinderTopology(complex.getPreferredTopology());
                     } else {
                         reaction.setBindee(stoichiometricReactant.getEntity());
-                        reaction.setBindeeTopology(stoichiometricReactant.getPrefferedTopology());
+                        reaction.setBindeeTopology(stoichiometricReactant.getPreferredTopology());
                     }
                 }
+            }
+            // dynamic reactions
+            if (DynamicReaction.class.isAssignableFrom(moduleClass)) {
+                DynamicReaction reaction = (DynamicReaction) module;
+                ReactionModuleRepresentation reactionRepresentation = (ReactionModuleRepresentation) representation;
+                // only one complex product
+                ReactantRepresentation product = reactionRepresentation.getProducts().iterator().next();
+                Reactant complex = product.toModel(PRODUCT);
+
             }
             // identifier
             module.setIdentifier(representation.getIdentifier());

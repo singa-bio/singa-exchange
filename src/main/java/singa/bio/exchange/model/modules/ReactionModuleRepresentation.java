@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * @author cl
  */
+
 public class ReactionModuleRepresentation extends ModuleRepresentation {
 
     @JsonProperty
