@@ -6,6 +6,7 @@ import bio.singa.chemistry.entities.*;
 import bio.singa.chemistry.features.diffusivity.Diffusivity;
 import bio.singa.chemistry.features.permeability.MembranePermeability;
 import bio.singa.chemistry.features.permeability.OsmoticPermeability;
+import bio.singa.chemistry.features.reactions.MichaelisConstant;
 import bio.singa.chemistry.features.reactions.RateConstant;
 import bio.singa.features.identifiers.ChEBIIdentifier;
 import bio.singa.features.identifiers.UniProtIdentifier;
@@ -20,20 +21,16 @@ import bio.singa.simulation.model.graphs.AutomatonGraph;
 import bio.singa.simulation.model.graphs.AutomatonGraphs;
 import bio.singa.simulation.model.graphs.AutomatonNode;
 import bio.singa.simulation.model.modules.UpdateModule;
-import bio.singa.simulation.model.modules.concentration.imlementations.ComplexBuildingReaction;
-import bio.singa.simulation.model.modules.concentration.imlementations.NthOrderReaction;
-import bio.singa.simulation.model.modules.concentration.imlementations.ReversibleReaction;
-import bio.singa.simulation.model.modules.concentration.imlementations.SingleFileChannelMembraneTransport;
+import bio.singa.simulation.model.modules.concentration.imlementations.*;
+import bio.singa.simulation.model.modules.concentration.reactants.Reactant;
+import bio.singa.simulation.model.modules.concentration.reactants.ReactantRole;
 import bio.singa.simulation.model.modules.displacement.implementations.EndocytosisActinBoost;
 import bio.singa.simulation.model.modules.displacement.implementations.VesicleDiffusion;
 import bio.singa.simulation.model.modules.displacement.implementations.VesicleTransport;
 import bio.singa.simulation.model.modules.qualitative.implementations.ClathrinMediatedEndocytosis;
 import bio.singa.simulation.model.modules.qualitative.implementations.VesicleAttachment;
 import bio.singa.simulation.model.modules.qualitative.implementations.VesicleFusion;
-import bio.singa.simulation.model.sections.CellRegions;
-import bio.singa.simulation.model.sections.CellSubsections;
-import bio.singa.simulation.model.sections.ConcentrationInitializer;
-import bio.singa.simulation.model.sections.InitialConcentration;
+import bio.singa.simulation.model.sections.*;
 import bio.singa.simulation.model.simulation.Simulation;
 import bio.singa.simulation.parser.organelles.OrganelleTemplate;
 import bio.singa.structure.features.molarmass.MolarMass;
@@ -65,6 +62,7 @@ import java.util.List;
 import static bio.singa.chemistry.features.diffusivity.Diffusivity.SQUARE_CENTIMETRE_PER_SECOND;
 import static bio.singa.chemistry.features.permeability.MembranePermeability.CENTIMETRE_PER_SECOND;
 import static bio.singa.features.model.FeatureOrigin.MANUALLY_ANNOTATED;
+import static bio.singa.features.units.UnitProvider.MICRO_MOLE_PER_LITRE;
 import static bio.singa.features.units.UnitProvider.MOLE_PER_LITRE;
 import static bio.singa.features.units.UnitProvider.NANO_MOLE_PER_LITRE;
 import static bio.singa.simulation.features.DefaultFeatureSources.BINESH2015;
@@ -73,6 +71,7 @@ import static tec.uom.se.AbstractUnit.ONE;
 import static tec.uom.se.unit.MetricPrefix.MICRO;
 import static tec.uom.se.unit.MetricPrefix.NANO;
 import static tec.uom.se.unit.Units.METRE;
+import static tec.uom.se.unit.Units.MINUTE;
 import static tec.uom.se.unit.Units.SECOND;
 
 /**
@@ -86,6 +85,7 @@ public class Converter {
     static final FeatureOrigin PUTNAM1971 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Putnam 1971", "Putnam, David F. \"Composition and concentrative properties of human urine.\" (1971).");
     static final FeatureOrigin TOFTS2000 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Tofts 2000", "Tofts, P. S., et al. \"Test liquids for quantitative MRI measurements of self‐diffusion coefficient in vivo.\" Magnetic resonance in medicine 43.3 (2000): 368-374.");
     static final FeatureOrigin HAINES1994 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Haines 1994", "Haines, Thomas H. \"Water transport across biological membranes.\" FEBS letters 346.1 (1994): 115-122.");
+    static final FeatureOrigin CHEN2005 = new FeatureOrigin(FeatureOrigin.OriginType.LITERATURE, "Chen-Goodspeed 2005", "Chen-Goodspeed, Misty, Abolanle N. Lukan, and Carmen W. Dessauer. \"Modeling of Gαs and Gαi regulation of human type V and VI adenylyl cyclase.\" Journal of Biological Chemistry 280.3 (2005): 1808-1816.");
 
     public static EntityDataset getEntityDatasetFrom(Simulation simulation) {
         EntityDataset dataset = new EntityDataset();
@@ -559,6 +559,47 @@ public class Converter {
         ComplexedChemicalEntity clathrinTriskelion = ComplexedChemicalEntity.create("Clathrin Triskelion")
                 .addAssociatedPart(clathrinHeavyChain, 3)
                 .addAssociatedPart(clathrinLightChain, 3)
+                .build();
+
+        RateConstant scaling = RateConstant.create(1.0)
+                .forward().firstOrder()
+                .timeUnit(MINUTE)
+                .origin(new FeatureOrigin(FeatureOrigin.OriginType.MANUAL_ANNOTATION, "Unit Scaling", "Scales the velocity to the corresponding unit"))
+                .build();
+
+        // adenylate cyclase
+        Protein ac6 = new Protein.Builder("AC6")
+                .additionalIdentifier(new UniProtIdentifier("O43306"))
+                .build();
+
+        SmallMolecule atp = SmallMolecule.create("ATP")
+                .additionalIdentifier(new ChEBIIdentifier("CHEBI:15422"))
+                .build();
+
+        SmallMolecule camp = SmallMolecule.create("cAMP")
+                .additionalIdentifier(new ChEBIIdentifier("CHEBI:17489"))
+                .build();
+
+        MichaelisConstant km = new MichaelisConstant(Quantities.getQuantity(20, MICRO_MOLE_PER_LITRE), CHEN2005);
+
+        FeatureOrigin regression = new FeatureOrigin(FeatureOrigin.OriginType.PREDICTION, "Regression", "Regression using Matlab.");
+        DynamicReaction reaction = DynamicReaction.inSimulation(simulation)
+                .identifier("Adenylate Cyclase Reaction")
+                // derived from v = kCat*E*S/(kM+s), where kCat has is a pseudo first order rate derived from regression
+                // the scaling parameter determines the unit of the equation
+                .kineticLaw("(1/((p01/cATPuM)^p02+(p03/cGAuM)^p04))*us*cAC6*(cATP/(kM+cATP))")
+                // matlab regression
+                .referenceParameter("p01", 6.144e5, regression)
+                .referenceParameter("p02", 0.3063, regression)
+                .referenceParameter("p03", 1.196, regression)
+                .referenceParameter("p04", 1.153, regression)
+                .referenceParameter("us", scaling)
+                .referenceParameter("kM", km)
+                .referenceParameter("cATPuM", new Reactant(atp, ReactantRole.CATALYTIC, MICRO_MOLE_PER_LITRE))
+                .referenceParameter("cGAuM", new Reactant(gtpGProteinAlpha, ReactantRole.CATALYTIC, MICRO_MOLE_PER_LITRE))
+                .referenceParameter("cAC6", new Reactant(ac6, ReactantRole.CATALYTIC, CellTopology.MEMBRANE))
+                .referenceParameter("cATP", new Reactant(atp, ReactantRole.SUBSTRATE))
+                .referenceParameter(new Reactant(camp, ReactantRole.PRODUCT))
                 .build();
 
         // setup snares for fusion

@@ -13,41 +13,25 @@ import java.util.List;
 public class ReactionModuleRepresentation extends ModuleRepresentation {
 
     @JsonProperty
-    private List<ReactantRepresentation> substrates;
-
-    @JsonProperty
-    private List<ReactantRepresentation> products;
+    private List<ReactantRepresentation> reactants;
 
     @JsonProperty
     private String reaction;
 
     public ReactionModuleRepresentation() {
-        substrates = new ArrayList<>();
-        products = new ArrayList<>();
+        reactants = new ArrayList<>();
     }
 
-    public List<ReactantRepresentation> getSubstrates() {
-        return substrates;
+    public List<ReactantRepresentation> getReactants() {
+        return reactants;
     }
 
-    public void setSubstrates(List<ReactantRepresentation> substrates) {
-        this.substrates = substrates;
+    public void setReactants(List<ReactantRepresentation> reactants) {
+        this.reactants = reactants;
     }
 
-    public void addSubstrate(ReactantRepresentation substrate) {
-        substrates.add(substrate);
-    }
-
-    public List<ReactantRepresentation> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<ReactantRepresentation> products) {
-        this.products = products;
-    }
-
-    public void addProduct(ReactantRepresentation product) {
-        products.add(product);
+    public void addReactant(ReactantRepresentation reactant) {
+        this.reactants.add(reactant);
     }
 
     public String getReaction() {
@@ -57,4 +41,5 @@ public class ReactionModuleRepresentation extends ModuleRepresentation {
     public void setReaction(String reaction) {
         this.reaction = reaction;
     }
+
 }

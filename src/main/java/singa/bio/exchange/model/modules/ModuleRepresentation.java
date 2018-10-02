@@ -20,6 +20,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = ConcentrationModuleRepresentation.class, name = "concentration-based"),
         @JsonSubTypes.Type(value = DisplacementModuleRepresentation.class, name = "displacement-based"),
         @JsonSubTypes.Type(value = ReactionModuleRepresentation.class, name = "reaction-based"),
+        @JsonSubTypes.Type(value = KineticLawModuleRepresentation.class, name = "kinetic-law-based"),
         @JsonSubTypes.Type(value = QualitativeModuleRepresentation.class, name = "qualitative")
 })
 @JsonPropertyOrder({ "name", "identifier" })

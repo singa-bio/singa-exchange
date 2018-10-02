@@ -5,7 +5,7 @@ import bio.singa.simulation.model.sections.CellRegion;
 import bio.singa.simulation.model.sections.CellSubsection;
 import bio.singa.simulation.model.sections.CellTopology;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import singa.bio.exchange.model.entities.ReactantRepresentation;
+import singa.bio.exchange.model.EnumTransformation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +54,7 @@ public class RegionRepresentation {
         for (Map.Entry<String, String> entry : getSubsections().entrySet()) {
             String topologyString = entry.getKey();
             String subsectionString = entry.getValue();
-            region.addSubSection(ReactantRepresentation.toType(topologyString), SubsectionCache.get(subsectionString));
+            region.addSubSection(EnumTransformation.toTopology(topologyString), SubsectionCache.get(subsectionString));
         }
         return region;
     }
@@ -81,12 +81,11 @@ public class RegionRepresentation {
 
     public void setSubsections(Map<String, String> subsections) {
         this.subsections = subsections;
-
     }
 
     public void addSubsection(CellTopology topology, CellSubsection subsection) {
         if (subsection != null) {
-            subsections.put(ReactantRepresentation.fromType(topology), subsection.getIdentifier());
+            subsections.put(EnumTransformation.fromTopology(topology), subsection.getIdentifier());
             SubsectionCache.add(subsection);
         }
     }

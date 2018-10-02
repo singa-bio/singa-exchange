@@ -1,11 +1,11 @@
 package singa.bio.exchange.model.entities;
 
 import bio.singa.simulation.model.modules.concentration.reactants.Reactant;
-import bio.singa.simulation.model.modules.concentration.reactants.ReactantRole;
 import bio.singa.simulation.model.sections.CellTopology;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import singa.bio.exchange.model.EnumTransformation;
 
-import static bio.singa.simulation.model.sections.CellTopology.*;
+import javax.measure.Unit;
 
 /**
  * @author cl
@@ -15,11 +15,17 @@ public class ReactantRepresentation {
     @JsonProperty
     private String identifier;
 
+    @JsonProperty
+    private String role;
+
     @JsonProperty("stoichiometric-number")
     private double stoichiometricNumber;
 
     @JsonProperty("preferred-topology")
     private String preferredTopology;
+
+    @JsonProperty("preferred-unit")
+    private Unit preferredUnit;
 
     public ReactantRepresentation() {
 
@@ -28,37 +34,18 @@ public class ReactantRepresentation {
     public static ReactantRepresentation of(Reactant reactant) {
         ReactantRepresentation representation = new ReactantRepresentation();
         representation.setIdentifier(reactant.getEntity().getIdentifier().toString());
-        representation.setPreferredTopology(fromType(reactant.getPreferredTopology()));
+        representation.setRole(EnumTransformation.fromRole(reactant.getRole()));
         representation.setStoichiometricNumber(reactant.getStoichiometricNumber());
+        representation.setPreferredTopology(EnumTransformation.fromTopology(reactant.getPreferredTopology()));
+        representation.setPreferredUnit(reactant.getPreferredConcentrationUnit());
         return representation;
     }
 
-    public Reactant toModel(ReactantRole role) {
-        Reactant reactant = new Reactant(EntityCache.get(getIdentifier()), role, getStoichiometricNumber());
-        reactant.setPreferredTopology(toType(getPreferredTopology()));
+    public Reactant toModel() {
+        Reactant reactant = new Reactant(EntityCache.get(getIdentifier()), EnumTransformation.toRole(getRole()), getStoichiometricNumber());
+        reactant.setPreferredTopology(EnumTransformation.toTopology(getPreferredTopology()));
+        reactant.setPreferredConcentrationUnit(getPreferredUnit());
         return reactant;
-    }
-
-    public static String fromType(CellTopology type) {
-        switch (type) {
-            case OUTER:
-                return "outer";
-            case MEMBRANE:
-                return "membrane";
-            default:
-                return "inner";
-        }
-    }
-
-    public static CellTopology toType(String type) {
-        switch (type) {
-            case "outer":
-                return OUTER;
-            case "membrane":
-                return MEMBRANE;
-            default:
-                return INNER;
-        }
     }
 
     public String getIdentifier() {
@@ -67,6 +54,14 @@ public class ReactantRepresentation {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public double getStoichiometricNumber() {
@@ -86,7 +81,14 @@ public class ReactantRepresentation {
     }
 
     public void setPreferredTopology(CellTopology preferredTopology) {
-        this.preferredTopology = fromType(preferredTopology);
+        this.preferredTopology = EnumTransformation.fromTopology(preferredTopology);
     }
 
+    public Unit getPreferredUnit() {
+        return preferredUnit;
+    }
+
+    public void setPreferredUnit(Unit preferredUnit) {
+        this.preferredUnit = preferredUnit;
+    }
 }
