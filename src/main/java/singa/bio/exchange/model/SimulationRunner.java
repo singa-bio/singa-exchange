@@ -165,7 +165,7 @@ public class SimulationRunner {
     }
 
     private static void writeVariationJson(Path currentVariationSetPath, Simulation simulation) {
-        SimulationRepresentation variationRepresentation = Converter.getSimulationFrom(simulation);
+        SimulationRepresentation variationRepresentation = Converter.getRepresentationFrom(simulation);
         String json;
         try {
             json = variationRepresentation.toJson();

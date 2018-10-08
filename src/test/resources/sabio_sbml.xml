@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model name="SABIOmdl08Oct2018432">
+<notes><body xmlns="http://www.w3.org/1999/xhtml">
+<p>
+This model has been created with the help of the SABIO-RK Database
+(http://sabio.h-its.org/) 
+ (c) 2005-2018 HITS gGmbH http://www.h-its.org
+
+</p><br/>
+To cite SABIO-RK Database, please use
+"http://www.ncbi.nlm.nih.gov/pubmed/22102587"
+<br/>
+SABIO-RK - database for biochemical reaction kinetics. Wittig U, Kania R, Golebiewski M, Rey M, Shi L, Jong L, Algaa E, Weidemann A, Sauer-Danzwith H, Mir S, Krebs O, Bittkowski M, Wetsch E, Rojas I, Mueller W. Nucleic Acids Res. 2012;40(Database issue)790-6
+</body></notes>
+      <listOfFunctionDefinitions>
+      <functionDefinition id="KL_12398">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <lambda>
+            <bvar>
+              <ci> A </ci>
+            </bvar>
+            <bvar>
+              <ci> kcatdivKm </ci>
+            </bvar>
+            <bvar>
+              <ci> kcat </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <notanumber/>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfUnitDefinitions>
+      <unitDefinition id="Mwedgeoneswedgeone" name="M^(-1)*s^(-1)">
+        <listOfUnits>
+          <unit scale="0" exponent="1" multiplier="1" kind="litre"/>
+          <unit scale="0" exponent="-1" multiplier="1" kind="mole"/>
+          <unit scale="0" exponent="-1" multiplier="1" kind="second"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="swedgeone" name="s^(-1)">
+        <listOfUnits>
+          <unit scale="0" exponent="-1" multiplier="1" kind="second"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="M" name="M">
+        <listOfUnits>
+          <unit scale="0" exponent="-1" multiplier="1" kind="litre"/>
+          <unit scale="0" exponent="1" multiplier="1" kind="mole"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compart_Cell" constant="true" name="Cell"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="SPC_37_Cell" initialConcentration="1" constant="false" hasOnlySubstanceUnits="false" name="NAD+" metaid="META_SPC_37_Cell" boundaryCondition="false" compartment="compart_Cell">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#META_SPC_37_Cell">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:13389"/>
+                  <rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:15846"/>
+                  <rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:44215"/>
+                  <rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00003"/>
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+</species>
+      <species id="SPC_2277_Cell" initialConcentration="1" constant="false" hasOnlySubstanceUnits="false" name="Glycol" metaid="META_SPC_2277_Cell" boundaryCondition="false" compartment="compart_Cell">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#META_SPC_2277_Cell">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:30742"/>
+                  <rdf:li rdf:resource="http://identifiers.org/kegg.compound/C01380"/>
+                  <rdf:li rdf:resource="http://identifiers.org/kegg.compound/C15588"/>
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+</species>
+      <species id="SPC_2004_Cell" initialConcentration="1" constant="false" hasOnlySubstanceUnits="false" name="Glycolaldehyde" metaid="META_SPC_2004_Cell" boundaryCondition="false" compartment="compart_Cell">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#META_SPC_2004_Cell">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:17071"/>
+                  <rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00266"/>
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+</species>
+      <species id="SPC_38_Cell" initialConcentration="1" constant="false" hasOnlySubstanceUnits="false" name="NADH" metaid="META_SPC_38_Cell" boundaryCondition="false" compartment="compart_Cell">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#META_SPC_38_Cell">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:16908"/>
+                  <rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00004"/>
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+</species>
+      <species id="ENZ_64210_Cell" initialConcentration="1" constant="false" hasOnlySubstanceUnits="false" name="alcohol dehydrogenase(Enzyme) wildtype class II pi chain" metaid="META_ENZ_64210_Cell" boundaryCondition="false" compartment="compart_Cell">
+        <annotation>
+<sbrk:sabiork xmlns:sbrk="http://sabiork.h-its.org">
+<sbrk:modifierType>Modifier-Catalyst</sbrk:modifierType>
+</sbrk:sabiork>                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#META_ENZ_64210_Cell">
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="http://identifiers.org/uniprot/P08319"/>
+                </rdf:Bag>
+              </bqbiol:is>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+</species>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="REAC_0" metaid="META_REAC_0" reversible="true" fast="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#META_REAC_0">
+              <bqbiol:isVersionOf>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="http://identifiers.org/ec-code/1.1.1.1"/>
+                </rdf:Bag>
+              </bqbiol:isVersionOf>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="http://identifiers.org/kegg.reaction/R01781"/>
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:hasTaxon>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="http://identifiers.org/taxonomy/9606"/>
+                </rdf:Bag>
+              </bqbiol:hasTaxon>
+              <bqbiol:is>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="http://identifiers.org/sabiork.reaction/1874"/>
+                </rdf:Bag>
+              </bqbiol:is>
+              <bqbiol:occursIn>
+                <rdf:Bag>
+                  <rdf:li rdf:resource="http://identifiers.org/bto/BTO:0000759"/>
+                </rdf:Bag>
+              </bqbiol:occursIn>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+        <listOfReactants>
+          <speciesReference constant="true" species="SPC_37_Cell" sboTerm="SBO:0000015" stoichiometry="1"/>
+          <speciesReference constant="true" species="SPC_2277_Cell" sboTerm="SBO:0000015" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" species="SPC_2004_Cell" sboTerm="SBO:0000011" stoichiometry="1"/>
+          <speciesReference constant="true" species="SPC_38_Cell" sboTerm="SBO:0000011" stoichiometry="1"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="ENZ_64210_Cell" sboTerm="SBO:0000460"/>
+        </listOfModifiers>
+        <kineticLaw metaid="META_KL_12398">
+          <annotation>
+<sbrk:sabiork xmlns:sbrk="http://sabiork.h-its.org">
+<sbrk:kineticLawID>12398</sbrk:kineticLawID>
+<sbrk:experimentalConditions>
+<sbrk:pH>
+<sbrk:startValuepH>10.0</sbrk:startValuepH>
+</sbrk:pH>
+<sbrk:temperature>
+<sbrk:startValueTemperature>25.0</sbrk:startValueTemperature>
+<sbrk:temperatureUnit>°C</sbrk:temperatureUnit>
+</sbrk:temperature>
+<sbrk:buffer> 0.1 M glycine/NaOH</sbrk:buffer>
+</sbrk:experimentalConditions>
+</sbrk:sabiork>
+                      <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+              <rdf:Description rdf:about="#META_KL_12398">
+                <bqbiol:isDescribedBy>
+                  <rdf:Bag>
+                    <rdf:li rdf:resource="http://identifiers.org/pubmed/6397223"/>
+                  </rdf:Bag>
+                </bqbiol:isDescribedBy>
+                <bqbiol:isDescribedBy>
+                  <rdf:Bag>
+                    <rdf:li rdf:resource="http://identifiers.org/sabiork.kineticrecord/12398"/>
+                  </rdf:Bag>
+                </bqbiol:isDescribedBy>
+              </rdf:Description>
+            </rdf:RDF>
+          </annotation>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <ci> KL_12398 </ci>
+              <ci> SPC_37_Cell </ci>
+              <ci> kcatdivKm_SPC_2277_Cell </ci>
+              <ci> kcat </ci>
+              <ci> Km_SPC_2277_Cell </ci>
+            </apply>
+          </math>
+                  <listOfLocalParameters>
+            <localParameter id="kcatdivKm_SPC_2277_Cell" name="kcatdivKm_Glycol" value="3.33333333" sboTerm="SBO:0000302" units="Mwedgeoneswedgeone"/>
+            <localParameter id="kcat" name="kcat" value="0.75" sboTerm="SBO:0000025" units="swedgeone"/>
+            <localParameter id="Km_SPC_2277_Cell" name="Km_Glycol" value="0.29" sboTerm="SBO:0000027" units="M"/>
+          </listOfLocalParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

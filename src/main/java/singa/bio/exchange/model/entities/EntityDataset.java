@@ -20,6 +20,15 @@ public class EntityDataset implements Jasonizable {
         entities = new ArrayList<>();
     }
 
+    public static EntityDataset fromCache() {
+        EntityDataset dataset = new EntityDataset();
+        EntityCache.getAll().stream()
+                .map(EntityRepresentation::of)
+                .forEach(dataset::addEntity);
+        return dataset;
+    }
+
+
     public List<ChemicalEntity> toModel() {
         List<ChemicalEntity> entities = getEntities().stream()
                 .map(EntityRepresentation::toModel)
@@ -41,5 +50,6 @@ public class EntityDataset implements Jasonizable {
     public void addEntity(EntityRepresentation entity) {
         entities.add(entity);
     }
+
 
 }

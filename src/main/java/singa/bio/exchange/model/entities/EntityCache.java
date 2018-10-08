@@ -2,6 +2,7 @@ package singa.bio.exchange.model.entities;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -32,6 +33,10 @@ public class EntityCache {
 
     public static ChemicalEntity get(String identifier) {
         return getInstance().cache.get(identifier);
+    }
+
+    public static Collection<ChemicalEntity> getAll() {
+        return getInstance().cache.values();
     }
 
 }
