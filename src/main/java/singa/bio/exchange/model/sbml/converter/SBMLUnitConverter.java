@@ -2,15 +2,16 @@ package singa.bio.exchange.model.sbml.converter;
 
 import bio.singa.features.units.UnitPrefix;
 import bio.singa.features.units.UnitPrefixes;
+import bio.singa.features.units.UnitRegistry;
 import org.sbml.jsbml.ListOf;
 import org.sbml.jsbml.UnitDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import singa.bio.exchange.model.units.UnitCache;
 import tec.uom.se.unit.ProductUnit;
 
 import javax.measure.Unit;
-import java.util.HashMap;
-import java.util.Map;
+import javax.measure.quantity.Time;
 
 import static tec.uom.se.AbstractUnit.ONE;
 import static tec.uom.se.unit.Units.*;
@@ -27,17 +28,52 @@ public class SBMLUnitConverter {
     public SBMLUnitConverter() {
     }
 
-    public static Map<String, Unit<?>> convert(ListOf<UnitDefinition> sbmlUnits) {
+    public static void convert(ListOf<UnitDefinition> sbmlUnits) {
         logger.info("Parsing units ...");
-        Map<String, Unit<?>> units = new HashMap<>();
         for (UnitDefinition unitDefinition : sbmlUnits) {
-            units.put(unitDefinition.getId(), convertUnit(unitDefinition));
+            UnitCache.add(unitDefinition.getId(), convertUnit(unitDefinition));
         }
-        return units;
+        determineSystemUnits();
     }
 
-    public static Unit<?> convertUnit(UnitDefinition unitDefinition) {
-        Unit<?> resultUnit = new ProductUnit();
+    private static void determineSystemUnits() {
+        // first length
+        for (Unit value : UnitCache.getAll().values()) {
+            if (UnitRegistry.isLengthUnit(value)) {
+                UnitRegistry.setSpaceUnit(value);
+                break;
+            }
+
+        }
+        // then time
+        for (Unit value : UnitCache.getAll().values()) {
+            if (UnitRegistry.isTimeUnit(value)) {
+                UnitRegistry.setTimeUnit(value);
+                break;
+            }
+            if (UnitRegistry.isInverseTimeUnit(value)) {
+                UnitRegistry.setTimeUnit((Unit<Time>) ONE.divide(value));
+                break;
+            }
+        }
+        // then substance
+        for (Unit value : UnitCache.getAll().values()) {
+            if (UnitRegistry.isSubstanceUnit(value)) {
+                UnitRegistry.setUnit(value);
+                break;
+            }
+        }
+        // finally concentration
+        for (Unit value : UnitCache.getAll().values()) {
+            if (UnitRegistry.isConcentrationUnit(value)) {
+                UnitRegistry.setUnit(value);
+                break;
+            }
+        }
+    }
+
+    public static Unit convertUnit(UnitDefinition unitDefinition) {
+        Unit resultUnit = new ProductUnit();
         for (org.sbml.jsbml.Unit sbmlUnit : unitDefinition.getListOfUnits()) {
             Unit unitComponent = getUnitForKind(sbmlUnit.getKind());
             UnitPrefix prefix = UnitPrefixes.getUnitPrefixFromScale(sbmlUnit.getScale());

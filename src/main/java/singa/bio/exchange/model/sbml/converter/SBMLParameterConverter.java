@@ -1,16 +1,17 @@
 package singa.bio.exchange.model.sbml.converter;
 
-import bio.singa.simulation.model.parameters.SimulationParameter;
+import bio.singa.simulation.model.parameters.Parameter;
+import bio.singa.simulation.model.parameters.ParameterStorage;
+
 import org.sbml.jsbml.ListOf;
 import org.sbml.jsbml.LocalParameter;
-import org.sbml.jsbml.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import singa.bio.exchange.model.sbml.SBMLParser;
+import singa.bio.exchange.model.units.UnitCache;
 import tec.uom.se.quantity.Quantities;
 
 import javax.measure.Unit;
-import java.util.HashMap;
-import java.util.Map;
 
 import static tec.uom.se.AbstractUnit.ONE;
 
@@ -23,36 +24,28 @@ public class SBMLParameterConverter {
 
     private static final Logger logger = LoggerFactory.getLogger(SBMLParameterConverter.class);
 
-    private final Map<String, Unit<?>> units;
-
-    public SBMLParameterConverter(Map<String, Unit<?>> units) {
-        this.units = units;
-    }
-
-    public Map<String, SimulationParameter<?>> convertSimulationParameters(ListOf<Parameter> sbmlParameters) {
-        Map<String, SimulationParameter<?>> parameters = new HashMap<>();
-        for (Parameter parameter : sbmlParameters) {
-            parameters.put(parameter.getId(), convertSimulationParameter(parameter));
+    public static void convert(ListOf<org.sbml.jsbml.Parameter> sbmlParameters) {
+        for (org.sbml.jsbml.Parameter parameter : sbmlParameters) {
+            ParameterStorage.add(parameter.getId(), convertSimulationParameter(parameter));
         }
-        return parameters;
     }
 
-    public SimulationParameter<?> convertSimulationParameter(Parameter sbmlParameter) {
+    public static Parameter<?> convertSimulationParameter(org.sbml.jsbml.Parameter sbmlParameter) {
         return convertParameter(sbmlParameter.getId(), sbmlParameter.getValue(), sbmlParameter.getUnits());
     }
 
-    public SimulationParameter<?> convertLocalParameter(LocalParameter sbmlLocalParameter) {
+    public static Parameter<?> convertLocalParameter(LocalParameter sbmlLocalParameter) {
         return convertParameter(sbmlLocalParameter.getId(), sbmlLocalParameter.getValue(), sbmlLocalParameter.getUnits());
     }
 
-    private SimulationParameter<?> convertParameter(String primaryIdentifier, double value, String unit) {
+    private static Parameter<?> convertParameter(String primaryIdentifier, double value, String unit) {
         Unit<?> parameterUnit;
         if (unit.equalsIgnoreCase("dimensionless") || unit.isEmpty()) {
             parameterUnit = ONE;
         } else {
-            parameterUnit = units.get(unit);
+            parameterUnit = UnitCache.get(unit);
         }
-        SimulationParameter<?> simulationParameter = new SimulationParameter<>(primaryIdentifier, Quantities.getQuantity(value, parameterUnit));
+        Parameter<?> simulationParameter = new Parameter<>(primaryIdentifier, Quantities.getQuantity(value, parameterUnit), SBMLParser.DEFAULT_SBML_ORIGIN);
         logger.debug("Set parameter {} to {}.", simulationParameter.getIdentifier(), simulationParameter.getQuantity());
         return simulationParameter;
     }

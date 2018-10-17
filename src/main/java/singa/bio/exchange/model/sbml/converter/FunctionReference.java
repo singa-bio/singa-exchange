@@ -1,4 +1,4 @@
-package singa.bio.exchange.model.sbml;
+package singa.bio.exchange.model.sbml.converter;
 
 import java.util.ArrayList;
 import java.util.List;

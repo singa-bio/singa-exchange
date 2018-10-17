@@ -2,6 +2,7 @@ package singa.bio.exchange.model;
 
 import bio.singa.features.parameters.Environment;
 import bio.singa.features.quantities.DynamicViscosity;
+import bio.singa.features.units.UnitRegistry;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,16 +60,16 @@ public class EnvironmentRepresentation {
     public static EnvironmentRepresentation fromSingleton() {
         EnvironmentRepresentation representation = new EnvironmentRepresentation();
         // node distance
-        representation.setNodeDistance(Environment.getNodeDistance().getValue().doubleValue());
-        representation.setNodeDistanceUnit(Environment.getNodeDistance().getUnit());
+        representation.setNodeDistance(UnitRegistry.getSpaceScale());
+        representation.setNodeDistanceUnit(UnitRegistry.getSpaceUnit());
         // system extend
         representation.setSystemExtend(Environment.getSystemExtend().getValue().doubleValue());
         representation.setSystemExtendUnit(Environment.getSystemExtend().getUnit());
         // simulation extend
         representation.setSimulationExtend(Environment.getSimulationExtend());
         // initial time step
-        representation.setInitialTimeStep(Environment.getTimeStep().getValue().doubleValue());
-        representation.setInitialTimeStepUnit(Environment.getTimeStep().getUnit());
+        representation.setInitialTimeStep(UnitRegistry.getTimeScale());
+        representation.setInitialTimeStepUnit(UnitRegistry.getTimeUnit());
         // viscosity
         representation.setViscosity(Environment.getViscosity().getValue().doubleValue());
         representation.setViscosityUnit(Environment.getViscosity().getUnit());
@@ -82,10 +83,10 @@ public class EnvironmentRepresentation {
         Environment.reset();
         // node distance
         if (nodeDistance != 0.0 && Double.isFinite(nodeDistance) && nodeDistanceUnit != null) {
-            Environment.setNodeDistance(Quantities.getQuantity(getNodeDistance(), getNodeDistanceUnit()));
+            UnitRegistry.setSpace(Quantities.getQuantity(getNodeDistance(), getNodeDistanceUnit()));
         } else {
-            logger.warn("Node distance and/or unit have not been set, using default {}.", Environment.DEFAULT_NODE_DISTANCE);
-            Environment.setNodeDistance(Environment.DEFAULT_NODE_DISTANCE);
+            logger.warn("Node distance and/or unit have not been set, using default {}.", UnitRegistry.DEFAULT_SPACE);
+            UnitRegistry.setSpace(UnitRegistry.DEFAULT_SPACE);
         }
         // system extend
         if (systemExtend != 0.0 && Double.isFinite(systemExtend) && systemExtendUnit != null) {
@@ -103,24 +104,24 @@ public class EnvironmentRepresentation {
         }
         // initial time step
         if (initialTimeStep != 0.0 && Double.isFinite(initialTimeStep) && initialTimeStepUnit != null) {
-            Environment.setTimeStep(Quantities.getQuantity(getInitialTimeStep(), getInitialTimeStepUnit()));
+            UnitRegistry.setTime(Quantities.getQuantity(getInitialTimeStep(), getInitialTimeStepUnit()));
         } else {
-            logger.warn("Initial time step and/or unit have not been set, using default {}.", Environment.DEFAULT_TIME_STEP);
-            Environment.setTimeStep(Environment.DEFAULT_TIME_STEP);
+            logger.warn("Initial time step and/or unit have not been set, using default {}.", UnitRegistry.DEFAULT_TIME);
+            UnitRegistry.setTime(UnitRegistry.DEFAULT_TIME);
         }
         // viscosity
         if (viscosity != 0.0 && Double.isFinite(viscosity) && viscosityUnit != null) {
             Environment.setSystemViscosity(Quantities.getQuantity(getViscosity(), getViscosityUnit()));
         } else {
-            logger.warn("Viscosity and/or unit have not been set, using default {}.", Environment.DEFAULT_VISCOSITY);
-            Environment.setSystemViscosity(Environment.DEFAULT_VISCOSITY);
+            logger.warn("Viscosity and/or unit have not been set, using default {}.", Environment.DEFAULT_SYSTEM_VISCOSITY);
+            Environment.setSystemViscosity(Environment.DEFAULT_SYSTEM_VISCOSITY);
         }
         // temperature
         if (temperature != 0.0 && Double.isFinite(temperature) && temperatureUnit != null) {
             Environment.setTemperature(Quantities.getQuantity(getTemperature(), getTemperatureUnit()));
         } else {
-            logger.warn("Temperature and/or unit have not been set, using default {}.", Environment.DEFAULT_TEMPERATURE);
-            Environment.setTemperature(Environment.DEFAULT_TEMPERATURE);
+            logger.warn("Temperature and/or unit have not been set, using default {}.", Environment.DEFAULT_SYSTEM_TEMPERATURE);
+            Environment.setTemperature(Environment.DEFAULT_SYSTEM_TEMPERATURE);
         }
     }
 

@@ -1,13 +1,13 @@
 package singa.bio.exchange.model.sbml;
 
 import bio.singa.core.parser.AbstractHTMLParser;
-import bio.singa.simulation.model.modules.concentration.imlementations.DynamicReaction;
+import bio.singa.simulation.model.modules.UpdateModule;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SabioRKParserService extends AbstractHTMLParser<List<DynamicReaction>> {
+public class SabioRKParserService extends AbstractHTMLParser<List<UpdateModule>> {
 
     private static final String SABIORK_FETCH_URL = "http://sabiork.h-its.org/sabioRestWebServices/searchKineticLaws/sbml";
     private final Map<String, String> queryMap;
@@ -19,11 +19,12 @@ public class SabioRKParserService extends AbstractHTMLParser<List<DynamicReactio
     }
 
     @Override
-    public List<DynamicReaction> parse() {
+    public List<UpdateModule> parse() {
         fetchWithQuery(queryMap);
         SBMLParser parser = new SBMLParser(getFetchResult());
         parser.parse();
-        return parser.getReactions();
+        return SBMLParser.current.getModules();
+
     }
 
 

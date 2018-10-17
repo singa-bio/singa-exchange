@@ -4,7 +4,6 @@ import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.chemistry.entities.ComplexedChemicalEntity;
 import bio.singa.features.model.Feature;
 import bio.singa.features.model.ScalableQuantityFeature;
-import bio.singa.simulation.features.Constant;
 import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.modules.concentration.ConcentrationBasedModule;
 import bio.singa.simulation.model.modules.concentration.ModuleBuilder;
@@ -16,15 +15,15 @@ import bio.singa.simulation.model.modules.concentration.reactants.Reactant;
 import bio.singa.simulation.model.modules.concentration.reactants.ReactantRole;
 import bio.singa.simulation.model.modules.displacement.DisplacementBasedModule;
 import bio.singa.simulation.model.modules.qualitative.QualitativeModule;
+import bio.singa.simulation.model.parameters.Parameter;
 import bio.singa.simulation.model.simulation.Simulation;
 import org.reflections.Reflections;
 import singa.bio.exchange.model.Converter;
 import singa.bio.exchange.model.EnumTransformation;
 import singa.bio.exchange.model.IllegalConversionException;
 import singa.bio.exchange.model.entities.ReactantRepresentation;
-import singa.bio.exchange.model.features.ConstantRepresentation;
 import singa.bio.exchange.model.features.FeatureRepresentation;
-import singa.bio.exchange.model.origins.OriginCache;
+import singa.bio.exchange.model.features.ParameterRepresentation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -124,8 +123,8 @@ public class ModuleFactory {
             for (Map.Entry<String, Reactant> reactantEntry : reaction.getKineticLaw().getConcentrationMap().entrySet()) {
                 representation.addReactant(reactantEntry.getKey(), ReactantRepresentation.of(reactantEntry.getValue()));
             }
-            for (Map.Entry<String, Constant> constantEntry : reaction.getKineticLaw().getConstantMap().entrySet()) {
-                representation.addConstant(constantEntry.getKey(), ConstantRepresentation.of(constantEntry.getValue()));
+            for (Map.Entry<String, Parameter> constantEntry : reaction.getKineticLaw().getParameterMap().entrySet()) {
+                representation.addConstant(constantEntry.getKey(), ParameterRepresentation.of(constantEntry.getValue()));
             }
             for (Map.Entry<String, ScalableQuantityFeature> featureEntry : reaction.getKineticLaw().getFeatureMap().entrySet()) {
                 representation.addKineticFeature(featureEntry.getKey(), FeatureRepresentation.of(featureEntry.getValue()));
@@ -237,8 +236,8 @@ public class ModuleFactory {
                 for (Map.Entry<String, ReactantRepresentation> representationEntry : reactionRepresentation.getReactants().entrySet()) {
                     kineticLaw.referenceReactant(representationEntry.getKey(), representationEntry.getValue().toModel());
                 }
-                for (Map.Entry<String, ConstantRepresentation> representationEntry : reactionRepresentation.getConstants().entrySet()) {
-                    kineticLaw.referenceConstant(representationEntry.getKey(), representationEntry.getValue().getValue(), OriginCache.get(representationEntry.getValue().getOrigin()));
+                for (Map.Entry<String, ParameterRepresentation> representationEntry : reactionRepresentation.getConstants().entrySet()) {
+                    kineticLaw.referenceParameter(representationEntry.getValue().toModel());
                 }
                 for (Map.Entry<String, FeatureRepresentation> representationEntry : reactionRepresentation.getKineticFeatures().entrySet()) {
                     kineticLaw.referenceFeature(representationEntry.getKey(), (ScalableQuantityFeature) representationEntry.getValue().toModel());

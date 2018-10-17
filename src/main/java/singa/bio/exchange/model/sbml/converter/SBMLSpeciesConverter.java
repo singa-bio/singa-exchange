@@ -6,13 +6,17 @@ import bio.singa.chemistry.entities.Protein;
 import bio.singa.chemistry.entities.SmallMolecule;
 import bio.singa.features.identifiers.ChEBIIdentifier;
 import bio.singa.features.identifiers.UniProtIdentifier;
+import bio.singa.features.units.UnitRegistry;
+import bio.singa.simulation.model.sections.CellSubsection;
+import bio.singa.simulation.model.sections.ConcentrationInitializer;
 import org.sbml.jsbml.CVTerm;
 import org.sbml.jsbml.ListOf;
 import org.sbml.jsbml.Species;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.entities.EntityCache;
-import singa.bio.exchange.model.entities.EntityDataset;
+import singa.bio.exchange.model.sbml.SBMLParser;
+import singa.bio.exchange.model.sections.SubsectionCache;
 
 import java.util.regex.Matcher;
 
@@ -25,13 +29,16 @@ public class SBMLSpeciesConverter {
 
     private static final Logger logger = LoggerFactory.getLogger(SBMLSpeciesConverter.class);
 
-    public static EntityDataset convert(ListOf<Species> listOfSpecies) {
+    public static void convert(ListOf<Species> listOfSpecies) {
         SBMLSpeciesConverter converter = new SBMLSpeciesConverter();
-        converter.convertSpeciesDataset(listOfSpecies);
-        return EntityDataset.fromCache();
+        converter.convertSpeciesList(listOfSpecies);
+        for (ChemicalEntity chemicalEntity : EntityCache.getAll()) {
+            SBMLParser.current.addReferencedEntity(chemicalEntity);
+        }
+        converter.convertInitialConcentrations(listOfSpecies);
     }
 
-    private void convertSpeciesDataset(ListOf<Species> listOfSpecies) {
+    private void convertSpeciesList(ListOf<Species> listOfSpecies) {
         logger.info("Parsing chemical entity data ...");
         for (Species species : listOfSpecies) {
             logger.debug("Parsing entity {} ...", species.getId());
@@ -61,6 +68,11 @@ public class SBMLSpeciesConverter {
                         break;
                     }
                 }
+            }
+            if (EntityCache.get(species.getId()) == null) {
+                ChemicalEntity entity = SmallMolecule.create(species.getId()).build();
+                entity.setName(species.getName());
+                EntityCache.add(entity);
             }
         }
 
@@ -108,6 +120,16 @@ public class SBMLSpeciesConverter {
         // no parser available
         return SmallMolecule.create(term.getResource(0))
                 .build();
+    }
+
+    public void convertInitialConcentrations(ListOf<Species> listOfSpecies) {
+        ConcentrationInitializer ci = new ConcentrationInitializer();
+        for (Species species : listOfSpecies) {
+            ChemicalEntity entity = EntityCache.get(species.getId());
+            CellSubsection subsection = SubsectionCache.get(species.getCompartment());
+            ci.addInitialConcentration(subsection, entity, UnitRegistry.concentration(species.getInitialConcentration()));
+        }
+        SBMLParser.current.setConcentrationInitializer(ci);
     }
 
 }

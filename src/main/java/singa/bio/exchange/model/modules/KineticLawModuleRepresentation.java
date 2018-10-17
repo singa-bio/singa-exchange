@@ -2,7 +2,7 @@ package singa.bio.exchange.model.modules;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.entities.ReactantRepresentation;
-import singa.bio.exchange.model.features.ConstantRepresentation;
+import singa.bio.exchange.model.features.ParameterRepresentation;
 import singa.bio.exchange.model.features.FeatureRepresentation;
 
 import java.util.HashMap;
@@ -17,7 +17,7 @@ public class KineticLawModuleRepresentation extends ModuleRepresentation {
     private String law;
 
     @JsonProperty
-    private Map<String, ConstantRepresentation> constants;
+    private Map<String, ParameterRepresentation> constants;
 
     @JsonProperty("kinetic-features")
     private Map<String, FeatureRepresentation> kineticFeatures;
@@ -39,15 +39,15 @@ public class KineticLawModuleRepresentation extends ModuleRepresentation {
         this.law = law;
     }
 
-    public Map<String, ConstantRepresentation> getConstants() {
+    public Map<String, ParameterRepresentation> getConstants() {
         return constants;
     }
 
-    public void setConstants(Map<String, ConstantRepresentation> constants) {
+    public void setConstants(Map<String, ParameterRepresentation> constants) {
         this.constants = constants;
     }
 
-    public void addConstant(String identifier, ConstantRepresentation constantRepresentation) {
+    public void addConstant(String identifier, ParameterRepresentation constantRepresentation) {
         constants.put(identifier, constantRepresentation);
     }
 

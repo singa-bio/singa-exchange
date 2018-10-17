@@ -1,14 +1,17 @@
 package singa.bio.exchange.model.sbml.converter;
 
 import bio.singa.core.utility.Resources;
-import bio.singa.features.units.UnitRegistry;
+import bio.singa.simulation.model.parameters.ParameterStorage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.IllegalConversionException;
-import singa.bio.exchange.model.units.UnitCache;
+import singa.bio.exchange.model.features.ParameterDataset;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
@@ -16,13 +19,19 @@ import java.io.InputStream;
 /**
  * @author cl
  */
-public class SBMLUnitConverterTest {
+public class SBMLParameterConverterTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(SBMLUnitConverterTest.class);
 
+    private static final Logger logger = LoggerFactory.getLogger(SBMLParameterConverterTest.class);
+
+    @Before
+    @After
+    public void cleanUp() {
+        ParameterStorage.clear();
+    }
 
     @Test
-    public void convertUnitDefinitions() {
+    public void convertCompartmentDataset() {
         InputStream inputStream = Resources.getResourceAsStream("BIOMD0000000184.xml");
 
         SBMLReader reader = new SBMLReader();
@@ -34,9 +43,16 @@ public class SBMLUnitConverterTest {
             throw new IllegalConversionException("Unable to read SBML file.");
         }
 
+        // requires units
         SBMLUnitConverter.convert(document.getModel().getListOfUnitDefinitions());
-        UnitCache.getAll().forEach((k, v) -> System.out.println(k + ": " + v));
-        UnitRegistry.getDefaultUnits().forEach((k, v) -> System.out.println(k + ": " + v));
+        SBMLParameterConverter.convert(document.getModel().getListOfParameters());
+        try {
+            String parameters = ParameterDataset.fromCache().toJson();
+            System.out.println(parameters);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
