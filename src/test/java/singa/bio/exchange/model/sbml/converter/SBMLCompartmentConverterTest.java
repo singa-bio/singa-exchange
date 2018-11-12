@@ -3,7 +3,7 @@ package singa.bio.exchange.model.sbml.converter;
 import bio.singa.core.utility.Resources;
 import bio.singa.simulation.model.parameters.ParameterStorage;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLReader;
 import org.slf4j.Logger;

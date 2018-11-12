@@ -1,7 +1,7 @@
 package singa.bio.exchange.model.features;
 
-import bio.singa.chemistry.MultiEntityFeature;
 import bio.singa.chemistry.entities.ChemicalEntity;
+import bio.singa.chemistry.features.MultiEntityFeature;
 import bio.singa.features.model.Feature;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

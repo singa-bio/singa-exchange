@@ -4,9 +4,9 @@ import bio.singa.core.utility.Resources;
 import bio.singa.simulation.model.parameters.ParameterStorage;
 import bio.singa.simulation.model.simulation.Simulation;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLReader;
 import org.slf4j.Logger;
@@ -26,8 +26,8 @@ public class SBMLFunctionConverterTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SBMLFunctionConverterTest.class);
 
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     public void cleanUp() {
         ParameterStorage.clear();
     }

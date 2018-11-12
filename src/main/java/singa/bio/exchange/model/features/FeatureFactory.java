@@ -1,8 +1,8 @@
 package singa.bio.exchange.model.features;
 
-import bio.singa.chemistry.MultiEntityFeature;
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.chemistry.features.EntityFeature;
+import bio.singa.chemistry.features.MultiEntityFeature;
 import bio.singa.features.identifiers.SimpleStringIdentifier;
 import bio.singa.features.identifiers.model.Identifier;
 import bio.singa.features.identifiers.model.IdentifierPatternRegistry;
