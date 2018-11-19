@@ -1,0 +1,941 @@
+{
+  "metadata" : {
+    "comment" : "automatically created by singa-exchange",
+    "creation-time-stamp" : "2018-11-19T12-59-35Z",
+    "simulation-tool" : "SiNGA",
+    "simulation-tool-version" : "0.4.2"
+  },
+  "entities" : {
+    "entities" : [ {
+      "type" : "protein",
+      "primary-identifier" : "G(G)",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "origin" : "manually assigned",
+        "content" : "P63211"
+      } ]
+    }, {
+      "type" : "small molecule",
+      "primary-identifier" : "GTP",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "ChEBIIdentifier",
+        "origin" : "manually assigned",
+        "content" : "CHEBI:17552"
+      } ]
+    }, {
+      "type" : "protein",
+      "primary-identifier" : "G(B)",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "origin" : "manually assigned",
+        "content" : "P62873"
+      } ]
+    }, {
+      "type" : "protein",
+      "primary-identifier" : "G(A)",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "origin" : "manually assigned",
+        "content" : "P63092"
+      } ]
+    }, {
+      "type" : "small molecule",
+      "primary-identifier" : "GDP",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "ChEBIIdentifier",
+        "origin" : "manually assigned",
+        "content" : "CHEBI:17552"
+      } ]
+    }, {
+      "type" : "protein",
+      "primary-identifier" : "V2R",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "origin" : "manually assigned",
+        "content" : "P30518"
+      }, {
+        "type" : "quantitative",
+        "name" : "MolarMass",
+        "origin" : "UniProt Database",
+        "quantity" : 40279.0,
+        "unit" : "g/mol"
+      } ]
+    }, {
+      "type" : "small molecule",
+      "primary-identifier" : "AVP",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "ChEBIIdentifier",
+        "origin" : "manually assigned",
+        "content" : "CHEBI:34543"
+      } ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "G(A):GTP",
+      "features" : [ ],
+      "components" : {
+        "GTP" : 1,
+        "G(A)" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "G(A):GDP",
+      "features" : [ ],
+      "components" : {
+        "GDP" : 1,
+        "G(A)" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "G(BG)",
+      "features" : [ ],
+      "components" : {
+        "G(G)" : 1,
+        "G(B)" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "V2R:AVP",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "MolarMass",
+        "origin" : "computed by sum of components",
+        "quantity" : 40279.0,
+        "unit" : "g/mol"
+      } ],
+      "components" : {
+        "V2R" : 1,
+        "AVP" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "V2R:G(A):GTP",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "MolarMass",
+        "origin" : "computed by sum of components",
+        "quantity" : 40279.0,
+        "unit" : "g/mol"
+      } ],
+      "components" : {
+        "G(A):GTP" : 1,
+        "V2R" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "V2R:AVP:G(A):GDP",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "MolarMass",
+        "origin" : "computed by sum of components",
+        "quantity" : 40279.0,
+        "unit" : "g/mol"
+      } ],
+      "components" : {
+        "G(A):GDP" : 1,
+        "V2R:AVP" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "V2R:G(A):GDP",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "MolarMass",
+        "origin" : "computed by sum of components",
+        "quantity" : 40279.0,
+        "unit" : "g/mol"
+      } ],
+      "components" : {
+        "G(A):GDP" : 1,
+        "V2R" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "G(ABG)",
+      "features" : [ ],
+      "components" : {
+        "G(BG)" : 1,
+        "G(A)" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "V2R:AVP:G(A):GTP",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "MolarMass",
+        "origin" : "computed by sum of components",
+        "quantity" : 40279.0,
+        "unit" : "g/mol"
+      } ],
+      "components" : {
+        "G(A):GTP" : 1,
+        "V2R:AVP" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "G(ABG):GDP",
+      "features" : [ ],
+      "components" : {
+        "GDP" : 1,
+        "G(ABG)" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "V2R:G(ABG):GDP",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "MolarMass",
+        "origin" : "computed by sum of components",
+        "quantity" : 40279.0,
+        "unit" : "g/mol"
+      } ],
+      "components" : {
+        "G(ABG):GDP" : 1,
+        "V2R" : 1
+      }
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "V2R:AVP:G(ABG):GDP",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "MolarMass",
+        "origin" : "computed by sum of components",
+        "quantity" : 40279.0,
+        "unit" : "g/mol"
+      } ],
+      "components" : {
+        "G(ABG):GDP" : 1,
+        "V2R:AVP" : 1
+      }
+    } ]
+  },
+  "modules" : {
+    "modules" : [ {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 01",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(A):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:G(A):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R + G(A):GDP ⇋ V2R:G(A):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 02",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(A):GTP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:G(A):GTP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R + G(A):GTP ⇋ V2R:G(A):GTP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 03",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(ABG):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:G(ABG):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R + G(ABG):GDP ⇋ V2R:G(ABG):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 04",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 1.7857E-4,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.001,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "AVP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "outer"
+      }, {
+        "identifier" : "V2R",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:AVP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R + AVP ⇋ V2R:AVP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 05",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(A):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R:AVP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:AVP:G(A):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R:AVP + G(A):GDP ⇋ V2R:AVP:G(A):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 06",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(A):GTP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R:AVP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:AVP:G(A):GTP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R:AVP + G(A):GTP ⇋ V2R:AVP:G(A):GTP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 07",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(ABG):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R:AVP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:AVP:G(ABG):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R:AVP + G(ABG):GDP ⇋ V2R:AVP:G(ABG):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "NthOrderReaction",
+      "identifier" : "reaction 08",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 6.2E-4,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(ABG):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "G(A):GTP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "G(BG)",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      } ],
+      "reaction" : "G(ABG):GDP ⟶  G(A):GTP + G(BG)"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ReversibleReaction",
+      "identifier" : "reaction 09",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.002,
+        "unit" : "1/s"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 6.2E-4,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(A):GTP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "G(A):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      } ],
+      "reaction" : "G(A):GTP ⇋ G(A):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 10",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.2158,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0013,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(A):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "G(BG)",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "G(ABG):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      } ],
+      "reaction" : "G(BG) + G(A):GDP ⇋ G(ABG):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ReversibleReaction",
+      "identifier" : "reaction 11",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.11,
+        "unit" : "1/s"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 1.5,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "V2R:AVP:G(A):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R:AVP:G(A):GTP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      } ],
+      "reaction" : "V2R:AVP:G(A):GDP ⇋ V2R:AVP:G(A):GTP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 12",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 1.5,
+        "unit" : "1/s"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(BG)",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R:AVP:G(A):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:AVP:G(ABG):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R:AVP:G(A):GDP + G(BG) ⇋ V2R:AVP:G(ABG):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 13",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.2158,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0013,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(BG)",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R:AVP:G(A):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:AVP:G(ABG):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R:AVP:G(A):GDP + G(BG) ⇋ V2R:AVP:G(ABG):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ReversibleReaction",
+      "identifier" : "reaction 14",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.11,
+        "unit" : "1/s"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 6.2E-4,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "V2R:G(A):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R:G(A):GTP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      } ],
+      "reaction" : "V2R:G(A):GDP ⇋ V2R:G(A):GTP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 15",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 6.2E-4,
+        "unit" : "1/s"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(BG)",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R:G(A):GTP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:G(ABG):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R:G(A):GTP + G(BG) ⇋ V2R:G(ABG):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 16",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.2158,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.0013,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "G(BG)",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "inner"
+      }, {
+        "identifier" : "V2R:G(A):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:G(ABG):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R:G(A):GDP + G(BG) ⇋ V2R:G(ABG):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 17",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 1.7857E-4,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.001,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "AVP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "outer"
+      }, {
+        "identifier" : "V2R:G(A):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:AVP:G(A):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R:G(A):GDP + AVP ⇋ V2R:AVP:G(A):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 18",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 1.7857E-4,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.001,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "AVP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "outer"
+      }, {
+        "identifier" : "V2R:G(ABG):GDP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:AVP:G(ABG):GDP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R:G(ABG):GDP + AVP ⇋ V2R:AVP:G(ABG):GDP"
+    }, {
+      "type" : "reaction-based",
+      "name" : "ComplexBuildingReaction",
+      "identifier" : "reaction 19",
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 1.7857E-4,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "origin" : "Bush 2016",
+        "quantity" : 0.001,
+        "unit" : "1/s"
+      } ],
+      "reactants" : [ {
+        "identifier" : "AVP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "outer"
+      }, {
+        "identifier" : "V2R:G(A):GTP",
+        "role" : "substrate",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      }, {
+        "identifier" : "V2R:AVP:G(A):GTP",
+        "role" : "product",
+        "stoichiometric-number" : 1.0,
+        "preferred-topology" : "membrane"
+      } ],
+      "reaction" : "V2R:G(A):GTP + AVP ⇋ V2R:AVP:G(A):GTP"
+    } ]
+  },
+  "regions" : {
+    "regions" : [ {
+      "identifier" : "Interstitium membrane",
+      "subsections" : {
+        "membrane" : "Basolateral membrane",
+        "outer" : "Interstitium",
+        "inner" : "Cytoplasm"
+      }
+    } ]
+  },
+  "subsections" : {
+    "subsections" : [ {
+      "identifier" : "Basolateral membrane"
+    }, {
+      "identifier" : "Cytoplasm"
+    }, {
+      "identifier" : "Interstitium"
+    } ]
+  },
+  "origins" : {
+    "origins" : [ {
+      "type" : "manual",
+      "short-descriptor" : "manually assigned",
+      "detailed-descriptor" : "none"
+    }, {
+      "type" : "manual",
+      "short-descriptor" : "Bush 2016",
+      "detailed-descriptor" : "Bush, Alan, et al. \"Yeast GPCR signaling reflects the fraction of occupied receptors, not the number.\" Molecular systems biology 12.12 (2016): 898."
+    }, {
+      "type" : "database",
+      "short-descriptor" : "UniProt Database",
+      "detailed-descriptor" : "UniProt Consortium. \"UniProt: the universal protein knowledgebase.\" Nucleic acids research 46.5 (2018): 2699."
+    }, {
+      "type" : "prediction",
+      "short-descriptor" : "computed by sum of components",
+      "detailed-descriptor" : "none"
+    } ]
+  },
+  "environment" : {
+    "node-distance" : 1.0,
+    "node-distance-unit" : "µm",
+    "simulation-extend" : 100.0,
+    "system-extend" : 1.0,
+    "system-extend-unit" : "µm",
+    "temperature" : 293.0,
+    "temperature-unit" : "K",
+    "viscosity" : 1.0,
+    "viscosity-unit" : "Pa·s",
+    "initial-time-step" : 1.0,
+    "initial-time-step-unit" : "µs"
+  },
+  "graph" : {
+    "rows" : 1,
+    "columns" : 1,
+    "nodes" : [ {
+      "identifier" : "(0, 0)",
+      "x" : 0.0,
+      "y" : 0.0
+    } ],
+    "edges" : [ ]
+  },
+  "membranes" : {
+    "membranes" : [ {
+      "identifier" : "Interstitium membrane",
+      "regions" : {
+        "Interstitium membrane" : [ {
+          "x" : 100.0,
+          "y" : 50.0
+        }, {
+          "x" : 0.0,
+          "y" : 50.0
+        } ]
+      },
+      "inner-region" : "Cytoplasm",
+      "membrane-region" : "Interstitium membrane"
+    } ]
+  },
+  "concentrations" : {
+    "concentrations" : [ {
+      "subsection" : "Basolateral membrane",
+      "entity" : "V2R",
+      "value" : 843.0,
+      "unit" : "nmol/l"
+    }, {
+      "subsection" : "Interstitium",
+      "entity" : "AVP",
+      "value" : 1000.0,
+      "unit" : "nmol/l"
+    }, {
+      "subsection" : "Cytoplasm",
+      "entity" : "G(ABG):GDP",
+      "value" : 520.0,
+      "unit" : "nmol/l"
+    } ]
+  }
+}
