@@ -253,7 +253,7 @@ public class SimulationRunner {
         terminationLatch.await();
     }
 
-    private static void initializeJFXEnvironment() {
+    public static void initializeJFXEnvironment() {
         final CountDownLatch latch = new CountDownLatch(1);
         SwingUtilities.invokeLater(() -> {
             new JFXPanel();

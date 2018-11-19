@@ -28,7 +28,6 @@ public class EntityDataset implements Jasonizable {
         return dataset;
     }
 
-
     public List<ChemicalEntity> toModel() {
         List<ChemicalEntity> entities = getEntities().stream()
                 .map(EntityRepresentation::toModel)
