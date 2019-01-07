@@ -2,21 +2,22 @@ package singa.bio.exchange.model;
 
 import bio.singa.chemistry.entities.ChemicalEntities;
 import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.simulation.model.agents.membranes.Membrane;
+import bio.singa.simulation.model.agents.surfacelike.Membrane;
 import bio.singa.simulation.model.modules.UpdateModule;
-import bio.singa.simulation.model.sections.InitialConcentration;
+import bio.singa.simulation.model.sections.concentration.InitialConcentration;
+import bio.singa.simulation.model.sections.concentration.SectionConcentration;
 import bio.singa.simulation.model.simulation.Simulation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import singa.bio.exchange.model.entities.EntityDataset;
 import singa.bio.exchange.model.entities.EntityRepresentation;
+import singa.bio.exchange.model.evidence.EvidenceDataset;
 import singa.bio.exchange.model.graphs.GraphRepresentation;
 import singa.bio.exchange.model.macroscopic.MembraneDataset;
 import singa.bio.exchange.model.macroscopic.MembraneRepresentation;
 import singa.bio.exchange.model.modules.ModuleDataset;
 import singa.bio.exchange.model.modules.ModuleRepresentation;
-import singa.bio.exchange.model.origins.OriginDataset;
 import singa.bio.exchange.model.sections.InitialConcentrationDataset;
-import singa.bio.exchange.model.sections.InitialConcentrationRepresentation;
+import singa.bio.exchange.model.sections.SectionConcentrationRepresentation;
 import singa.bio.exchange.model.sections.RegionDataset;
 import singa.bio.exchange.model.sections.SubsectionDataset;
 import singa.bio.exchange.model.units.UnitJacksonModule;
@@ -70,7 +71,10 @@ public class Converter {
     public static InitialConcentrationDataset getConcentrationsFrom(Simulation simulation) {
         InitialConcentrationDataset dataset = new InitialConcentrationDataset();
         for (InitialConcentration initialConcentration : simulation.getConcentrationInitializer().getInitialConcentrations()) {
-            dataset.addConcentration(InitialConcentrationRepresentation.of(initialConcentration));
+            if (initialConcentration instanceof SectionConcentration) {
+                dataset.addConcentration(SectionConcentrationRepresentation.of((SectionConcentration) initialConcentration));
+            }
+            // TODO  membrane concentrations
         }
         return dataset;
     }
@@ -88,7 +92,7 @@ public class Converter {
         representation.setModules(moduleDataset);
         representation.setGraph(graph);
         representation.setMembranes(membranes);
-        representation.setOrigins(OriginDataset.fromCache());
+        representation.setEvidence(EvidenceDataset.fromCache());
         representation.setSubsections(SubsectionDataset.fromCache());
         representation.setRegions(RegionDataset.fromCache());
         representation.setEnvironment(EnvironmentRepresentation.fromSingleton());

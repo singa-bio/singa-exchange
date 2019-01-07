@@ -1,6 +1,6 @@
 package singa.bio.exchange.model.macroscopic;
 
-import bio.singa.simulation.model.agents.membranes.Membrane;
+import bio.singa.simulation.model.agents.surfacelike.Membrane;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.Jasonizable;
 

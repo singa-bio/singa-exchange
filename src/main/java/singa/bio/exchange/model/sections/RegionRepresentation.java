@@ -35,7 +35,7 @@ public class RegionRepresentation {
         RegionRepresentation representation = new RegionRepresentation();
         representation.setIdentifier(region.getIdentifier());
         if (region.getGoTerm() != null) {
-            representation.setGoTerm(region.getGoTerm().getIdentifier());
+            representation.setGoTerm(region.getGoTerm().getContent());
         }
         representation.addSubsection(INNER, region.getInnerSubsection());
         representation.addSubsection(MEMBRANE, region.getMembraneSubsection());
@@ -54,7 +54,7 @@ public class RegionRepresentation {
         for (Map.Entry<String, String> entry : getSubsections().entrySet()) {
             String topologyString = entry.getKey();
             String subsectionString = entry.getValue();
-            region.addSubSection(EnumTransformation.toTopology(topologyString), SubsectionCache.get(subsectionString));
+            region.addSubsection(EnumTransformation.toTopology(topologyString), SubsectionCache.get(subsectionString));
         }
         return region;
     }

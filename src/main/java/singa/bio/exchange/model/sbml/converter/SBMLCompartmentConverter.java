@@ -69,8 +69,8 @@ public class SBMLCompartmentConverter {
             if (topology.containsKey(subsection)) {
                 CellSubsection outside = subsections.get(topology.get(subsection));
                 region = new CellRegion("Border " + subsection.getIdentifier() + "-" + outside.getIdentifier());
-                region.addSubSection(CellTopology.INNER, subsection);
-                region.addSubSection(CellTopology.OUTER, outside);
+                region.addSubsection(CellTopology.INNER, subsection);
+                region.addSubsection(CellTopology.OUTER, outside);
                 regions.add(region);
             }
             if (size.containsKey(subsection)) {
@@ -94,7 +94,7 @@ public class SBMLCompartmentConverter {
 
     private void addContainerRegion(CellSubsection subsection) {
         CellRegion cellRegion = new CellRegion(subsection.getIdentifier());
-        cellRegion.addSubSection(CellTopology.INNER, subsection);
+        cellRegion.addSubsection(CellTopology.INNER, subsection);
         regions.add(cellRegion);
     }
 

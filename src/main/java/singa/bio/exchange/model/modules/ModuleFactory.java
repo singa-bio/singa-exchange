@@ -3,7 +3,7 @@ package singa.bio.exchange.model.modules;
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.chemistry.entities.ComplexedChemicalEntity;
 import bio.singa.features.model.Feature;
-import bio.singa.features.model.ScalableQuantityFeature;
+import bio.singa.features.model.ScalableQuantitativeFeature;
 import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.modules.concentration.ConcentrationBasedModule;
 import bio.singa.simulation.model.modules.concentration.ModuleBuilder;
@@ -126,7 +126,7 @@ public class ModuleFactory {
             for (Map.Entry<String, Parameter> constantEntry : reaction.getKineticLaw().getParameterMap().entrySet()) {
                 representation.addConstant(constantEntry.getKey(), ParameterRepresentation.of(constantEntry.getValue()));
             }
-            for (Map.Entry<String, ScalableQuantityFeature> featureEntry : reaction.getKineticLaw().getFeatureMap().entrySet()) {
+            for (Map.Entry<String, ScalableQuantitativeFeature> featureEntry : reaction.getKineticLaw().getFeatureMap().entrySet()) {
                 representation.addKineticFeature(featureEntry.getKey(), FeatureRepresentation.of(featureEntry.getValue()));
             }
             return representation;
@@ -139,7 +139,7 @@ public class ModuleFactory {
             representation.addFeature(FeatureRepresentation.of(feature));
         }
         for (ChemicalEntity referencedEntity : module.getReferencedEntities()) {
-            representation.addAffectedEntity(referencedEntity.getIdentifier().getIdentifier());
+            representation.addAffectedEntity(referencedEntity.getIdentifier().getContent());
         }
         return representation;
     }
@@ -240,7 +240,7 @@ public class ModuleFactory {
                     kineticLaw.referenceParameter(representationEntry.getValue().toModel());
                 }
                 for (Map.Entry<String, FeatureRepresentation> representationEntry : reactionRepresentation.getKineticFeatures().entrySet()) {
-                    kineticLaw.referenceFeature(representationEntry.getKey(), (ScalableQuantityFeature) representationEntry.getValue().toModel());
+                    kineticLaw.referenceFeature(representationEntry.getKey(), (ScalableQuantitativeFeature) representationEntry.getValue().toModel());
                 }
             }
             // identifier

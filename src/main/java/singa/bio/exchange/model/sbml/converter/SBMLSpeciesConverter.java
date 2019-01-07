@@ -8,7 +8,7 @@ import bio.singa.features.identifiers.ChEBIIdentifier;
 import bio.singa.features.identifiers.UniProtIdentifier;
 import bio.singa.features.units.UnitRegistry;
 import bio.singa.simulation.model.sections.CellSubsection;
-import bio.singa.simulation.model.sections.ConcentrationInitializer;
+import bio.singa.simulation.model.sections.concentration.ConcentrationInitializer;
 import org.sbml.jsbml.CVTerm;
 import org.sbml.jsbml.ListOf;
 import org.sbml.jsbml.Species;

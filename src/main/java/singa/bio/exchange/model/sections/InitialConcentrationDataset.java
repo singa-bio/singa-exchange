@@ -1,7 +1,7 @@
 package singa.bio.exchange.model.sections;
 
-import bio.singa.simulation.model.sections.ConcentrationInitializer;
-import bio.singa.simulation.model.sections.InitialConcentration;
+import bio.singa.simulation.model.sections.concentration.ConcentrationInitializer;
+import bio.singa.simulation.model.sections.concentration.InitialConcentration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class InitialConcentrationDataset {
 
     @JsonProperty
-    private List<InitialConcentrationRepresentation> concentrations;
+    private List<SectionConcentrationRepresentation> concentrations;
 
     public InitialConcentrationDataset() {
         concentrations = new ArrayList<>();
@@ -23,20 +23,20 @@ public class InitialConcentrationDataset {
 
     public ConcentrationInitializer toModel() {
         Set<InitialConcentration> initialConcentrations = getConcentrations().stream()
-                .map(InitialConcentrationRepresentation::toModel)
+                .map(SectionConcentrationRepresentation::toModel)
                 .collect(Collectors.toSet());
         return new ConcentrationInitializer(initialConcentrations);
     }
 
-    public List<InitialConcentrationRepresentation> getConcentrations() {
+    public List<SectionConcentrationRepresentation> getConcentrations() {
         return concentrations;
     }
 
-    public void setConcentrations(List<InitialConcentrationRepresentation> concentrations) {
+    public void setConcentrations(List<SectionConcentrationRepresentation> concentrations) {
         this.concentrations = concentrations;
     }
 
-    public void addConcentration(InitialConcentrationRepresentation concentration) {
+    public void addConcentration(SectionConcentrationRepresentation concentration) {
         concentrations.add(concentration);
     }
 

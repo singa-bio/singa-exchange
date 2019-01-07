@@ -23,7 +23,7 @@ public class SubsectionRepresentation {
         SubsectionRepresentation representation = new SubsectionRepresentation();
         representation.setIdentifier(subsection.getIdentifier());
         if (subsection.getGoTerm() != null) {
-            representation.setGoTerm(subsection.getGoTerm().getIdentifier());
+            representation.setGoTerm(subsection.getGoTerm().getContent());
         }
         return representation;
     }

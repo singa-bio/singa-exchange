@@ -1,23 +1,25 @@
 package singa.bio.exchange.model.features;
 
-import bio.singa.chemistry.MultiEntityFeature;
 import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.chemistry.features.EntityFeature;
-import bio.singa.features.identifiers.SimpleStringIdentifier;
-import bio.singa.features.identifiers.model.Identifier;
-import bio.singa.features.identifiers.model.IdentifierPatternRegistry;
 import bio.singa.features.model.Feature;
-import bio.singa.features.model.FeatureOrigin;
+import bio.singa.features.model.StringFeature;
+import bio.singa.simulation.features.EntityFeature;
+import bio.singa.simulation.features.MultiEntityFeature;
+import bio.singa.simulation.features.MultiStringFeature;
+import bio.singa.simulation.features.RegionFeature;
+import bio.singa.simulation.model.sections.CellRegion;
 import org.reflections.Reflections;
 import singa.bio.exchange.model.IllegalConversionException;
 import singa.bio.exchange.model.entities.EntityCache;
-import singa.bio.exchange.model.origins.OriginCache;
+import singa.bio.exchange.model.evidence.EvidenceCache;
+import singa.bio.exchange.model.sections.RegionCache;
 import tec.uom.se.quantity.Quantities;
 
 import javax.measure.Quantity;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -35,6 +37,12 @@ public class FeatureFactory {
         }
     }
 
+    /**
+     * Tries to instantiate the actual feature class from the general feature representation.
+     *
+     * @param representation The representation to instantiate.
+     * @return The resulting feature.
+     */
     public static Feature create(FeatureRepresentation representation) {
         cacheSubtypes();
         String className = representation.getName();
@@ -47,67 +55,64 @@ public class FeatureFactory {
         }
         // if class cannot be found something went wrong
         Objects.requireNonNull(featureClass);
-        // is identifier
-        if (Identifier.class.isAssignableFrom(featureClass)) {
-            String identifierString = ((QualitativeFeatureRepresentation) representation).getContent();
-            // get identifier by pattern or use simple string identifier
-            return IdentifierPatternRegistry.instantiate(identifierString).orElse(new SimpleStringIdentifier(identifierString));
-        }
-        // is simple entity feature
-        if (EntityFeature.class.isAssignableFrom(featureClass)) {
-            ChemicalEntity chemicalEntity = EntityCache.get(((QualitativeFeatureRepresentation) representation).getContent());
-            Constructor<?> constructor;
-            try {
-                constructor = featureClass.getConstructor(ChemicalEntity.class, FeatureOrigin.class);
-            } catch (NoSuchMethodException e) {
-                throw new IllegalConversionException("Unable to get constructor for entity feature " + representation.getName(), e);
+        Feature feature = null;
+        if (representation instanceof QuantitativeFeatureRepresentation) {
+            // handle quantity based features
+            QuantitativeFeatureRepresentation quantitative = (QuantitativeFeatureRepresentation) representation;
+            Quantity content = Quantities.getQuantity(quantitative.getQuantity(), quantitative.getUnit());
+            feature = instantiate(featureClass, Quantity.class, content);
+        } else if (representation instanceof QualitativeFeatureRepresentation) {
+            if (StringFeature.class.isAssignableFrom(featureClass)) {
+                // handle string based feature
+                String content = ((QualitativeFeatureRepresentation) representation).getContent();
+                feature = instantiate(featureClass, String.class, content);
+            } else if (EntityFeature.class.isAssignableFrom(featureClass)) {
+                // handle entity based features
+                ChemicalEntity content = EntityCache.get(((QualitativeFeatureRepresentation) representation).getContent());
+                feature = instantiate(featureClass, ChemicalEntity.class, content);
+            } else if (RegionFeature.class.isAssignableFrom(featureClass)) {
+                // handle region based features
+                CellRegion content = RegionCache.get(((QualitativeFeatureRepresentation) representation).getContent());
+                feature = instantiate(featureClass, CellRegion.class, content);
             }
-
-            try {
-                return (Feature) constructor.newInstance(chemicalEntity, OriginCache.get(representation.getOrigin()));
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalConversionException("Unable to create instance of entity feature " + representation.getName(), e);
-            }
-        }
-        // is multi entity feature
-        if (MultiEntityFeature.class.isAssignableFrom(featureClass)) {
+        } else if (MultiEntityFeature.class.isAssignableFrom(featureClass)) {
+            // handle multi-entity based features
             MultiEntityFeatureRepresentation multiEntity = (MultiEntityFeatureRepresentation) representation;
-            Set<ChemicalEntity> entities = new HashSet<>();
+            List<ChemicalEntity> entities = new ArrayList<>();
             for (String entity : multiEntity.getEntities()) {
                 entities.add(EntityCache.get(entity));
             }
-            Constructor<?> constructor;
-            try {
-                constructor = featureClass.getConstructor(Set.class, FeatureOrigin.class);
-            } catch (NoSuchMethodException e) {
-                throw new IllegalConversionException("Unable to get constructor for multi entity feature " + representation.getName(), e);
-            }
-
-            try {
-                return (Feature) constructor.newInstance(entities, OriginCache.get(representation.getOrigin()));
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalConversionException("Unable to create instance of multi entity feature " + representation.getName(), e);
-            }
+            feature = instantiate(featureClass, List.class, entities);
+        } else if (MultiStringFeature.class.isAssignableFrom(featureClass)) {
+            // handle multi-entity based features
+            MultiStringFeatureRepresentation multiEntity = (MultiStringFeatureRepresentation) representation;
+            List<String> strings = new ArrayList<>(multiEntity.getStrings());
+            feature = instantiate(featureClass, List.class, strings);
         }
 
-        // it is a quantitative feature
-        if (representation instanceof QuantitativeFeatureRepresentation) {
-            // create quantity
-            QuantitativeFeatureRepresentation quantitative = (QuantitativeFeatureRepresentation) representation;
-            Quantity quantity = Quantities.getQuantity(quantitative.getQuantity(), quantitative.getUnit());
-            Constructor<?> constructor;
-            try {
-                constructor = featureClass.getConstructor(Quantity.class, FeatureOrigin.class);
-            } catch (NoSuchMethodException e) {
-                throw new IllegalConversionException("Unable to get constructor for quantitative feature " + representation.getName(), e);
+        if (feature != null) {
+            for (String evidenceIdentifier : representation.getEvidence()) {
+                feature.addEvidence(EvidenceCache.get(evidenceIdentifier));
             }
-            try {
-                return (Feature) constructor.newInstance(quantity, OriginCache.get(representation.getOrigin()));
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalConversionException("Unable to create instance of quantitative feature " + representation.getName(), e);
-            }
+            return feature;
         }
         throw new IllegalConversionException("Unable to convert feature " + representation.getName());
     }
+
+    private static Feature instantiate(Class<? extends Feature> featureClass, Class<?> constructorClass, Object construtorParameter) {
+        Constructor<?> constructor;
+        try {
+            constructor = featureClass.getConstructor(constructorClass);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalConversionException("Unable to get constructor for feature " + featureClass.getName(), e);
+        }
+
+        try {
+            return (Feature) constructor.newInstance(construtorParameter);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalConversionException("Unable to create instance of feature " + featureClass.getName(), e);
+        }
+    }
+
 
 }

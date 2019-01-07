@@ -1,6 +1,6 @@
 package singa.bio.exchange.model.sbml;
 
-import bio.singa.features.model.FeatureOrigin;
+import bio.singa.features.model.Evidence;
 import bio.singa.simulation.model.rules.AssignmentRule;
 import bio.singa.simulation.model.simulation.Simulation;
 import org.sbml.jsbml.Model;
@@ -22,7 +22,7 @@ public class SBMLParser {
 
     private static final Logger logger = LoggerFactory.getLogger(SBMLParser.class);
 
-    public static final FeatureOrigin DEFAULT_SBML_ORIGIN = new FeatureOrigin(FeatureOrigin.OriginType.MANUAL_ANNOTATION,
+    public static final Evidence DEFAULT_SBML_ORIGIN = new Evidence(Evidence.SourceType.DATABASE,
             "SBML", "Parsed from SBML file.");
 
     private SBMLDocument document;

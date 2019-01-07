@@ -1,11 +1,9 @@
 package singa.bio.exchange.model.macroscopic;
 
 import bio.singa.mathematics.vectors.Vector2D;
-import bio.singa.simulation.model.agents.membranes.Membrane;
-import bio.singa.simulation.model.agents.membranes.MembraneTracer;
+import bio.singa.simulation.model.agents.surfacelike.Membrane;
 import bio.singa.simulation.model.sections.CellRegion;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import singa.bio.exchange.model.Converter;
 import singa.bio.exchange.model.sections.RegionCache;
 
 import java.util.*;
@@ -63,7 +61,9 @@ public class MembraneRepresentation {
             }
             regionMap.put(region, vectors);
         }
-        return MembraneTracer.membraneToRegion(innerRegion, membraneRegion, regionMap, Converter.current.getGraph());
+        // TODO requires different call to membrane factory
+        // MembraneTracer.membraneToRegion(innerRegion, membraneRegion, regionMap, Converter.current.getGraph());
+        return null;
     }
 
     public String getIdentifier() {

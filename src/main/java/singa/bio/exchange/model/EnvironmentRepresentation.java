@@ -71,8 +71,9 @@ public class EnvironmentRepresentation {
         representation.setInitialTimeStep(UnitRegistry.getTimeScale());
         representation.setInitialTimeStepUnit(UnitRegistry.getTimeUnit());
         // viscosity
-        representation.setViscosity(Environment.getViscosity().getValue().doubleValue());
-        representation.setViscosityUnit(Environment.getViscosity().getUnit());
+        // TODO add macro viscosity
+        representation.setViscosity(Environment.getMatrixViscosity().getValue().doubleValue());
+        representation.setViscosityUnit(Environment.getMatrixViscosity().getUnit());
         // temperature
         representation.setTemperature(Environment.getTemperature().getValue().doubleValue());
         representation.setTemperatureUnit(Environment.getTemperature().getUnit());
@@ -111,10 +112,10 @@ public class EnvironmentRepresentation {
         }
         // viscosity
         if (viscosity != 0.0 && Double.isFinite(viscosity) && viscosityUnit != null) {
-            Environment.setSystemViscosity(Quantities.getQuantity(getViscosity(), getViscosityUnit()));
+            Environment.setMatrixViscosity(Quantities.getQuantity(getViscosity(), getViscosityUnit()));
         } else {
-            logger.warn("Viscosity and/or unit have not been set, using default {}.", Environment.DEFAULT_SYSTEM_VISCOSITY);
-            Environment.setSystemViscosity(Environment.DEFAULT_SYSTEM_VISCOSITY);
+            logger.warn("Viscosity and/or unit have not been set, using default {}.", Environment.DEFAULT_MATRIX_VISCOSITY);
+            Environment.setMatrixViscosity(Environment.DEFAULT_MATRIX_VISCOSITY);
         }
         // temperature
         if (temperature != 0.0 && Double.isFinite(temperature) && temperatureUnit != null) {

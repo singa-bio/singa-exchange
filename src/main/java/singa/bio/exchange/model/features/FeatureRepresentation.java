@@ -1,15 +1,21 @@
 package singa.bio.exchange.model.features;
 
-import bio.singa.chemistry.MultiEntityFeature;
-import bio.singa.chemistry.entities.ChemicalEntity;
+import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
+import bio.singa.features.model.QualitativeFeature;
+import bio.singa.simulation.features.EntityFeature;
+import bio.singa.simulation.features.MultiEntityFeature;
+import bio.singa.simulation.features.MultiStringFeature;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import singa.bio.exchange.model.origins.OriginRepresentation;
+import singa.bio.exchange.model.IllegalConversionException;
+import singa.bio.exchange.model.evidence.EvidenceRepresentation;
 
 import javax.measure.Quantity;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author cl
@@ -20,50 +26,33 @@ import javax.measure.Quantity;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = QuantitativeFeatureRepresentation.class, name = "quantitative"),
         @JsonSubTypes.Type(value = QualitativeFeatureRepresentation.class, name = "qualitative"),
-        @JsonSubTypes.Type(value = MultiEntityFeatureRepresentation.class, name = "qualitative-multi"),
+        @JsonSubTypes.Type(value = MultiEntityFeatureRepresentation.class, name = "entity-multi"),
+        @JsonSubTypes.Type(value = MultiStringFeatureRepresentation.class, name = "string-multi")
 })
-@JsonPropertyOrder({ "name" })
+@JsonPropertyOrder({"name"})
 public abstract class FeatureRepresentation {
 
     @JsonProperty
     private String name;
 
     @JsonProperty
-    private String origin;
+    private List<String> evidence;
 
     public FeatureRepresentation() {
-
+        evidence = new ArrayList<>();
     }
 
-    public static FeatureRepresentation of(Feature feature) {
-        if (feature.getFeatureContent() instanceof Quantity) {
-            QuantitativeFeatureRepresentation representation = new QuantitativeFeatureRepresentation();
-            representation.setName(feature.getClass().getSimpleName());
-            representation.setOrigin(OriginRepresentation.of(feature.getFeatureOrigin()).getShortDescriptor());
-            Quantity quantity = (Quantity) feature.getFeatureContent();
-            representation.setQuantity(quantity.getValue().doubleValue());
-            representation.setUnit(quantity.getUnit());
-            return representation;
+    public static FeatureRepresentation of(Feature<?> feature) {
+        if (feature.getContent() instanceof Quantity) {
+            return QuantitativeFeatureRepresentation.of(feature);
         } else if (feature instanceof MultiEntityFeature) {
-            MultiEntityFeatureRepresentation representation = new MultiEntityFeatureRepresentation();
-            representation.setName(feature.getClass().getSimpleName());
-            representation.setOrigin(OriginRepresentation.of(feature.getFeatureOrigin()).getShortDescriptor());
-            for (ChemicalEntity chemicalEntity : ((MultiEntityFeature) feature).getFeatureContent()) {
-                representation.addEntity(chemicalEntity.getIdentifier().toString());
-            }
-            return representation;
-        } else {
-            QualitativeFeatureRepresentation representation = new QualitativeFeatureRepresentation();
-            representation.setName(feature.getClass().getSimpleName());
-            representation.setOrigin(OriginRepresentation.of(feature.getFeatureOrigin()).getShortDescriptor());
-            // entity feature
-            if (feature.getFeatureContent() instanceof ChemicalEntity) {
-                representation.setContent(((ChemicalEntity) feature.getFeatureContent()).getIdentifier().toString());
-            } else {
-                representation.setContent(feature.getFeatureContent().toString());
-            }
-            return representation;
+            return MultiEntityFeatureRepresentation.of(feature);
+        } else if (feature instanceof MultiStringFeature) {
+            return MultiStringFeatureRepresentation.of(feature);
+        } else if (feature instanceof EntityFeature || feature instanceof QualitativeFeature) {
+            return QualitativeFeatureRepresentation.of(feature);
         }
+        throw new IllegalConversionException("The feature " + feature + " could not be converted to its json representation.");
     }
 
     public Feature toModel() {
@@ -78,12 +67,18 @@ public abstract class FeatureRepresentation {
         this.name = name;
     }
 
-    public String getOrigin() {
-        return origin;
+    public List<String> getEvidence() {
+        return evidence;
     }
 
-    public void setOrigin(String origin) {
-        this.origin = origin;
+    public void setEvidence(List<String> identfiiers) {
+        this.evidence = identfiiers;
+    }
+
+    public void addEvidence(List<Evidence> evidences) {
+        for (Evidence evidence : evidences) {
+            this.evidence.add(EvidenceRepresentation.of(evidence).getIdentifier());
+        }
     }
 
 }

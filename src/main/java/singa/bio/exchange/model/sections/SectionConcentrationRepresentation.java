@@ -3,7 +3,8 @@ package singa.bio.exchange.model.sections;
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.features.quantities.MolarConcentration;
 import bio.singa.simulation.model.sections.CellSubsection;
-import bio.singa.simulation.model.sections.InitialConcentration;
+import bio.singa.simulation.model.sections.concentration.InitialConcentration;
+import bio.singa.simulation.model.sections.concentration.SectionConcentration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.entities.EntityCache;
 import tec.uom.se.quantity.Quantities;
@@ -13,7 +14,7 @@ import javax.measure.Unit;
 /**
  * @author cl
  */
-public class InitialConcentrationRepresentation {
+public class SectionConcentrationRepresentation {
 
     @JsonProperty
     private String region;
@@ -30,12 +31,12 @@ public class InitialConcentrationRepresentation {
     @JsonProperty
     private Unit<MolarConcentration> unit;
 
-    public InitialConcentrationRepresentation() {
+    public SectionConcentrationRepresentation() {
 
     }
 
-    public static InitialConcentrationRepresentation of(InitialConcentration initialConcentration) {
-        InitialConcentrationRepresentation representation = new InitialConcentrationRepresentation();
+    public static SectionConcentrationRepresentation of(SectionConcentration initialConcentration) {
+        SectionConcentrationRepresentation representation = new SectionConcentrationRepresentation();
         if (initialConcentration.getRegion() != null) {
             representation.setRegion(initialConcentration.getRegion().getIdentifier());
         }
@@ -51,9 +52,9 @@ public class InitialConcentrationRepresentation {
         ChemicalEntity entity = EntityCache.get(getEntity());
         String region = getRegion();
         if (region == null || region.isEmpty()) {
-            return new InitialConcentration(subsection, entity, Quantities.getQuantity(value, unit));
+            return new SectionConcentration(subsection, entity, Quantities.getQuantity(value, unit));
         } else {
-            return new InitialConcentration(RegionCache.get(region), subsection, entity, Quantities.getQuantity(value, unit));
+            return new SectionConcentration(RegionCache.get(region), subsection, entity, Quantities.getQuantity(value, unit));
         }
     }
 

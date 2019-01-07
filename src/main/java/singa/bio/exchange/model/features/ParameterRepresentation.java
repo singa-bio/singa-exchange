@@ -2,8 +2,8 @@ package singa.bio.exchange.model.features;
 
 import bio.singa.simulation.model.parameters.Parameter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import singa.bio.exchange.model.origins.OriginCache;
-import singa.bio.exchange.model.origins.OriginRepresentation;
+import singa.bio.exchange.model.evidence.EvidenceCache;
+import singa.bio.exchange.model.evidence.EvidenceRepresentation;
 import tec.uom.se.quantity.Quantities;
 
 import javax.measure.Unit;
@@ -33,12 +33,12 @@ public class ParameterRepresentation {
         representation.setIdentifier(parameter.getIdentifier());
         representation.setQuantity(parameter.getQuantity().getValue().doubleValue());
         representation.setUnit(parameter.getQuantity().getUnit());
-        representation.setOrigin(OriginRepresentation.of(parameter.getOrigin()).getShortDescriptor());
+        representation.setOrigin(EvidenceRepresentation.of(parameter.getOrigin()).getIdentifier());
         return representation;
     }
 
     public Parameter toModel() {
-        return new Parameter(getIdentifier(), Quantities.getQuantity(getQuantity(), getUnit()), OriginCache.get(origin));
+        return new Parameter(getIdentifier(), Quantities.getQuantity(getQuantity(), getUnit()), EvidenceCache.get(origin));
     }
 
     public String getIdentifier() {

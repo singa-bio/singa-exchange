@@ -1,7 +1,8 @@
 package singa.bio.exchange.model;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.features.model.QuantityFormatter;
+import bio.singa.features.formatter.GeneralQuantityFormatter;
+import bio.singa.features.formatter.QuantityFormatter;
 import bio.singa.features.quantities.MolarConcentration;
 import bio.singa.mathematics.topology.grids.rectangular.RectangularCoordinate;
 import bio.singa.simulation.events.EpochUpdateWriter;
@@ -10,7 +11,8 @@ import bio.singa.simulation.features.variation.ModuleFeatureVariationEntry;
 import bio.singa.simulation.features.variation.VariationSet;
 import bio.singa.simulation.model.graphs.AutomatonNode;
 import bio.singa.simulation.model.modules.UpdateModule;
-import bio.singa.simulation.model.sections.InitialConcentration;
+import bio.singa.simulation.model.sections.concentration.InitialConcentration;
+import bio.singa.simulation.model.sections.concentration.SectionConcentration;
 import bio.singa.simulation.model.simulation.Simulation;
 import bio.singa.simulation.model.simulation.SimulationManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,8 +42,8 @@ import static tec.uom.se.unit.Units.SECOND;
  */
 public class SimulationRunner {
 
-    public static final QuantityFormatter<MolarConcentration> CONCENTRATION_FORMATTER = new QuantityFormatter<>(new DecimalFormat("0.0000E00"), NANO_MOLE_PER_LITRE, false);
-    private static QuantityFormatter<Time> TIME_FORMATTER = new QuantityFormatter<>(new DecimalFormat("0.0000E00"), MILLI(SECOND), false);
+    public static final QuantityFormatter<MolarConcentration> CONCENTRATION_FORMATTER = new GeneralQuantityFormatter<>(new DecimalFormat("0.0000E00"), NANO_MOLE_PER_LITRE, false);
+    private static QuantityFormatter<Time> TIME_FORMATTER = new GeneralQuantityFormatter<>(new DecimalFormat("0.0000E00"), MILLI(SECOND), false);
 
     public static void runMultipleSimulations(Path simulationPath, List<RectangularCoordinate> observedNodes) throws IOException, InterruptedException {
 
@@ -131,19 +133,20 @@ public class SimulationRunner {
     }
 
     private static String getValueString(Object parameter) {
-        if (parameter instanceof InitialConcentration) {
+        // add membrane concentration
+        if (parameter instanceof SectionConcentration) {
             // varying concentration
-            return String.valueOf(((InitialConcentration) parameter).getConcentration().getValue().doubleValue());
+            return String.valueOf(((SectionConcentration) parameter).getConcentration().getValue().doubleValue());
         } else if (parameter instanceof EntityFeatureVariationEntry) {
             // varying feature of a entity
-            Object featureContent = ((EntityFeatureVariationEntry) parameter).getFeature().getFeatureContent();
+            Object featureContent = ((EntityFeatureVariationEntry) parameter).getFeature().getContent();
             if (featureContent instanceof Quantity) {
                 return String.valueOf(((Quantity) featureContent).getValue().doubleValue());
             }
             return String.valueOf(featureContent);
         } else if (parameter instanceof ModuleFeatureVariationEntry) {
             // varying feature of a module
-            Object featureContent = ((ModuleFeatureVariationEntry) parameter).getFeature().getFeatureContent();
+            Object featureContent = ((ModuleFeatureVariationEntry) parameter).getFeature().getContent();
             if (featureContent instanceof Quantity) {
                 return String.valueOf(((Quantity) featureContent).getValue().doubleValue());
             }
@@ -234,8 +237,8 @@ public class SimulationRunner {
         // reference nodes to write
         for (RectangularCoordinate coordinate : observedNodes) {
             AutomatonNode node = simulation.getGraph().getNode(coordinate);
-            epochUpdateWriter.addNodeToObserve(node);
-            simulation.observeNode(node);
+            epochUpdateWriter.addUpdatableToObserve(node);
+            simulation.observe(node);
         }
 
         // reference writer

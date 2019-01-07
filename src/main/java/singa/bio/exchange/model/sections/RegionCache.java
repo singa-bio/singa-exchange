@@ -36,6 +36,14 @@ public class RegionCache {
         return getInstance().cache.get(identifier);
     }
 
+    public static Collection<CellRegion> getAll() {
+        return getInstance().cache.values();
+    }
+
+    public static void clear() {
+        getInstance().cache.clear();
+    }
+
     public static CellRegion getInner(String subsectionIdentifier) {
         for (CellRegion value : getInstance().cache.values()) {
             if (!value.hasMembrane()) {
@@ -45,13 +53,5 @@ public class RegionCache {
             }
         }
         throw new IllegalConversionException("Unable to get cell region for inner subsection " +subsectionIdentifier);
-    }
-
-    public static Collection<CellRegion> getAll() {
-        return getInstance().cache.values();
-    }
-
-    public static void clear() {
-        getInstance().cache.clear();
     }
 }

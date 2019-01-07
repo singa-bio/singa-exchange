@@ -3,12 +3,10 @@ package singa.bio.exchange.model;
 import bio.singa.simulation.model.modules.concentration.reactants.ReactantRole;
 import bio.singa.simulation.model.sections.CellTopology;
 
-import static bio.singa.simulation.model.modules.concentration.reactants.ReactantRole.CATALYTIC;
-import static bio.singa.simulation.model.modules.concentration.reactants.ReactantRole.PRODUCT;
-import static bio.singa.simulation.model.modules.concentration.reactants.ReactantRole.SUBSTRATE;
-import static bio.singa.simulation.model.sections.CellTopology.INNER;
-import static bio.singa.simulation.model.sections.CellTopology.MEMBRANE;
-import static bio.singa.simulation.model.sections.CellTopology.OUTER;
+import static bio.singa.features.model.Evidence.SourceType;
+import static bio.singa.features.model.Evidence.SourceType.*;
+import static bio.singa.simulation.model.modules.concentration.reactants.ReactantRole.*;
+import static bio.singa.simulation.model.sections.CellTopology.*;
 
 /**
  * @author cl
@@ -56,6 +54,36 @@ public class EnumTransformation {
                 return SUBSTRATE;
             default:
                 return CATALYTIC;
+        }
+    }
+
+    public static String fromSourceType(SourceType type) {
+        switch (type) {
+            case ESTIMATION:
+                return "estimation";
+            case PREDICTION:
+                return "prediction";
+            case DATABASE:
+                return "database";
+            case LITERATURE:
+                return "literature";
+            default:
+                return "guess";
+        }
+    }
+
+    public static SourceType toSourceType(String type) {
+        switch (type) {
+            case "estimation":
+                return ESTIMATION;
+            case "prediction":
+                return PREDICTION;
+            case "database":
+                return DATABASE;
+            case "literature":
+                return LITERATURE;
+            default:
+                return GUESS;
         }
     }
 
