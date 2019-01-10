@@ -1,12 +1,15 @@
-package singa.bio.exchange.model.macroscopic;
+package singa.bio.exchange.model.agents;
 
 import bio.singa.mathematics.vectors.Vector2D;
 import bio.singa.simulation.model.agents.surfacelike.Membrane;
+import bio.singa.simulation.model.agents.surfacelike.MembraneFactory;
 import bio.singa.simulation.model.sections.CellRegion;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import singa.bio.exchange.model.Converter;
 import singa.bio.exchange.model.sections.RegionCache;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author cl
@@ -47,23 +50,20 @@ public class MembraneRepresentation {
     }
 
     public Membrane toModel() {
-        Membrane membrane = new Membrane(identifier);
-        CellRegion innerRegion = RegionCache.get(this.innerRegion);
-        membrane.setInnerRegion(innerRegion);
-        CellRegion membraneRegion = RegionCache.get(this.membraneRegion);
-        membrane.setMembraneRegion(membraneRegion);
-        Map<CellRegion, Set<Vector2D>> regionMap = new HashMap<>();
+        List<Vector2D> vectors = regions.values().stream()
+                .flatMap(Collection::stream)
+                .map(VectorRepresentation::toModel)
+                .collect(Collectors.toList());
+
+        Map<Vector2D, CellRegion> mapping = new HashMap<>();
         for (Map.Entry<String, List<VectorRepresentation>> entry : regions.entrySet()) {
             CellRegion region = RegionCache.get(entry.getKey());
-            Set<Vector2D> vectors = new HashSet<>();
-            for (VectorRepresentation vectorRepresentation : entry.getValue()) {
-                vectors.add(vectorRepresentation.toModel());
+            for (VectorRepresentation representation : entry.getValue()) {
+                mapping.put(representation.toModel(), region);
             }
-            regionMap.put(region, vectors);
         }
-        // TODO requires different call to membrane factory
-        // MembraneTracer.membraneToRegion(innerRegion, membraneRegion, regionMap, Converter.current.getGraph());
-        return null;
+
+        return MembraneFactory.createClosedMembrane(vectors, RegionCache.get(getInnerRegion()), RegionCache.get(getMembraneRegion()), Converter.current.getGraph(), mapping);
     }
 
     public String getIdentifier() {

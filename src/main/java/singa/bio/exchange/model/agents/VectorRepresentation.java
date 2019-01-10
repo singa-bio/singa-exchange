@@ -1,4 +1,4 @@
-package singa.bio.exchange.model.macroscopic;
+package singa.bio.exchange.model.agents;
 
 import bio.singa.mathematics.vectors.Vector2D;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,4 +1,4 @@
-package singa.bio.exchange.model.macroscopic;
+package singa.bio.exchange.model.agents;
 
 import bio.singa.simulation.model.agents.surfacelike.Membrane;
 import com.fasterxml.jackson.annotation.JsonProperty;

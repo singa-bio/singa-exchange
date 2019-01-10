@@ -1,7 +1,9 @@
 package singa.bio.exchange.model.features;
 
+import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
 import bio.singa.simulation.features.MultiStringFeature;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
  */
 public class MultiStringFeatureRepresentation extends FeatureRepresentation {
 
+    @JsonProperty
     private List<String> strings;
 
     public MultiStringFeatureRepresentation() {
@@ -24,6 +27,9 @@ public class MultiStringFeatureRepresentation extends FeatureRepresentation {
             representation.addString(string);
         }
         representation.addEvidence(feature.getAllEvidence());
+        if (representation.getEvidence().isEmpty()) {
+            representation.addEvidence(Evidence.NO_EVIDENCE);
+        }
         return representation;
     }
 

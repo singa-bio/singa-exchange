@@ -1,8 +1,11 @@
 package singa.bio.exchange.model.features;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
+import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
 import bio.singa.simulation.features.MultiEntityFeature;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import singa.bio.exchange.model.entities.EntityRepresentation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +15,7 @@ import java.util.List;
  */
 public class MultiEntityFeatureRepresentation extends FeatureRepresentation {
 
+    @JsonProperty
     private List<String> entities;
 
     public MultiEntityFeatureRepresentation() {
@@ -22,9 +26,12 @@ public class MultiEntityFeatureRepresentation extends FeatureRepresentation {
         MultiEntityFeatureRepresentation representation = new MultiEntityFeatureRepresentation();
         representation.setName(feature.getClass().getSimpleName());
         for (ChemicalEntity chemicalEntity : ((MultiEntityFeature) feature).getContent()) {
-            representation.addEntity(chemicalEntity.getIdentifier().toString());
+            representation.addEntity(EntityRepresentation.of(chemicalEntity).getPrimaryIdentifier());
         }
         representation.addEvidence(feature.getAllEvidence());
+        if (representation.getEvidence().isEmpty()) {
+            representation.addEvidence(Evidence.NO_EVIDENCE);
+        }
         return representation;
     }
 

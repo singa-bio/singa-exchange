@@ -2,24 +2,24 @@ package singa.bio.exchange.model;
 
 import bio.singa.chemistry.entities.ChemicalEntities;
 import bio.singa.chemistry.entities.ChemicalEntity;
+import bio.singa.simulation.model.agents.linelike.LineLikeAgent;
+import bio.singa.simulation.model.agents.pointlike.Vesicle;
 import bio.singa.simulation.model.agents.surfacelike.Membrane;
+import bio.singa.simulation.model.agents.volumelike.VolumeLikeAgent;
 import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.sections.concentration.InitialConcentration;
+import bio.singa.simulation.model.sections.concentration.MembraneConcentration;
 import bio.singa.simulation.model.sections.concentration.SectionConcentration;
 import bio.singa.simulation.model.simulation.Simulation;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import singa.bio.exchange.model.agents.*;
 import singa.bio.exchange.model.entities.EntityDataset;
 import singa.bio.exchange.model.entities.EntityRepresentation;
 import singa.bio.exchange.model.evidence.EvidenceDataset;
 import singa.bio.exchange.model.graphs.GraphRepresentation;
-import singa.bio.exchange.model.macroscopic.MembraneDataset;
-import singa.bio.exchange.model.macroscopic.MembraneRepresentation;
 import singa.bio.exchange.model.modules.ModuleDataset;
 import singa.bio.exchange.model.modules.ModuleRepresentation;
-import singa.bio.exchange.model.sections.InitialConcentrationDataset;
-import singa.bio.exchange.model.sections.SectionConcentrationRepresentation;
-import singa.bio.exchange.model.sections.RegionDataset;
-import singa.bio.exchange.model.sections.SubsectionDataset;
+import singa.bio.exchange.model.sections.*;
 import singa.bio.exchange.model.units.UnitJacksonModule;
 
 import java.io.IOException;
@@ -68,30 +68,71 @@ public class Converter {
         return dataset;
     }
 
+    public static FilamentDataset getFilamentsFrom(Simulation simulation) {
+        FilamentDataset dataset = new FilamentDataset();
+        if (simulation.getLineLayer() != null) {
+            for (LineLikeAgent filament : simulation.getLineLayer().getFilaments()) {
+                dataset.addFilament(FilamentRepresentation.of(filament));
+            }
+        }
+        dataset.setMicrotubuleOrganizingCentre(MicrotubuleOrganizingCentreRepresentation.of(simulation.getMembraneLayer().getMicrotubuleOrganizingCentre()));
+        return dataset;
+    }
+
+    public static VesicleDataset getVesiclesFrom(Simulation simulation) {
+        VesicleDataset dataset = new VesicleDataset();
+        if (simulation.getVesicleLayer() != null) {
+            for (Vesicle vesicle : simulation.getVesicleLayer().getVesicles()) {
+                dataset.addVesicle(VesicleRepresentation.of(vesicle));
+            }
+        }
+        return dataset;
+    }
+
+    public static  VolumeDataset getVolumesFrom(Simulation simulation) {
+        VolumeDataset dataset = new VolumeDataset();
+        if (simulation.getVolumeLayer() != null) {
+            for (VolumeLikeAgent volume : simulation.getVolumeLayer().getAgents()) {
+                dataset.addVolume(VolumeRepresentation.of(volume));
+            }
+        }
+        return dataset;
+    }
+
     public static InitialConcentrationDataset getConcentrationsFrom(Simulation simulation) {
         InitialConcentrationDataset dataset = new InitialConcentrationDataset();
         for (InitialConcentration initialConcentration : simulation.getConcentrationInitializer().getInitialConcentrations()) {
             if (initialConcentration instanceof SectionConcentration) {
                 dataset.addConcentration(SectionConcentrationRepresentation.of((SectionConcentration) initialConcentration));
+            } else if (initialConcentration instanceof MembraneConcentration) {
+                dataset.addConcentration(MembraneConcentrationRepresentation.of((MembraneConcentration) initialConcentration));
+            } else {
+                throw new IllegalConversionException("Illegal initial concentration format.");
             }
-            // TODO  membrane concentrations
         }
         return dataset;
     }
 
     public static SimulationRepresentation getRepresentationFrom(Simulation simulation) {
         ModuleDataset moduleDataset = getModuleDatasetFrom(simulation);
-        EntityDataset entityDataset = getEntityDatasetFrom(simulation);
+        // only called to fill cache
+        getEntityDatasetFrom(simulation);
         GraphRepresentation graph = getGraphFrom(simulation);
         MembraneDataset membranes = getMembranesFrom(simulation);
+        FilamentDataset filaments = getFilamentsFrom(simulation);
+        VesicleDataset vesicles = getVesiclesFrom(simulation);
+        VolumeDataset volumes = getVolumesFrom(simulation);
         InitialConcentrationDataset concentrations = getConcentrationsFrom(simulation);
 
         SimulationRepresentation representation = new SimulationRepresentation();
         representation.setMetadata(Metadata.forSinga());
-        representation.setEntities(entityDataset);
+        representation.setEntities(EntityDataset.fromCache());
         representation.setModules(moduleDataset);
         representation.setGraph(graph);
         representation.setMembranes(membranes);
+        representation.setFilaments(filaments);
+        representation.setVesicles(vesicles);
+        representation.setVolumes(volumes);
         representation.setEvidence(EvidenceDataset.fromCache());
         representation.setSubsections(SubsectionDataset.fromCache());
         representation.setRegions(RegionDataset.fromCache());

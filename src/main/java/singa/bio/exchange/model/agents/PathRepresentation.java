@@ -1,6 +1,6 @@
-package singa.bio.exchange.model.macroscopic;
+package singa.bio.exchange.model.agents;
 
-import bio.singa.mathematics.geometry.faces.VertexPolygon;
+import bio.singa.mathematics.geometry.edges.VectorPath;
 import bio.singa.mathematics.geometry.model.Polygon;
 import bio.singa.mathematics.vectors.Vector2D;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,29 +12,40 @@ import java.util.stream.Collectors;
 /**
  * @author cl
  */
-public class PolygonRepresentation {
+public class PathRepresentation {
 
     @JsonProperty
     private List<VectorRepresentation> vertices;
 
-    public PolygonRepresentation() {
+    public PathRepresentation() {
         vertices = new ArrayList<>();
     }
 
-    public static PolygonRepresentation of(Polygon polygon) {
-        PolygonRepresentation representation = new PolygonRepresentation();
+    public static PathRepresentation of(Polygon polygon) {
+        PathRepresentation representation = new PathRepresentation();
         for (Vector2D vertex : polygon.getVertices()) {
             representation.addVector(VectorRepresentation.of(vertex));
+        }
+//        Vector2D first = polygon.getVertices().get(0);
+//        Vector2D last = polygon.getVertices().get(polygon.getNumberOfVertices() - 1);
+//        if (!first.equals(last)) {
+//            representation.addVector(VectorRepresentation.of(first));
+//        }
+        return representation;
+    }
+
+    public static  PathRepresentation of (VectorPath path) {
+        PathRepresentation representation = new PathRepresentation();
+        for (Vector2D segment : path.getSegments()) {
+            representation.addVector(VectorRepresentation.of(segment));
         }
         return representation;
     }
 
-    public Polygon toModel() {
-        List<Vector2D> vertices = getVertices().stream()
+    public List<Vector2D> toModel() {
+        return getVertices().stream()
                 .map(VectorRepresentation::toModel)
                 .collect(Collectors.toList());
-        return new VertexPolygon(vertices);
-
     }
 
     public List<VectorRepresentation> getVertices() {

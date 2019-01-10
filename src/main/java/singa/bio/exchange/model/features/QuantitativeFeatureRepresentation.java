@@ -1,5 +1,6 @@
 package singa.bio.exchange.model.features;
 
+import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -28,6 +29,9 @@ public class QuantitativeFeatureRepresentation extends FeatureRepresentation {
         representation.setQuantity(quantity.getValue().doubleValue());
         representation.setUnit(quantity.getUnit());
         representation.addEvidence(feature.getAllEvidence());
+        if (representation.getEvidence().isEmpty()) {
+            representation.addEvidence(Evidence.NO_EVIDENCE);
+        }
         return representation;
     }
 

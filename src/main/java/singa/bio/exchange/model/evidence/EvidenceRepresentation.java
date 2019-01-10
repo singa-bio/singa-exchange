@@ -24,12 +24,15 @@ public class EvidenceRepresentation {
 
     }
 
-    public static EvidenceRepresentation of(Evidence origin) {
+    public static EvidenceRepresentation of(Evidence evidence) {
+        if (evidence == null) {
+            return EvidenceRepresentation.of(Evidence.NO_EVIDENCE);
+        }
         EvidenceRepresentation representation = new EvidenceRepresentation();
-        representation.setType(fromSourceType(origin.getType()));
-        representation.setIdentifier(origin.getIdentifier());
-        representation.setDescription(origin.getDescription());
-        EvidenceCache.add(origin);
+        representation.setType(fromSourceType(evidence.getType()));
+        representation.setIdentifier(evidence.getIdentifier());
+        representation.setDescription(evidence.getDescription());
+        EvidenceCache.add(evidence);
         return representation;
     }
 

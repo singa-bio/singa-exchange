@@ -1,12 +1,15 @@
 package singa.bio.exchange.model.sections;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
+import bio.singa.features.model.Evidence;
 import bio.singa.features.quantities.MolarConcentration;
 import bio.singa.simulation.model.sections.CellSubsection;
 import bio.singa.simulation.model.sections.concentration.InitialConcentration;
 import bio.singa.simulation.model.sections.concentration.SectionConcentration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.entities.EntityCache;
+import singa.bio.exchange.model.entities.EntityRepresentation;
+import singa.bio.exchange.model.evidence.EvidenceCache;
 import tec.uom.se.quantity.Quantities;
 
 import javax.measure.Unit;
@@ -14,22 +17,16 @@ import javax.measure.Unit;
 /**
  * @author cl
  */
-public class SectionConcentrationRepresentation {
-
-    @JsonProperty
-    private String region;
+public class SectionConcentrationRepresentation extends InitialConcentrationRepresentation {
 
     @JsonProperty
     private String subsection;
 
-    @JsonProperty
-    private String entity;
+    @JsonProperty("concentration-value")
+    private double concentrationValue;
 
-    @JsonProperty
-    private double value;
-
-    @JsonProperty
-    private Unit<MolarConcentration> unit;
+    @JsonProperty("concentration-unit")
+    private Unit<MolarConcentration> concentrationUnit;
 
     public SectionConcentrationRepresentation() {
 
@@ -38,32 +35,31 @@ public class SectionConcentrationRepresentation {
     public static SectionConcentrationRepresentation of(SectionConcentration initialConcentration) {
         SectionConcentrationRepresentation representation = new SectionConcentrationRepresentation();
         if (initialConcentration.getRegion() != null) {
-            representation.setRegion(initialConcentration.getRegion().getIdentifier());
+            representation.setRegion(RegionRepresentation.of(initialConcentration.getRegion()).getIdentifier());
         }
         representation.setSubsection(initialConcentration.getSubsection().getIdentifier());
-        representation.setEntity(initialConcentration.getEntity().getIdentifier().toString());
-        representation.setValue(initialConcentration.getConcentration().getValue().doubleValue());
-        representation.setUnit(initialConcentration.getConcentration().getUnit());
+        representation.setEntity(EntityRepresentation.of(initialConcentration.getEntity()).getPrimaryIdentifier());
+        representation.setConcentrationValue(initialConcentration.getConcentration().getValue().doubleValue());
+        representation.setConcentrationUnit(initialConcentration.getConcentration().getUnit());
+        representation.addEvidence(initialConcentration.getEvidence());
         return representation;
     }
 
+    @Override
     public InitialConcentration toModel() {
         CellSubsection subsection = SubsectionCache.get(getSubsection());
         ChemicalEntity entity = EntityCache.get(getEntity());
+        Evidence evidence = EvidenceCache.get(getEvidence());
         String region = getRegion();
         if (region == null || region.isEmpty()) {
-            return new SectionConcentration(subsection, entity, Quantities.getQuantity(value, unit));
+            SectionConcentration sectionConcentration = new SectionConcentration(subsection, entity, Quantities.getQuantity(concentrationValue, concentrationUnit));
+            sectionConcentration.setEvidence(evidence);
+            return sectionConcentration;
         } else {
-            return new SectionConcentration(RegionCache.get(region), subsection, entity, Quantities.getQuantity(value, unit));
+            SectionConcentration sectionConcentration = new SectionConcentration(RegionCache.get(region), subsection, entity, Quantities.getQuantity(concentrationValue, concentrationUnit));
+            sectionConcentration.setEvidence(evidence);
+            return sectionConcentration;
         }
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
     }
 
     public String getSubsection() {
@@ -74,27 +70,20 @@ public class SectionConcentrationRepresentation {
         this.subsection = subsection;
     }
 
-    public String getEntity() {
-        return entity;
+    public double getConcentrationValue() {
+        return concentrationValue;
     }
 
-    public void setEntity(String entity) {
-        this.entity = entity;
+    public void setConcentrationValue(double concentrationValue) {
+        this.concentrationValue = concentrationValue;
     }
 
-    public double getValue() {
-        return value;
+    public Unit<MolarConcentration> getConcentrationUnit() {
+        return concentrationUnit;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setConcentrationUnit(Unit<MolarConcentration> concentrationUnit) {
+        this.concentrationUnit = concentrationUnit;
     }
 
-    public Unit<MolarConcentration> getUnit() {
-        return unit;
-    }
-
-    public void setUnit(Unit<MolarConcentration> unit) {
-        this.unit = unit;
-    }
 }

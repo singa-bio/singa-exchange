@@ -81,4 +81,9 @@ public abstract class FeatureRepresentation {
         }
     }
 
+    public void addEvidence(Evidence evidence) {
+        this.evidence.add(EvidenceRepresentation.of(evidence).getIdentifier());
+
+    }
+
 }

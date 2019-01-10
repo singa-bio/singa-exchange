@@ -40,6 +40,7 @@ public abstract class EntityRepresentation {
     }
 
     public static EntityRepresentation of(ChemicalEntity chemicalEntity) {
+        EntityCache.add(chemicalEntity);
         if (chemicalEntity instanceof SmallMolecule) {
             SmallMoleculeRepresentation representation = new SmallMoleculeRepresentation();
             representation.setPrimaryIdentifier(chemicalEntity.getIdentifier().toString());
@@ -55,7 +56,7 @@ public abstract class EntityRepresentation {
                 representation.addFeature(FeatureRepresentation.of(feature));
             }
             for (Map.Entry<ChemicalEntity, Integer> entry : complex.getAssociatedParts().entrySet()) {
-                representation.addComponent(entry.getKey().getIdentifier().toString(), entry.getValue());
+                representation.addComponent(EntityRepresentation.of(entry.getKey()).getPrimaryIdentifier(), entry.getValue());
             }
             return representation;
         } else {

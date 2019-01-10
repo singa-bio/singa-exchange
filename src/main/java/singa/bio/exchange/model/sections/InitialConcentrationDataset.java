@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class InitialConcentrationDataset {
 
     @JsonProperty
-    private List<SectionConcentrationRepresentation> concentrations;
+    private List<InitialConcentrationRepresentation> concentrations;
 
     public InitialConcentrationDataset() {
         concentrations = new ArrayList<>();
@@ -23,20 +23,20 @@ public class InitialConcentrationDataset {
 
     public ConcentrationInitializer toModel() {
         Set<InitialConcentration> initialConcentrations = getConcentrations().stream()
-                .map(SectionConcentrationRepresentation::toModel)
+                .map(InitialConcentrationRepresentation::toModel)
                 .collect(Collectors.toSet());
         return new ConcentrationInitializer(initialConcentrations);
     }
 
-    public List<SectionConcentrationRepresentation> getConcentrations() {
+    public List<InitialConcentrationRepresentation> getConcentrations() {
         return concentrations;
     }
 
-    public void setConcentrations(List<SectionConcentrationRepresentation> concentrations) {
+    public void setConcentrations(List<InitialConcentrationRepresentation> concentrations) {
         this.concentrations = concentrations;
     }
 
-    public void addConcentration(SectionConcentrationRepresentation concentration) {
+    public void addConcentration(InitialConcentrationRepresentation concentration) {
         concentrations.add(concentration);
     }
 

@@ -271,7 +271,7 @@ public class ModuleFactory {
             for (FeatureRepresentation feature : representation.getFeatures()) {
                 module.setFeature(feature.toModel());
             }
-            Converter.current.getModules().add(module);
+            Converter.current.addModule(module);
             return module;
         } else if (QualitativeModule.class.isAssignableFrom(moduleClass)) {
             // displacement based
@@ -294,7 +294,7 @@ public class ModuleFactory {
             for (FeatureRepresentation feature : representation.getFeatures()) {
                 module.setFeature(feature.toModel());
             }
-            Converter.current.getModules().add(module);
+            Converter.current.addModule(module);
             return module;
         }
         throw new IllegalConversionException("Unable to convert module.");
