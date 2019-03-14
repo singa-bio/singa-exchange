@@ -1,0 +1,1006 @@
+{
+  "metadata" : {
+    "comment" : "automatically created by singa-exchange",
+    "creation-time-stamp" : "2019-02-19T11-58-20Z",
+    "simulation-tool" : "SiNGA",
+    "simulation-tool-version" : "0.5.0"
+  },
+  "entities" : {
+    "entities" : [ {
+      "type" : "small molecule",
+      "primary-identifier" : "GTP",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "ChEBIIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "CHEBI:17552"
+      } ]
+    }, {
+      "type" : "small molecule",
+      "primary-identifier" : "GDP",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "ChEBIIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "CHEBI:17552"
+      } ]
+    }, {
+      "type" : "protein",
+      "primary-identifier" : "V2R",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "P30518"
+      } ]
+    }, {
+      "type" : "protein",
+      "primary-identifier" : "GA",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "P63092"
+      } ]
+    }, {
+      "type" : "small molecule",
+      "primary-identifier" : "AVP",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "ChEBIIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "CHEBI:34543"
+      } ]
+    }, {
+      "type" : "protein",
+      "primary-identifier" : "GB",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "P62873"
+      } ]
+    }, {
+      "type" : "protein",
+      "primary-identifier" : "GG",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "P63211"
+      } ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "(GA:GDP)",
+      "features" : [ ],
+      "components" : [ "GA", "GDP" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "(GB:GG)",
+      "features" : [ ],
+      "components" : [ "GB", "GG" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "(V2R:AVP)",
+      "features" : [ ],
+      "components" : [ "V2R", "AVP" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "(V2R:(GA:GDP))",
+      "features" : [ ],
+      "components" : [ "V2R", "GA", "GDP" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "(GA:GTP)",
+      "features" : [ ],
+      "components" : [ "GA", "GTP" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "((GA:GDP):(GB:GG))",
+      "features" : [ ],
+      "components" : [ "GA", "GDP", "GB", "GG" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "((V2R:AVP):(GA:GTP))",
+      "features" : [ ],
+      "components" : [ "V2R", "AVP", "GA", "GTP" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "((V2R:AVP):(GA:GDP))",
+      "features" : [ ],
+      "components" : [ "V2R", "AVP", "GA", "GDP" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "(V2R:((GA:GDP):(GB:GG)))",
+      "features" : [ ],
+      "components" : [ "V2R", "GA", "GDP", "GB", "GG" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "((V2R:AVP):((GA:GDP):(GB:GG)))",
+      "features" : [ ],
+      "components" : [ "V2R", "AVP", "GA", "GDP", "GB", "GG" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "(V2R:(GA:GTP))",
+      "features" : [ ],
+      "components" : [ "V2R", "GA", "GTP" ]
+    } ]
+  },
+  "modules" : {
+    "modules" : [ {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R AVP binding",
+      "reaction" : "AVP(o) + V2R(m) <=> (V2R:AVP)(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "AVP",
+        "role" : "substrate",
+        "preferred-topology" : "outer",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "V2R",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:AVP)",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 1.7857E-4,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.001,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R G(A)GDP binding",
+      "reaction" : "(GA:GDP)(m) + V2R(m) <=> (V2R:(GA:GDP))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(GA:GDP)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "V2R",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:(GA:GDP))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R G(A)GTP binding",
+      "reaction" : "(GA:GTP)(m) + V2R(m) <=> (V2R:(GA:GTP))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(GA:GTP)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "V2R",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:(GA:GTP))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R G(ABG)GDP binding",
+      "reaction" : "((GA:GDP):(GB:GG))(m) + V2R(m) <=> (V2R:((GA:GDP):(GB:GG)))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "((GA:GDP):(GB:GG))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "V2R",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:((GA:GDP):(GB:GG)))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:AVP G(A)GDP binding",
+      "reaction" : "(GA:GDP)(m) + (V2R:AVP)(m) <=> ((V2R:AVP):(GA:GDP))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(GA:GDP)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:AVP)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):(GA:GDP))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:AVP G(A)GTP binding",
+      "reaction" : "(GA:GTP)(m) + (V2R:AVP)(m) <=> ((V2R:AVP):(GA:GTP))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(GA:GTP)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:AVP)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):(GA:GTP))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:AVP G(ABG)GDP binding",
+      "reaction" : "((GA:GDP):(GB:GG))(m) + (V2R:AVP)(m) <=> ((V2R:AVP):((GA:GDP):(GB:GG)))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "((GA:GDP):(GB:GG))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:AVP)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):((GA:GDP):(GB:GG)))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.0046111,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.1,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: G(ABG)GDP split and GDP exchange",
+      "reaction" : "((GA:GDP):(GB:GG))(m) -> (GA:GTP)(m) + (GB:GG)(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "irreversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "((GA:GDP):(GB:GG))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(GA:GTP)",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(GB:GG)",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 6.2E-4,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: G(A)GDP hydrolysis",
+      "reaction" : "(GA:GTP)(m) <=> (GA:GDP)(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(GA:GTP)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(GA:GDP)",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.002,
+        "unit" : "1/s"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 6.2E-4,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: G(A)GDP G(BG) binding",
+      "reaction" : "(GA:GDP)(m) + (GB:GG)(m) <=> ((GA:GDP):(GB:GG))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(GA:GDP)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(GB:GG)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((GA:GDP):(GB:GG))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.2158,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.0013,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:AVP:G(A)GDP hydrolysis",
+      "reaction" : "((V2R:AVP):(GA:GDP))(m) <=> ((V2R:AVP):(GA:GTP))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):(GA:GDP))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):(GA:GTP))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.11,
+        "unit" : "1/s"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 1.5,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:AVP:G(ABG)GDP GDP exchange",
+      "reaction" : "(GB:GG)(m) + ((V2R:AVP):(GA:GTP))(m) -> ((V2R:AVP):((GA:GDP):(GB:GG)))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "irreversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(GB:GG)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):(GA:GTP))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):((GA:GDP):(GB:GG)))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 1.5,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:AVP:G(A)GDP G(BG) binding",
+      "reaction" : "(GB:GG)(m) + ((V2R:AVP):(GA:GDP))(m) <=> ((V2R:AVP):((GA:GDP):(GB:GG)))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(GB:GG)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):(GA:GDP))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):((GA:GDP):(GB:GG)))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.2158,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.0013,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:G(A)GDP hydrolysis",
+      "reaction" : "(V2R:(GA:GDP))(m) <=> (V2R:(GA:GTP))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(V2R:(GA:GDP))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:(GA:GTP))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.11,
+        "unit" : "1/s"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 6.2E-4,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:G(ABG)GDP GDP exchange",
+      "reaction" : "(GB:GG)(m) + (V2R:(GA:GTP))(m) <=> (V2R:((GA:GDP):(GB:GG)))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(GB:GG)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:(GA:GTP))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:((GA:GDP):(GB:GG)))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 6.2E-4,
+        "unit" : "1/s"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.0,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:G(A)GDP G(BG) binding",
+      "reaction" : "(GB:GG)(m) + (V2R:(GA:GDP))(m) <=> (V2R:((GA:GDP):(GB:GG)))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "(GB:GG)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:(GA:GDP))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:((GA:GDP):(GB:GG)))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.2158,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.0013,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:G(A)GDP ligand binding",
+      "reaction" : "AVP(o) + (V2R:(GA:GDP))(m) <=> ((V2R:AVP):(GA:GDP))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "AVP",
+        "role" : "substrate",
+        "preferred-topology" : "outer",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:(GA:GDP))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):(GA:GDP))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 1.7857E-4,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.001,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:G(ABG)GDP ligand binding",
+      "reaction" : "AVP(o) + (V2R:((GA:GDP):(GB:GG)))(m) <=> ((V2R:AVP):((GA:GDP):(GB:GG)))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "AVP",
+        "role" : "substrate",
+        "preferred-topology" : "outer",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:((GA:GDP):(GB:GG)))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):((GA:GDP):(GB:GG)))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 1.7857E-4,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.001,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "receptor activation: V2R:G(A)GTP ligand binding",
+      "reaction" : "AVP(o) + (V2R:(GA:GTP))(m) <=> ((V2R:AVP):(GA:GTP))(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "AVP",
+        "role" : "substrate",
+        "preferred-topology" : "outer",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(V2R:(GA:GTP))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((V2R:AVP):(GA:GTP))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 1.7857E-4,
+        "unit" : "l/(s·nmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Bush 2016" ],
+        "quantity" : 0.001,
+        "unit" : "1/s"
+      } ]
+    } ]
+  },
+  "regions" : {
+    "regions" : [ {
+      "identifier" : "basolateral plasma membrane",
+      "go-term" : "GO:0016323",
+      "subsections" : {
+        "membrane" : "basolateral plasma membrane",
+        "outer" : "interstitium",
+        "inner" : "cytoplasm"
+      }
+    } ]
+  },
+  "subsections" : {
+    "subsections" : [ {
+      "identifier" : "cytoplasm",
+      "go-term" : "GO:0005737"
+    }, {
+      "identifier" : "interstitium",
+      "go-term" : "GO:0005576"
+    }, {
+      "identifier" : "basolateral plasma membrane",
+      "go-term" : "GO:0016323"
+    } ]
+  },
+  "evidence" : {
+    "evidence" : [ {
+      "type" : "literature",
+      "identifier" : "Bush 2016",
+      "description" : "Bush, Alan, et al. \"Yeast GPCR signaling reflects the fraction of occupied receptors, not the number.\" Molecular systems biology 12.12 (2016): 898."
+    }, {
+      "type" : "guess",
+      "identifier" : "no evidence",
+      "description" : "no information about evidence provided"
+    } ]
+  },
+  "environment" : {
+    "node-distance" : 1.0,
+    "node-distance-unit" : "µm",
+    "simulation-extend" : 100.0,
+    "system-extend" : 1.0,
+    "system-extend-unit" : "µm",
+    "temperature" : 293.0,
+    "temperature-unit" : "K",
+    "viscosity" : 1.0,
+    "viscosity-unit" : "Pa·s",
+    "initial-time-step" : 1.0,
+    "initial-time-step-unit" : "µs"
+  },
+  "graph" : {
+    "rows" : 1,
+    "columns" : 1,
+    "nodes" : [ {
+      "identifier" : "(0, 0)",
+      "x" : 0.0,
+      "y" : 0.0
+    } ],
+    "edges" : [ ]
+  },
+  "membranes" : {
+    "membranes" : [ {
+      "identifier" : "basolateral plasma membrane",
+      "inner-region" : "cytoplasm",
+      "membrane-region" : "basolateral plasma membrane",
+      "regions" : {
+        "basolateral plasma membrane" : [ {
+          "x" : 100.0,
+          "y" : 50.0
+        }, {
+          "x" : 0.0,
+          "y" : 50.0
+        } ]
+      }
+    } ]
+  },
+  "filaments" : {
+    "filaments" : [ ]
+  },
+  "vesicles" : {
+    "vesicles" : [ ]
+  },
+  "volumes" : {
+    "volumes" : [ ]
+  },
+  "concentrations" : {
+    "concentrations" : [ {
+      "type" : "section",
+      "entity" : "AVP",
+      "evidence" : "no evidence",
+      "subsection" : "interstitium",
+      "concentration-value" : 1000.0,
+      "concentration-unit" : "nmol/l"
+    }, {
+      "type" : "section",
+      "entity" : "((GA:GDP):(GB:GG))",
+      "evidence" : "no evidence",
+      "subsection" : "basolateral plasma membrane",
+      "concentration-value" : 520.0,
+      "concentration-unit" : "nmol/l"
+    }, {
+      "type" : "section",
+      "entity" : "V2R",
+      "evidence" : "no evidence",
+      "subsection" : "basolateral plasma membrane",
+      "concentration-value" : 843.0,
+      "concentration-unit" : "nmol/l"
+    } ]
+  }
+}

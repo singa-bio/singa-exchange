@@ -1,19 +1,13 @@
 package singa.bio.exchange.model.entities;
 
-import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.chemistry.entities.ComplexedChemicalEntity;
-import bio.singa.chemistry.entities.Protein;
-import bio.singa.chemistry.entities.SmallMolecule;
+import bio.singa.chemistry.entities.*;
 import bio.singa.features.model.Feature;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
+import singa.bio.exchange.model.IllegalConversionException;
 import singa.bio.exchange.model.features.FeatureRepresentation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author cl
@@ -24,7 +18,9 @@ import java.util.Map;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SmallMoleculeRepresentation.class, name = "small molecule"),
         @JsonSubTypes.Type(value = ProteinRepresentation.class, name = "protein"),
-        @JsonSubTypes.Type(value = ComplexRepresentation.class, name = "complex")
+        @JsonSubTypes.Type(value = ComplexRepresentation.class, name = "complex"),
+        @JsonSubTypes.Type(value = DynamicSubstrateRepresentation.class, name = "dynamic"),
+        @JsonSubTypes.Type(value = ModificationSiteRepresentation.class, name = "modification site")
 })
 @JsonPropertyOrder({ "primary-identifier", "type" })
 public abstract class EntityRepresentation {
@@ -33,6 +29,7 @@ public abstract class EntityRepresentation {
     private String primaryIdentifier;
 
     @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<FeatureRepresentation> features;
 
     public EntityRepresentation() {
@@ -42,63 +39,37 @@ public abstract class EntityRepresentation {
     public static EntityRepresentation of(ChemicalEntity chemicalEntity) {
         EntityCache.add(chemicalEntity);
         if (chemicalEntity instanceof SmallMolecule) {
-            SmallMoleculeRepresentation representation = new SmallMoleculeRepresentation();
-            representation.setPrimaryIdentifier(chemicalEntity.getIdentifier().toString());
-            for (Feature<?> feature : chemicalEntity.getFeatures()) {
-                representation.addFeature(FeatureRepresentation.of(feature));
-            }
-            return representation;
-        } else if (chemicalEntity instanceof ComplexedChemicalEntity) {
-            ComplexedChemicalEntity complex = (ComplexedChemicalEntity) chemicalEntity;
-            ComplexRepresentation representation = new ComplexRepresentation();
-            representation.setPrimaryIdentifier(complex.getIdentifier().toString());
-            for (Feature<?> feature : complex.getFeatures()) {
-                representation.addFeature(FeatureRepresentation.of(feature));
-            }
-            for (Map.Entry<ChemicalEntity, Integer> entry : complex.getAssociatedParts().entrySet()) {
-                representation.addComponent(EntityRepresentation.of(entry.getKey()).getPrimaryIdentifier(), entry.getValue());
-            }
-            return representation;
-        } else {
-            ProteinRepresentation representation = new ProteinRepresentation();
-            representation.setPrimaryIdentifier(chemicalEntity.getIdentifier().toString());
-            for (Feature<?> feature : chemicalEntity.getFeatures()) {
-                representation.addFeature(FeatureRepresentation.of(feature));
-            }
-            return representation;
+            return SmallMoleculeRepresentation.of(((SmallMolecule) chemicalEntity));
+        } else if (chemicalEntity instanceof Protein) {
+            return ProteinRepresentation.of(((Protein) chemicalEntity));
+        } else if (chemicalEntity instanceof ComplexEntity) {
+            return ComplexRepresentation.of(((ComplexEntity) chemicalEntity));
+        } else if (chemicalEntity instanceof ModificationSite) {
+            return ModificationSiteRepresentation.of(((ModificationSite) chemicalEntity));
         }
-
+        throw new IllegalConversionException("Trying to create entity representation from unknown model class "+chemicalEntity.getClass()+".");
     }
 
     public ChemicalEntity toModel() {
+        ChemicalEntity entity;
         if (this instanceof SmallMoleculeRepresentation) {
-            SmallMolecule entity = SmallMolecule.create(getPrimaryIdentifier()).build();
-            for (FeatureRepresentation featureRepresentation : getFeatures()) {
-                Feature feature = featureRepresentation.toModel();
-                entity.setFeature(feature);
-            }
-            EntityCache.add(entity);
-            return entity;
+            entity = ((SmallMoleculeRepresentation) this).toModel();
         } else if (this instanceof ProteinRepresentation) {
-            Protein entity = new Protein.Builder(getPrimaryIdentifier()).build();
-            for (FeatureRepresentation featureRepresentation : getFeatures()) {
-                Feature feature = featureRepresentation.toModel();
-                entity.setFeature(feature);
-            }
-            EntityCache.add(entity);
-            return entity;
+            entity = ((ProteinRepresentation) this).toModel();
+        } else if (this instanceof ComplexRepresentation) {
+            entity = ((ComplexRepresentation) this).toModel();
+        } else if (this instanceof ModificationSiteRepresentation) {
+            entity = ((ModificationSiteRepresentation) this).toModel();
         } else {
-            ComplexedChemicalEntity.Builder builder = new ComplexedChemicalEntity.Builder(getPrimaryIdentifier());
-            for (Map.Entry<String, Integer> entry : ((ComplexRepresentation) this).getComponents().entrySet()) {
-                builder.addAssociatedPart(EntityCache.get(entry.getKey()), entry.getValue());
-            }
-            ComplexedChemicalEntity entity = builder.build();
-            for (FeatureRepresentation featureRepresentation : getFeatures()) {
-                Feature feature = featureRepresentation.toModel();
-                entity.setFeature(feature);
-            }
-            EntityCache.add(entity);
-            return entity;
+            throw new IllegalConversionException("Trying to create entity representation from unknown representation class "+this.getClass()+".");
+        }
+        return entity;
+    }
+
+    void appendFeatures(ChemicalEntity entity) {
+        for (FeatureRepresentation featureRepresentation : getFeatures()) {
+            Feature feature = featureRepresentation.toModel();
+            entity.setFeature(feature);
         }
     }
 
@@ -121,4 +92,5 @@ public abstract class EntityRepresentation {
     public void addFeature(FeatureRepresentation feature) {
         features.add(feature);
     }
+
 }

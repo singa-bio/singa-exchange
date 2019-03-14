@@ -74,8 +74,10 @@ public class Converter {
             for (LineLikeAgent filament : simulation.getLineLayer().getFilaments()) {
                 dataset.addFilament(FilamentRepresentation.of(filament));
             }
+            if (simulation.getMembraneLayer().getMicrotubuleOrganizingCentre() != null) {
+                dataset.setMicrotubuleOrganizingCentre(MicrotubuleOrganizingCentreRepresentation.of(simulation.getMembraneLayer().getMicrotubuleOrganizingCentre()));
+            }
         }
-        dataset.setMicrotubuleOrganizingCentre(MicrotubuleOrganizingCentreRepresentation.of(simulation.getMembraneLayer().getMicrotubuleOrganizingCentre()));
         return dataset;
     }
 
@@ -89,7 +91,7 @@ public class Converter {
         return dataset;
     }
 
-    public static  VolumeDataset getVolumesFrom(Simulation simulation) {
+    public static VolumeDataset getVolumesFrom(Simulation simulation) {
         VolumeDataset dataset = new VolumeDataset();
         if (simulation.getVolumeLayer() != null) {
             for (VolumeLikeAgent volume : simulation.getVolumeLayer().getAgents()) {

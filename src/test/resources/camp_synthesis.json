@@ -1,0 +1,295 @@
+{
+  "metadata" : {
+    "comment" : "automatically created by singa-exchange",
+    "creation-time-stamp" : "2019-02-19T09-43-07Z",
+    "simulation-tool" : "SiNGA",
+    "simulation-tool-version" : "0.5.0"
+  },
+  "entities" : {
+    "entities" : [ {
+      "type" : "small molecule",
+      "primary-identifier" : "GTP",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "ChEBIIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "CHEBI:17552"
+      } ]
+    }, {
+      "type" : "protein",
+      "primary-identifier" : "AC6",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "O43306"
+      } ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "(GA:GTP)",
+      "features" : [ ],
+      "components" : [ "GA", "GTP" ]
+    }, {
+      "type" : "protein",
+      "primary-identifier" : "GA",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "P63092"
+      } ]
+    }, {
+      "type" : "small molecule",
+      "primary-identifier" : "ATP",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "ChEBIIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "CHEBI:15422"
+      } ]
+    }, {
+      "type" : "small molecule",
+      "primary-identifier" : "CAMP",
+      "features" : [ {
+        "type" : "qualitative",
+        "name" : "ChEBIIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "CHEBI:17489"
+      } ]
+    } ]
+  },
+  "modules" : {
+    "modules" : [ {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "camp synthesis: ac6 activation and reaction",
+      "reaction" : "ATP(i) - ATP(i), (GA:GTP)(m), AC6(m) -> CAMP(i)}",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "dynamic",
+        "law" : "(1/((p01/cATPuM)^p02+(p03/cGAuM)^p04))*us*cAC6*(cATP/(kM+cATP))",
+        "constants" : {
+          "p01" : {
+            "identifier" : "p01",
+            "quantity" : 614400.0,
+            "unit" : "",
+            "origin" : "no evidence"
+          },
+          "p03" : {
+            "identifier" : "p03",
+            "quantity" : 1.196,
+            "unit" : "",
+            "origin" : "no evidence"
+          },
+          "kM" : {
+            "identifier" : "kM",
+            "quantity" : 2.0E-11,
+            "unit" : "",
+            "origin" : "no evidence"
+          },
+          "p02" : {
+            "identifier" : "p02",
+            "quantity" : 0.3063,
+            "unit" : "",
+            "origin" : "no evidence"
+          },
+          "p04" : {
+            "identifier" : "p04",
+            "quantity" : 1.153,
+            "unit" : "",
+            "origin" : "no evidence"
+          }
+        },
+        "reactants" : {
+          "cGAuM" : {
+            "type" : "static",
+            "identifier" : "(GA:GTP)",
+            "role" : "catalyst",
+            "preferred-topology" : "membrane",
+            "stoichiometric-number" : 1.0,
+            "preferred-unit" : "µmol/l"
+          },
+          "cATP" : {
+            "type" : "static",
+            "identifier" : "ATP",
+            "role" : "substrate",
+            "preferred-topology" : "inner",
+            "stoichiometric-number" : 1.0
+          },
+          "cATPuM" : {
+            "type" : "static",
+            "identifier" : "ATP",
+            "role" : "catalyst",
+            "preferred-topology" : "inner",
+            "stoichiometric-number" : 1.0,
+            "preferred-unit" : "µmol/l"
+          },
+          "cAC6" : {
+            "type" : "static",
+            "identifier" : "AC6",
+            "role" : "catalyst",
+            "preferred-topology" : "membrane",
+            "stoichiometric-number" : 1.0
+          },
+          "CAMP" : {
+            "type" : "static",
+            "identifier" : "CAMP",
+            "role" : "product",
+            "preferred-topology" : "inner",
+            "stoichiometric-number" : 1.0
+          }
+        },
+        "kinetic-features" : {
+          "us" : {
+            "type" : "quantitative",
+            "name" : "FirstOrderForwardsRateConstant",
+            "evidence" : [ "Unit Scaling" ],
+            "quantity" : 1.0,
+            "unit" : "1/min"
+          }
+        }
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "ATP",
+        "role" : "substrate",
+        "preferred-topology" : "inner",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "CAMP",
+        "role" : "product",
+        "preferred-topology" : "inner",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "ATP",
+        "role" : "catalyst",
+        "preferred-topology" : "inner",
+        "stoichiometric-number" : 1.0,
+        "preferred-unit" : "µmol/l"
+      }, {
+        "type" : "static",
+        "identifier" : "(GA:GTP)",
+        "role" : "catalyst",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0,
+        "preferred-unit" : "µmol/l"
+      }, {
+        "type" : "static",
+        "identifier" : "AC6",
+        "role" : "catalyst",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ ]
+    } ]
+  },
+  "regions" : {
+    "regions" : [ {
+      "identifier" : "basolateral plasma membrane",
+      "go-term" : "GO:0016323",
+      "subsections" : {
+        "membrane" : "basolateral plasma membrane",
+        "outer" : "interstitium",
+        "inner" : "cytoplasm"
+      }
+    } ]
+  },
+  "subsections" : {
+    "subsections" : [ {
+      "identifier" : "cytoplasm",
+      "go-term" : "GO:0005737"
+    }, {
+      "identifier" : "interstitium",
+      "go-term" : "GO:0005576"
+    }, {
+      "identifier" : "basolateral plasma membrane",
+      "go-term" : "GO:0016323"
+    } ]
+  },
+  "evidence" : {
+    "evidence" : [ {
+      "type" : "guess",
+      "identifier" : "no evidence",
+      "description" : "no information about evidence provided"
+    }, {
+      "type" : "prediction",
+      "identifier" : "Unit Scaling",
+      "description" : "Scales the velocity to the corresponding unit"
+    } ]
+  },
+  "environment" : {
+    "node-distance" : 1.0,
+    "node-distance-unit" : "µm",
+    "simulation-extend" : 100.0,
+    "system-extend" : 1.0,
+    "system-extend-unit" : "µm",
+    "temperature" : 293.0,
+    "temperature-unit" : "K",
+    "viscosity" : 1.0,
+    "viscosity-unit" : "Pa·s",
+    "initial-time-step" : 1.0,
+    "initial-time-step-unit" : "µs"
+  },
+  "graph" : {
+    "rows" : 1,
+    "columns" : 1,
+    "nodes" : [ {
+      "identifier" : "(0, 0)",
+      "x" : 0.0,
+      "y" : 0.0
+    } ],
+    "edges" : [ ]
+  },
+  "membranes" : {
+    "membranes" : [ {
+      "identifier" : "basolateral plasma membrane",
+      "inner-region" : "cytoplasm",
+      "membrane-region" : "basolateral plasma membrane",
+      "regions" : {
+        "basolateral plasma membrane" : [ {
+          "x" : 100.0,
+          "y" : 50.0
+        }, {
+          "x" : 0.0,
+          "y" : 50.0
+        } ]
+      }
+    } ]
+  },
+  "filaments" : {
+    "filaments" : [ ]
+  },
+  "vesicles" : {
+    "vesicles" : [ ]
+  },
+  "volumes" : {
+    "volumes" : [ ]
+  },
+  "concentrations" : {
+    "concentrations" : [ {
+      "type" : "section",
+      "entity" : "ATP",
+      "evidence" : "no evidence",
+      "subsection" : "cytoplasm",
+      "concentration-value" : 0.25,
+      "concentration-unit" : "µmol/l"
+    }, {
+      "type" : "membrane",
+      "entity" : "AC6",
+      "region" : "basolateral plasma membrane",
+      "evidence" : "no evidence",
+      "area-value" : 1.0,
+      "area-unit" : "µm²",
+      "number-of-molecules" : 1000.0
+    }, {
+      "type" : "section",
+      "entity" : "(GA:GTP)",
+      "evidence" : "no evidence",
+      "subsection" : "basolateral plasma membrane",
+      "concentration-value" : 1.0,
+      "concentration-unit" : "µmol/l"
+    } ]
+  }
+}

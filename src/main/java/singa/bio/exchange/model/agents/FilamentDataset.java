@@ -1,6 +1,7 @@
 package singa.bio.exchange.model.agents;
 
 import bio.singa.simulation.model.agents.linelike.LineLikeAgent;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class FilamentDataset {
     private MicrotubuleOrganizingCentreRepresentation microtubuleOrganizingCentre;
 
     @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<FilamentRepresentation> filaments;
 
     public FilamentDataset() {

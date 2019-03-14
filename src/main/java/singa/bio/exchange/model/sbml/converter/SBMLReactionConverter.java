@@ -1,11 +1,12 @@
 package singa.bio.exchange.model.sbml.converter;
 
-import bio.singa.simulation.model.modules.concentration.imlementations.DynamicReaction;
-import bio.singa.simulation.model.modules.concentration.reactants.Reactant;
-import bio.singa.simulation.model.modules.concentration.reactants.ReactantRole;
+import bio.singa.simulation.model.modules.concentration.imlementations.reactions.Reaction;
+import bio.singa.simulation.model.modules.concentration.imlementations.reactions.ReactionBuilder;
+import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.kineticlaws.DynamicKineticLaw;
+import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.Reactant;
+import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.ReactantRole;
 import org.sbml.jsbml.ListOf;
 import org.sbml.jsbml.ModifierSpeciesReference;
-import org.sbml.jsbml.Reaction;
 import org.sbml.jsbml.SpeciesReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,32 +25,34 @@ public class SBMLReactionConverter {
 
     private static final Logger logger = LoggerFactory.getLogger(SBMLReactionConverter.class);
 
-    private DynamicReaction currentReaction;
+    private Reaction currentReaction;
 
-    public static void convert(ListOf<Reaction> listOfReactions) {
+    public static void convert(ListOf<org.sbml.jsbml.Reaction> listOfReactions) {
         SBMLReactionConverter converter = new SBMLReactionConverter();
         converter.convertReactionList(listOfReactions);
     }
 
-    public List<DynamicReaction> convertReactionList(ListOf<Reaction> sbmlReactions) {
-        List<DynamicReaction> reactions = new ArrayList<>();
-        for (Reaction reaction : sbmlReactions) {
+    public List<Reaction> convertReactionList(ListOf<org.sbml.jsbml.Reaction> sbmlReactions) {
+        List<Reaction> reactions = new ArrayList<>();
+        for (org.sbml.jsbml.Reaction reaction : sbmlReactions) {
             reactions.add(convertReaction(reaction));
         }
         return reactions;
     }
 
-    public DynamicReaction convertReaction(Reaction reaction) {
+    public Reaction convertReaction(org.sbml.jsbml.Reaction reaction) {
         logger.debug("Parsing Reaction {} ...", reaction.getName());
-        currentReaction = DynamicReaction.inSimulation(SBMLParser.current)
+        currentReaction = new ReactionBuilder.GeneralReactionBuilder(SBMLParser.current)
                 .identifier(reaction.getId())
-                .kineticLaw(SBMLFunctionConverter.convertKineticLaw(reaction.getKineticLaw().getMath(), reaction.getKineticLaw().getListOfLocalParameters()))
                 .build();
+
+        currentReaction.setKineticLaw(SBMLFunctionConverter.convertKineticLaw(reaction.getKineticLaw().getMath(),
+                reaction.getKineticLaw().getListOfLocalParameters(), currentReaction));
 
         assignSubstrates(reaction.getListOfReactants());
         assignProducts(reaction.getListOfProducts());
         assignModifiers(reaction.getListOfModifiers());
-        logger.debug("Parsed reaction: {}", currentReaction.getKineticLaw().getExpressionString());
+        logger.debug("Parsed reaction: {}", currentReaction.getKineticLaw());
         return currentReaction;
     }
 
@@ -58,8 +61,8 @@ public class SBMLReactionConverter {
             logger.debug("Assigning entity {} as substrate.", reference.getSpecies());
             String identifier = reference.getSpecies();
             Reactant reactant = new Reactant(EntityCache.get(identifier), ReactantRole.SUBSTRATE, reference.getStoichiometry());
-            currentReaction.getKineticLaw().referenceReactant(identifier, reactant);
-            currentReaction.addReactant(reactant);
+            ((DynamicKineticLaw) currentReaction.getKineticLaw()).referenceReactant(identifier, reactant);
+            currentReaction.getReactantBehavior().addReactant(reactant);
         }
     }
 
@@ -68,8 +71,8 @@ public class SBMLReactionConverter {
             logger.debug("Assigning entity {} as product.", reference.getSpecies());
             String identifier = reference.getSpecies();
             Reactant reactant = new Reactant(EntityCache.get(identifier), ReactantRole.PRODUCT, reference.getStoichiometry());
-            currentReaction.getKineticLaw().referenceReactant(identifier, reactant);
-            currentReaction.addReactant(reactant);
+            ((DynamicKineticLaw) currentReaction.getKineticLaw()).referenceReactant(identifier, reactant);
+            currentReaction.getReactantBehavior().addReactant(reactant);
         }
     }
 
@@ -78,8 +81,8 @@ public class SBMLReactionConverter {
             logger.debug("Assigning entity {} as catalyst.", reference.getSpecies());
             String identifier = reference.getSpecies();
             Reactant reactant = new Reactant(EntityCache.get(identifier), ReactantRole.CATALYTIC);
-            currentReaction.getKineticLaw().referenceReactant(identifier, reactant);
-            currentReaction.addReactant(reactant);
+            ((DynamicKineticLaw) currentReaction.getKineticLaw()).referenceReactant(identifier, reactant);
+            currentReaction.getReactantBehavior().addReactant(reactant);
         }
     }
 

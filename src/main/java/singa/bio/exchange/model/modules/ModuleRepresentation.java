@@ -2,7 +2,6 @@ package singa.bio.exchange.model.modules;
 
 import bio.singa.simulation.model.modules.UpdateModule;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import singa.bio.exchange.model.features.FeatureRepresentation;
@@ -19,11 +18,9 @@ import java.util.List;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ConcentrationModuleRepresentation.class, name = "concentration-based"),
         @JsonSubTypes.Type(value = DisplacementModuleRepresentation.class, name = "displacement-based"),
-        @JsonSubTypes.Type(value = ReactionModuleRepresentation.class, name = "reaction-based"),
-        @JsonSubTypes.Type(value = KineticLawModuleRepresentation.class, name = "kinetic-law-based"),
+        @JsonSubTypes.Type(value = ReactionRepresentation.class, name = "reaction-based"),
         @JsonSubTypes.Type(value = QualitativeModuleRepresentation.class, name = "qualitative")
 })
-@JsonPropertyOrder({ "name", "identifier" })
 public abstract class ModuleRepresentation {
 
     @JsonProperty
@@ -37,7 +34,6 @@ public abstract class ModuleRepresentation {
 
     public ModuleRepresentation() {
         features = new ArrayList<>();
-
     }
 
     public static ModuleRepresentation of(UpdateModule module) {

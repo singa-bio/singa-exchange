@@ -21,7 +21,7 @@ import singa.bio.exchange.model.evidence.EvidenceRepresentation;
         @JsonSubTypes.Type(value = MembraneConcentrationRepresentation.class, name = "membrane"),
         @JsonSubTypes.Type(value = SectionConcentrationRepresentation.class, name = "section")
 })
-@JsonPropertyOrder({"name"})
+@JsonPropertyOrder({"entity", "type", "region", "evidence"})
 public abstract class InitialConcentrationRepresentation {
 
     @JsonProperty

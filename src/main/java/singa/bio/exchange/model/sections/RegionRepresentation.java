@@ -5,6 +5,7 @@ import bio.singa.simulation.model.sections.CellRegion;
 import bio.singa.simulation.model.sections.CellSubsection;
 import bio.singa.simulation.model.sections.CellTopology;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import singa.bio.exchange.model.EnumTransformation;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import static bio.singa.simulation.model.sections.CellTopology.*;
 /**
  * @author cl
  */
+@JsonPropertyOrder({ "identifier", "go-term", "subsections" })
 public class RegionRepresentation {
 
     @JsonProperty

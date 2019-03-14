@@ -6,7 +6,6 @@ import singa.bio.exchange.model.Jasonizable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author cl
@@ -21,9 +20,12 @@ public class ModuleDataset implements Jasonizable {
     }
 
     public List<UpdateModule> toModel() {
-        return getModules().stream()
-                .map(ModuleRepresentation::toModel)
-                .collect(Collectors.toList());
+        List<UpdateModule> list = new ArrayList<>();
+        for (ModuleRepresentation moduleRepresentation : getModules()) {
+            UpdateModule toModel = moduleRepresentation.toModel();
+            list.add(toModel);
+        }
+        return list;
     }
 
     public List<ModuleRepresentation> getModules() {

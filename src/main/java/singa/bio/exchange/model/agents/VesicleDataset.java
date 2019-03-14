@@ -1,6 +1,7 @@
 package singa.bio.exchange.model.agents;
 
 import bio.singa.simulation.model.agents.pointlike.Vesicle;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 public class VesicleDataset {
 
     @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<VesicleRepresentation> vesicles;
 
     public VesicleDataset() {

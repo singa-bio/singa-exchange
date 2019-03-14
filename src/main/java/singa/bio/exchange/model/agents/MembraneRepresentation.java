@@ -1,10 +1,12 @@
 package singa.bio.exchange.model.agents;
 
+import bio.singa.mathematics.topology.grids.rectangular.NeumannRectangularDirection;
 import bio.singa.mathematics.vectors.Vector2D;
 import bio.singa.simulation.model.agents.surfacelike.Membrane;
 import bio.singa.simulation.model.agents.surfacelike.MembraneFactory;
 import bio.singa.simulation.model.sections.CellRegion;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import singa.bio.exchange.model.Converter;
 import singa.bio.exchange.model.sections.RegionCache;
 
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 /**
  * @author cl
  */
+@JsonPropertyOrder({"identifier", "inner-region", "membrane-region", "regions"})
 public class MembraneRepresentation {
 
     @JsonProperty
@@ -63,7 +66,15 @@ public class MembraneRepresentation {
             }
         }
 
-        return MembraneFactory.createClosedMembrane(vectors, RegionCache.get(getInnerRegion()), RegionCache.get(getMembraneRegion()), Converter.current.getGraph(), mapping);
+        if (vectors.get(0).equals(vectors.get(vectors.size() - 1))) {
+            return MembraneFactory.createClosedMembrane(vectors, RegionCache.get(getInnerRegion()),
+                    RegionCache.get(getMembraneRegion()), Converter.current.getGraph(), mapping);
+        } else {
+            return MembraneFactory.createLinearMembrane(vectors, RegionCache.get(getInnerRegion()),
+                    RegionCache.get(getMembraneRegion()), NeumannRectangularDirection.EAST,
+                    Converter.current.getGraph(), mapping, Converter.current.getSimulationRegion());
+        }
+
     }
 
     public String getIdentifier() {

@@ -1,11 +1,13 @@
 package singa.bio.exchange.model;
 
-import bio.singa.simulation.model.modules.concentration.reactants.ReactantRole;
+import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.ReactantRole;
 import bio.singa.simulation.model.sections.CellTopology;
 
+import static bio.singa.chemistry.entities.ComplexModification.Operation;
+import static bio.singa.chemistry.entities.ComplexModification.Operation.*;
 import static bio.singa.features.model.Evidence.SourceType;
 import static bio.singa.features.model.Evidence.SourceType.*;
-import static bio.singa.simulation.model.modules.concentration.reactants.ReactantRole.*;
+import static bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.ReactantRole.*;
 import static bio.singa.simulation.model.sections.CellTopology.*;
 
 /**
@@ -32,6 +34,32 @@ public class EnumTransformation {
                 return MEMBRANE;
             default:
                 return INNER;
+        }
+    }
+
+    public static String fromOperation(Operation type) {
+        switch (type) {
+            case ADD:
+                return "add";
+            case REMOVE:
+                return "remove";
+            case SPLIT:
+                return "split";
+            default:
+                return "replace";
+        }
+    }
+
+    public static Operation toOperation(String type) {
+        switch (type) {
+            case "add":
+                return ADD;
+            case "remove":
+                return REMOVE;
+            case "split":
+                return SPLIT;
+            default:
+                return REPLACE;
         }
     }
 

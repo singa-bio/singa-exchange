@@ -1,6 +1,7 @@
 package singa.bio.exchange.model.sbml.converter;
 
-import bio.singa.simulation.model.modules.concentration.reactants.KineticLaw;
+import bio.singa.simulation.model.modules.concentration.imlementations.reactions.Reaction;
+import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.kineticlaws.DynamicKineticLaw;
 import bio.singa.simulation.model.parameters.ParameterStorage;
 import org.sbml.jsbml.ASTNode;
 import org.sbml.jsbml.FunctionDefinition;
@@ -24,7 +25,7 @@ public class SBMLFunctionConverter {
     // the functions
     private static final Map<String, FunctionReference> functions = new HashMap<>();
 
-    private KineticLaw currentExpression;
+    private DynamicKineticLaw currentExpression;
 
     public static void convert(ListOf<FunctionDefinition> listOfFunctions) {
         convertFunctionList(listOfFunctions);
@@ -36,22 +37,22 @@ public class SBMLFunctionConverter {
         }
     }
 
-    public static KineticLaw convertKineticLaw(ASTNode sbmlExpression, ListOf<LocalParameter> additionalParameters) {
+    public static DynamicKineticLaw convertKineticLaw(ASTNode sbmlExpression, ListOf<LocalParameter> additionalParameters, Reaction currentReaction) {
         SBMLFunctionConverter converter = new SBMLFunctionConverter();
-        return converter.convertRawExpression(sbmlExpression, additionalParameters);
+        return converter.convertRawExpression(sbmlExpression, additionalParameters, currentReaction);
     }
 
-    public KineticLaw convertRawExpression(ASTNode sbmlExpression, ListOf<LocalParameter> additionalParameters) {
+    public DynamicKineticLaw convertRawExpression(ASTNode sbmlExpression, ListOf<LocalParameter> additionalParameters, Reaction currentReaction) {
         String expressionString = replaceFunction(sbmlExpression.toString());
-        currentExpression = new KineticLaw(expressionString);
+        currentExpression = new DynamicKineticLaw(currentReaction, expressionString);
         assignLocalParameters(additionalParameters);
         assignGlobalParameters(expressionString);
         return currentExpression;
     }
 
-    public KineticLaw convertRawExpression(ASTNode sbmlExpression) {
+    public DynamicKineticLaw convertRawExpression(ASTNode sbmlExpression, Reaction currentReaction) {
         String expressionString = replaceFunction(sbmlExpression.toString());
-        currentExpression = new KineticLaw(expressionString);
+        currentExpression = new DynamicKineticLaw(currentReaction, expressionString);
         assignGlobalParameters(expressionString);
         return currentExpression;
     }

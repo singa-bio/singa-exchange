@@ -1,6 +1,7 @@
 package singa.bio.exchange.model.agents;
 
 import bio.singa.simulation.model.agents.surfacelike.Membrane;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.Jasonizable;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class MembraneDataset implements Jasonizable {
 
     @JsonProperty
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<MembraneRepresentation> membranes;
 
     public MembraneDataset() {
