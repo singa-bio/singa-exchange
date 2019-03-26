@@ -1,5 +1,7 @@
 package singa.bio.exchange.model.sbml.converter;
 
+import bio.singa.chemistry.annotations.Annotation;
+import bio.singa.chemistry.annotations.AnnotationType;
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.chemistry.entities.Protein;
 import bio.singa.chemistry.entities.SmallMolecule;
@@ -41,28 +43,10 @@ public class SBMLSpeciesConverter {
         logger.info("Parsing chemical entity data ...");
         for (Species species : listOfSpecies) {
             logger.debug("Parsing entity {} ...", species.getId());
-//            boolean isComplex = false;
-//            for (CVTerm cVTerm : species.getAnnotation().getListOfCVTerms()) {
-//                if (cVTerm.getQualifier() == CVTerm.Qualifier.BQB_HAS_PART) {
-//                    isComplex = true;
-//                    break;
-//                }
-//            }
-//            if (isComplex) {
-//                ComplexEntity complex = new ComplexEntity.create(species.getId())
-//                        .name(species.getName())
-//                        .build();
-//                for (CVTerm term : species.getAnnotation().getListOfCVTerms()) {
-//                    if (term.getQualifier() == CVTerm.Qualifier.BQB_HAS_PART) {
-//                        complex.addAssociatedPart(createComponent(term));
-//                    }
-//                }
-//                EntityCache.add(complex);
-//            } else {
                 for (CVTerm term : species.getAnnotation().getListOfCVTerms()) {
                     if (term.getQualifier() == CVTerm.Qualifier.BQB_IS || term.getQualifier() == CVTerm.Qualifier.BQB_IS_VERSION_OF) {
                         ChemicalEntity entity = createEntity(species.getId(), term);
-                        entity.setName(species.getName());
+                        entity.addAnnotation(new Annotation<>(AnnotationType.NAME,species.getName()));
                         EntityCache.add(entity);
                         break;
                     }
@@ -70,7 +54,7 @@ public class SBMLSpeciesConverter {
 //            }
             if (EntityCache.get(species.getId()) == null) {
                 ChemicalEntity entity = SmallMolecule.create(species.getId()).build();
-                entity.setName(species.getName());
+                entity.addAnnotation(new Annotation<>(AnnotationType.NAME,species.getName()));
                 EntityCache.add(entity);
             }
         }

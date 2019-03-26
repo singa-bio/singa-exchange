@@ -25,7 +25,7 @@ import singa.bio.exchange.model.sections.SubsectionDataset;
 /**
  * @author cl
  */
-public class SimulationRepresentation implements Jasonizable {
+public class SimulationRepresentation implements Jsonizable {
 
     @JsonProperty
     private Metadata metadata;
@@ -93,7 +93,7 @@ public class SimulationRepresentation implements Jasonizable {
             Converter.current.setMembraneLayer(membraneLayer);
             membraneLayer.addMembranes(representation.getMembranes().toModel());
         }
-        // initialize vesicles, requires graph
+        // initialize vesicles, requires graph and regions
         if (!representation.getVesicles().getVesicles().isEmpty()) {
             VesicleLayer vesicleLayer = new VesicleLayer(Converter.current);
             Converter.current.setVesicleLayer(vesicleLayer);

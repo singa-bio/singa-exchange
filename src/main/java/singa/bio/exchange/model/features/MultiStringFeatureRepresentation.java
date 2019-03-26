@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author cl
  */
-public class MultiStringFeatureRepresentation extends FeatureRepresentation {
+public class MultiStringFeatureRepresentation extends FeatureRepresentation<List<String>> {
 
     @JsonProperty
     private List<String> strings;

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import singa.bio.exchange.model.IllegalConversionException;
 import singa.bio.exchange.model.evidence.EvidenceRepresentation;
+import singa.bio.exchange.model.variation.Variable;
 
 /**
  * @author cl
@@ -22,7 +23,7 @@ import singa.bio.exchange.model.evidence.EvidenceRepresentation;
         @JsonSubTypes.Type(value = SectionConcentrationRepresentation.class, name = "section")
 })
 @JsonPropertyOrder({"entity", "type", "region", "evidence"})
-public abstract class InitialConcentrationRepresentation {
+public abstract class InitialConcentrationRepresentation<Type> extends Variable<Type> {
 
     @JsonProperty
     private String region;

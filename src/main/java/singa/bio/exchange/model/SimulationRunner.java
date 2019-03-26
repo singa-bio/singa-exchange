@@ -1,10 +1,11 @@
 package singa.bio.exchange.model;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
+import bio.singa.features.formatter.ConcentrationFormatter;
 import bio.singa.features.formatter.GeneralQuantityFormatter;
-import bio.singa.features.formatter.MoleculeFormatter;
 import bio.singa.features.formatter.QuantityFormatter;
 import bio.singa.features.quantities.MolarConcentration;
+import bio.singa.features.units.UnitRegistry;
 import bio.singa.mathematics.topology.grids.rectangular.RectangularCoordinate;
 import bio.singa.simulation.events.EpochUpdateWriter;
 import bio.singa.simulation.features.variation.EntityFeatureVariationEntry;
@@ -37,6 +38,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static bio.singa.features.units.UnitProvider.NANO_MOLE_PER_LITRE;
 import static tec.uom.se.unit.MetricPrefix.MILLI;
 import static tec.uom.se.unit.Units.MINUTE;
 import static tec.uom.se.unit.Units.SECOND;
@@ -88,6 +90,7 @@ public class SimulationRunner {
             System.out.println("Starting simulation " + currentSetIdentifier + " of " + parameterVariations.size() + " for set " + identifierString);
             // create simulation
             Simulation simulation = Converter.getSimulationFrom(baseSimulationJson);
+            simulation.getScheduler().setRecalculationCutoff(0.03);
             // apply variation parameters
             applyParameters(simulation, currentVariationSet);
             // create folder for this set
@@ -144,7 +147,9 @@ public class SimulationRunner {
         // add membrane concentration
         if (parameter instanceof SectionConcentration) {
             // varying concentration
-            return String.valueOf(MolarConcentration.concentrationToMolecules(((SectionConcentration) parameter).getConcentration().getValue().doubleValue()).getValue().doubleValue());
+            return String.valueOf(MolarConcentration.concentrationToMolecules(((SectionConcentration) parameter).getConcentration()
+                    .to(UnitRegistry.getConcentrationUnit()).getValue().doubleValue())
+                    .getValue().doubleValue());
         } else if (parameter instanceof EntityFeatureVariationEntry) {
             // varying feature of a entity
             Object featureContent = ((EntityFeatureVariationEntry) parameter).getFeature().getContent();
@@ -219,7 +224,7 @@ public class SimulationRunner {
     }
 
     public static void runSimulation(Path simulationPath, Path simulationFolder, Simulation simulation, List<RectangularCoordinate> observedNodes) throws IOException, InterruptedException {
-        simulation.setMaximalTimeStep(Quantities.getQuantity(0.001, SECOND));
+        simulation.setMaximalTimeStep(Quantities.getQuantity(0.01, SECOND));
         // create writer
         EpochUpdateWriter epochUpdateWriter = EpochUpdateWriter.create()
                 .workspace(simulationPath)
@@ -227,7 +232,7 @@ public class SimulationRunner {
                 .simulation(simulation)
                 .allEntities()
                 .allModules()
-                .concentrationFormat(MoleculeFormatter.getInstance())
+                .concentrationFormat(ConcentrationFormatter.forUnit(NANO_MOLE_PER_LITRE))
                 .timeFormat(TIME_FORMATTER)
                 .build();
 
@@ -242,7 +247,7 @@ public class SimulationRunner {
 
         // set termination condition
         simulationManager.setSimulationTerminationToTime(Quantities.getQuantity(5, MINUTE));
-        simulationManager.setUpdateEmissionToTimePassed(Quantities.getQuantity(250, MILLI(SECOND)));
+        simulationManager.setUpdateEmissionToTimePassed(Quantities.getQuantity(100, MILLI(SECOND)));
 
         // reference nodes to write
         for (RectangularCoordinate coordinate : observedNodes) {

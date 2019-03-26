@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author cl
  */
-public class MultiEntityFeatureRepresentation extends FeatureRepresentation {
+public class MultiEntityFeatureRepresentation extends FeatureRepresentation<List<String>> {
 
     @JsonProperty
     private List<String> entities;

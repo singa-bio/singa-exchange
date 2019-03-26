@@ -17,7 +17,7 @@ import javax.measure.quantity.Area;
 /**
  * @author cl
  */
-public class MembraneConcentrationRepresentation extends InitialConcentrationRepresentation {
+public class MembraneConcentrationRepresentation extends InitialConcentrationRepresentation<Double> {
 
     @JsonProperty("area-value")
     private double areaValue;

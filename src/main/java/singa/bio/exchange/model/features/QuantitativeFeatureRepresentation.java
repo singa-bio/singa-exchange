@@ -10,7 +10,7 @@ import javax.measure.Unit;
 /**
  * @author cl
  */
-public class QuantitativeFeatureRepresentation extends FeatureRepresentation {
+public class QuantitativeFeatureRepresentation extends FeatureRepresentation<Double> {
 
     @JsonProperty
     private double quantity;

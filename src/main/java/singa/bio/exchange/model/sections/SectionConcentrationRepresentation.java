@@ -17,7 +17,7 @@ import javax.measure.Unit;
 /**
  * @author cl
  */
-public class SectionConcentrationRepresentation extends InitialConcentrationRepresentation {
+public class SectionConcentrationRepresentation extends InitialConcentrationRepresentation<Double> {
 
     @JsonProperty
     private String subsection;

@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import singa.bio.exchange.model.IllegalConversionException;
 import singa.bio.exchange.model.evidence.EvidenceRepresentation;
+import singa.bio.exchange.model.variation.Variable;
 
 import javax.measure.Quantity;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = MultiStringFeatureRepresentation.class, name = "string-multi")
 })
 @JsonPropertyOrder({"name"})
-public abstract class FeatureRepresentation {
+public abstract class FeatureRepresentation<Type> extends Variable<Type> {
 
     @JsonProperty
     private String name;

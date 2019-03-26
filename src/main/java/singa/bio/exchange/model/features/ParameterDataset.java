@@ -2,7 +2,7 @@ package singa.bio.exchange.model.features;
 
 import bio.singa.simulation.model.parameters.ParameterStorage;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import singa.bio.exchange.model.Jasonizable;
+import singa.bio.exchange.model.Jsonizable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author cl
  */
-public class ParameterDataset implements Jasonizable {
+public class ParameterDataset implements Jsonizable {
 
     @JsonProperty
     private List<ParameterRepresentation> parameters;

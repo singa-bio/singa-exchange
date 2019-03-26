@@ -43,7 +43,7 @@ public class FeatureFactory {
      * @param representation The representation to instantiate.
      * @return The resulting feature.
      */
-    public static Feature create(FeatureRepresentation representation) {
+    public static <Type> Feature create(FeatureRepresentation<Type> representation) {
         cacheSubtypes();
         String className = representation.getName();
         // get the class

@@ -1,7 +1,7 @@
 package singa.bio.exchange.model.sections;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import singa.bio.exchange.model.Jasonizable;
+import singa.bio.exchange.model.Jsonizable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author cl
  */
-public class RegionDataset implements Jasonizable {
+public class RegionDataset implements Jsonizable {
 
     @JsonProperty
     private List<RegionRepresentation> regions;

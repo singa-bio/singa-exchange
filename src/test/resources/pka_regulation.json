@@ -1,7 +1,7 @@
 {
   "metadata" : {
     "comment" : "automatically created by singa-exchange",
-    "creation-time-stamp" : "2019-03-01T14-07-20Z",
+    "creation-time-stamp" : "2019-03-21T13-49-39Z",
     "simulation-tool" : "SiNGA",
     "simulation-tool-version" : "0.5.0"
   },
@@ -76,6 +76,12 @@
       "type" : "small molecule",
       "primary-identifier" : "CAMP",
       "features" : [ {
+        "type" : "quantitative",
+        "name" : "Diffusivity",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 32.0,
+        "unit" : "µm²/s"
+      }, {
         "type" : "qualitative",
         "name" : "ChEBIIdentifier",
         "evidence" : [ "no evidence" ],
@@ -144,16 +150,8 @@
       "components" : [ "PKAR", "APS" ]
     }, {
       "type" : "complex",
-      "primary-identifier" : "(AQP2:PS)",
-      "components" : [ "AQP2", "PS" ]
-    }, {
-      "type" : "complex",
       "primary-identifier" : "(PP1R:(PS:P))",
       "components" : [ "PP1R", "PS", "P" ]
-    }, {
-      "type" : "complex",
-      "primary-identifier" : "((PDE4:(PS:P)):CAMP)",
-      "components" : [ "PDE4", "PS", "P", "CAMP" ]
     }, {
       "type" : "complex",
       "primary-identifier" : "(PDE4:PS)",
@@ -170,10 +168,6 @@
       "type" : "complex",
       "primary-identifier" : "(PKAR:(APS:P))",
       "components" : [ "PKAR", "APS", "P" ]
-    }, {
-      "type" : "complex",
-      "primary-identifier" : "((PDE4:PS):CAMP)",
-      "components" : [ "PDE4", "PS", "CAMP" ]
     }, {
       "type" : "complex",
       "primary-identifier" : "(AQP2:(PS:P))",
@@ -228,10 +222,6 @@
       "components" : [ "PKAC", "PKAR", "APS", "P", "CAMP", "CAMP" ]
     }, {
       "type" : "complex",
-      "primary-identifier" : "((AKAP:(PKAC:((PKAR:(APS:P)):CAMP))):PP2B)",
-      "components" : [ "AKAP", "PKAC", "PKAR", "APS", "P", "CAMP", "PP2B" ]
-    }, {
-      "type" : "complex",
       "primary-identifier" : "(AKAP:(PKAC:(((PKAR:(APS:P)):CAMP):CAMP)))",
       "components" : [ "AKAP", "PKAC", "PKAR", "APS", "P", "CAMP", "CAMP" ]
     } ]
@@ -268,16 +258,16 @@
       } ],
       "features" : [ {
         "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Ogreid 1981" ],
+        "quantity" : 4000.0,
+        "unit" : "l/(s·mol)"
+      }, {
+        "type" : "quantitative",
         "name" : "FirstOrderBackwardsRateConstant",
         "evidence" : [ "Ogreid 1982" ],
         "quantity" : 0.063,
         "unit" : "1/s"
-      }, {
-        "type" : "quantitative",
-        "name" : "SecondOrderForwardsRateConstant",
-        "evidence" : [ "Ogreid 1981" ],
-        "quantity" : 200000.0,
-        "unit" : "l/(s·mol)"
       } ]
     }, {
       "type" : "reaction-based",
@@ -310,16 +300,16 @@
       } ],
       "features" : [ {
         "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Ogreid 1981" ],
+        "quantity" : 4000.0,
+        "unit" : "l/(s·mol)"
+      }, {
+        "type" : "quantitative",
         "name" : "FirstOrderBackwardsRateConstant",
         "evidence" : [ "Ogreid 1982" ],
         "quantity" : 2.6E-6,
         "unit" : "1/s"
-      }, {
-        "type" : "quantitative",
-        "name" : "SecondOrderForwardsRateConstant",
-        "evidence" : [ "Ogreid 1981" ],
-        "quantity" : 200000.0,
-        "unit" : "l/(s·mol)"
       } ]
     }, {
       "type" : "reaction-based",
@@ -352,16 +342,16 @@
       } ],
       "features" : [ {
         "type" : "quantitative",
-        "name" : "SecondOrderBackwardsRateConstant",
-        "evidence" : [ "Ogreid 1981" ],
-        "quantity" : 200000.0,
-        "unit" : "l/(s·mol)"
-      }, {
-        "type" : "quantitative",
         "name" : "FirstOrderForwardsRateConstant",
         "evidence" : [ "Ogreid 1982" ],
         "quantity" : 2.6E-6,
         "unit" : "1/s"
+      }, {
+        "type" : "quantitative",
+        "name" : "SecondOrderBackwardsRateConstant",
+        "evidence" : [ "Ogreid 1981" ],
+        "quantity" : 4000.0,
+        "unit" : "l/(s·mol)"
       } ]
     }, {
       "type" : "reaction-based",
@@ -402,92 +392,14 @@
         "type" : "quantitative",
         "name" : "SecondOrderForwardsRateConstant",
         "evidence" : [ "Shaffer 1999b" ],
-        "quantity" : 240.0,
+        "quantity" : 4.8,
         "unit" : "l/(s·mmol)"
-      } ]
-    }, {
-      "type" : "reaction-based",
-      "name" : "Reaction",
-      "identifier" : "dephosphorylation by PP2B: PP2B substrate AQP2P binding",
-      "reaction" : "PP2B(i) + (AKAP:(PKAC:((PKAR:(APS:P)):CAMP)))(m) <=> ((AKAP:(PKAC:((PKAR:(APS:P)):CAMP))):PP2B)(m)",
-      "entity-type" : "static",
-      "kinetic-law" : {
-        "type" : "predefined",
-        "law" : "reversible"
-      },
-      "reactants" : [ {
-        "type" : "static",
-        "identifier" : "PP2B",
-        "role" : "substrate",
-        "preferred-topology" : "inner",
-        "stoichiometric-number" : 1.0
-      }, {
-        "type" : "static",
-        "identifier" : "(AKAP:(PKAC:((PKAR:(APS:P)):CAMP)))",
-        "role" : "substrate",
-        "preferred-topology" : "membrane",
-        "stoichiometric-number" : 1.0
-      }, {
-        "type" : "static",
-        "identifier" : "((AKAP:(PKAC:((PKAR:(APS:P)):CAMP))):PP2B)",
-        "role" : "product",
-        "preferred-topology" : "membrane",
-        "stoichiometric-number" : 1.0
-      } ],
-      "features" : [ {
-        "type" : "quantitative",
-        "name" : "FirstOrderBackwardsRateConstant",
-        "evidence" : [ "no evidence" ],
-        "quantity" : 1.0,
-        "unit" : "1/s"
-      }, {
-        "type" : "quantitative",
-        "name" : "SecondOrderForwardsRateConstant",
-        "evidence" : [ "no evidence" ],
-        "quantity" : 10.0,
-        "unit" : "l/(s·mmol)"
-      } ]
-    }, {
-      "type" : "reaction-based",
-      "name" : "Reaction",
-      "identifier" : "dephosphorylation by PP2B: PP2B AQP2P dephosphorylation",
-      "reaction" : "((AKAP:(PKAC:((PKAR:(APS:P)):CAMP))):PP2B)(m) -> (AKAP:(PKAC:((PKAR:APS):CAMP)))(m) + PP2B(i)",
-      "entity-type" : "static",
-      "kinetic-law" : {
-        "type" : "predefined",
-        "law" : "irreversible"
-      },
-      "reactants" : [ {
-        "type" : "static",
-        "identifier" : "((AKAP:(PKAC:((PKAR:(APS:P)):CAMP))):PP2B)",
-        "role" : "substrate",
-        "preferred-topology" : "membrane",
-        "stoichiometric-number" : 1.0
-      }, {
-        "type" : "static",
-        "identifier" : "(AKAP:(PKAC:((PKAR:APS):CAMP)))",
-        "role" : "product",
-        "preferred-topology" : "membrane",
-        "stoichiometric-number" : 1.0
-      }, {
-        "type" : "static",
-        "identifier" : "PP2B",
-        "role" : "product",
-        "preferred-topology" : "inner",
-        "stoichiometric-number" : 1.0
-      } ],
-      "features" : [ {
-        "type" : "quantitative",
-        "name" : "FirstOrderForwardsRateConstant",
-        "evidence" : [ "no evidence" ],
-        "quantity" : 10.03,
-        "unit" : "1/s"
       } ]
     }, {
       "type" : "reaction-based",
       "name" : "Reaction",
       "identifier" : "PKA phosphorylation: ATP binding",
-      "reaction" : "ATP(i) + [PKAC & PKARP & !ATP & !PP2B](m) <=> [PKAC & PKARP & !ATP & !PP2B](m)+ATP",
+      "reaction" : "ATP(i) + [PKAC & PKARP & !ATP & !PP2B](m) <=> [PKAC & PKARP & !ATP & !PP2B+ATP]",
       "entity-type" : "dynamic",
       "kinetic-law" : {
         "type" : "predefined",
@@ -527,16 +439,16 @@
       } ],
       "features" : [ {
         "type" : "quantitative",
-        "name" : "FirstOrderBackwardsRateConstant",
-        "evidence" : [ "Shaffer 1999b" ],
-        "quantity" : 50.0,
-        "unit" : "1/s"
-      }, {
-        "type" : "quantitative",
         "name" : "SecondOrderForwardsRateConstant",
         "evidence" : [ "Shaffer 1999b" ],
         "quantity" : 240.0,
         "unit" : "l/(s·mmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Shaffer 1999b" ],
+        "quantity" : 50.0,
+        "unit" : "1/s"
       } ]
     }, {
       "type" : "reaction-based",
@@ -586,16 +498,16 @@
       } ],
       "features" : [ {
         "type" : "quantitative",
-        "name" : "FirstOrderBackwardsRateConstant",
-        "evidence" : [ "Shaffer 1999b" ],
-        "quantity" : 8.0,
-        "unit" : "1/s"
-      }, {
-        "type" : "quantitative",
         "name" : "SecondOrderForwardsRateConstant",
         "evidence" : [ "Shaffer 1999b" ],
         "quantity" : 200.0,
         "unit" : "l/(s·mmol)"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "Shaffer 1999b" ],
+        "quantity" : 8.0,
+        "unit" : "1/s"
       } ],
       "targets" : {
         "PKAC" : "membrane"
@@ -604,7 +516,7 @@
       "type" : "reaction-based",
       "name" : "Reaction",
       "identifier" : "PKA phosphorylation: phosphorylation catalysis and substrate release",
-      "reaction" : "[PKAC & ATP & & PS & !(PS,P)](m) -> ADP(i) + [PKAC & ATP & & PS & !(PS,P)](m)+P -ATP $",
+      "reaction" : "[PKAC & ATP & & PS & !(PS,P)](m) -> ADP(i) + [PKAC & ATP & & PS & !(PS,P)+P -ATP $]",
       "entity-type" : "dynamic",
       "kinetic-law" : {
         "type" : "predefined",
@@ -659,17 +571,17 @@
         "PKAC" : "membrane",
         "(PP1R:(PS:P))" : "inner",
         "(AQP2:(PS:P))" : "membrane",
-        "(PDE4:(PS:P))" : "inner"
+        "(PDE4:(PS:P))" : "membrane"
       }
     }, {
       "type" : "reaction-based",
       "name" : "Reaction",
-      "identifier" : "camp regulation: pde4 substrate binding",
-      "reaction" : "CAMP(i) + (PDE4:PS)(i) <=> ((PDE4:PS):CAMP)(i)",
+      "identifier" : "camp regulation: cAMP to AMP catalysis by PDE4",
+      "reaction" : "CAMP(i) - (PDE4:PS)(m) -> AMP(i)}",
       "entity-type" : "static",
       "kinetic-law" : {
         "type" : "predefined",
-        "law" : "reversible"
+        "law" : "michaelis-menten"
       },
       "reactants" : [ {
         "type" : "static",
@@ -679,75 +591,39 @@
         "stoichiometric-number" : 1.0
       }, {
         "type" : "static",
-        "identifier" : "(PDE4:PS)",
-        "role" : "substrate",
-        "preferred-topology" : "inner",
-        "stoichiometric-number" : 1.0
-      }, {
-        "type" : "static",
-        "identifier" : "((PDE4:PS):CAMP)",
-        "role" : "product",
-        "preferred-topology" : "inner",
-        "stoichiometric-number" : 1.0
-      } ],
-      "features" : [ {
-        "type" : "quantitative",
-        "name" : "FirstOrderBackwardsRateConstant",
-        "evidence" : [ "Sette 1996" ],
-        "quantity" : 0.1,
-        "unit" : "1/s"
-      }, {
-        "type" : "quantitative",
-        "name" : "SecondOrderForwardsRateConstant",
-        "evidence" : [ "Sette 1996" ],
-        "quantity" : 3.6,
-        "unit" : "l/(s·mmol)"
-      } ]
-    }, {
-      "type" : "reaction-based",
-      "name" : "Reaction",
-      "identifier" : "camp regulation: pde4 camp hydrolysis",
-      "reaction" : "((PDE4:PS):CAMP)(i) -> (PDE4:PS)(i) + AMP(i)",
-      "entity-type" : "static",
-      "kinetic-law" : {
-        "type" : "predefined",
-        "law" : "irreversible"
-      },
-      "reactants" : [ {
-        "type" : "static",
-        "identifier" : "((PDE4:PS):CAMP)",
-        "role" : "substrate",
-        "preferred-topology" : "inner",
-        "stoichiometric-number" : 1.0
-      }, {
-        "type" : "static",
-        "identifier" : "(PDE4:PS)",
-        "role" : "product",
-        "preferred-topology" : "inner",
-        "stoichiometric-number" : 1.0
-      }, {
-        "type" : "static",
         "identifier" : "AMP",
         "role" : "product",
         "preferred-topology" : "inner",
         "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(PDE4:PS)",
+        "role" : "catalyst",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
       } ],
       "features" : [ {
         "type" : "quantitative",
-        "name" : "FirstOrderForwardsRateConstant",
-        "evidence" : [ "Sette 1996" ],
-        "quantity" : 5.4,
+        "name" : "MichaelisConstant",
+        "evidence" : [ "Koschinski 2017" ],
+        "quantity" : 5.9E-12,
+        "unit" : "nmol/µm³"
+      }, {
+        "type" : "quantitative",
+        "name" : "TurnoverNumber",
+        "evidence" : [ "Koschinski 2017" ],
+        "quantity" : 0.045,
         "unit" : "1/s"
       } ]
     }, {
       "type" : "reaction-based",
       "name" : "Reaction",
-      "identifier" : "camp regulation: pde4p substrate binding",
-      "reaction" : "CAMP(i) + (PDE4:(PS:P))(i) <=> ((PDE4:(PS:P)):CAMP)(i)",
+      "identifier" : "camp regulation: cAMP to AMP catalysis by PDE4p",
+      "reaction" : "CAMP(i) - (PDE4:(PS:P))(m) -> AMP(i)}",
       "entity-type" : "static",
       "kinetic-law" : {
         "type" : "predefined",
-        "law" : "reversible"
+        "law" : "michaelis-menten"
       },
       "reactants" : [ {
         "type" : "static",
@@ -757,76 +633,45 @@
         "stoichiometric-number" : 1.0
       }, {
         "type" : "static",
-        "identifier" : "(PDE4:(PS:P))",
-        "role" : "substrate",
-        "preferred-topology" : "inner",
-        "stoichiometric-number" : 1.0
-      }, {
-        "type" : "static",
-        "identifier" : "((PDE4:(PS:P)):CAMP)",
-        "role" : "product",
-        "preferred-topology" : "inner",
-        "stoichiometric-number" : 1.0
-      } ],
-      "features" : [ {
-        "type" : "quantitative",
-        "name" : "FirstOrderBackwardsRateConstant",
-        "evidence" : [ "Sette 1996" ],
-        "quantity" : 0.1,
-        "unit" : "1/s"
-      }, {
-        "type" : "quantitative",
-        "name" : "SecondOrderForwardsRateConstant",
-        "evidence" : [ "Sette 1996" ],
-        "quantity" : 3.6,
-        "unit" : "l/(s·mmol)"
-      } ]
-    }, {
-      "type" : "reaction-based",
-      "name" : "Reaction",
-      "identifier" : "camp regulation: pde4p camp hydrolysis",
-      "reaction" : "((PDE4:(PS:P)):CAMP)(i) -> (PDE4:(PS:P))(i) + AMP(i)",
-      "entity-type" : "static",
-      "kinetic-law" : {
-        "type" : "predefined",
-        "law" : "irreversible"
-      },
-      "reactants" : [ {
-        "type" : "static",
-        "identifier" : "((PDE4:(PS:P)):CAMP)",
-        "role" : "substrate",
-        "preferred-topology" : "inner",
-        "stoichiometric-number" : 1.0
-      }, {
-        "type" : "static",
-        "identifier" : "(PDE4:(PS:P))",
-        "role" : "product",
-        "preferred-topology" : "inner",
-        "stoichiometric-number" : 1.0
-      }, {
-        "type" : "static",
         "identifier" : "AMP",
         "role" : "product",
         "preferred-topology" : "inner",
         "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(PDE4:(PS:P))",
+        "role" : "catalyst",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
       } ],
       "features" : [ {
         "type" : "quantitative",
-        "name" : "FirstOrderForwardsRateConstant",
-        "evidence" : [ "Sette 1996" ],
-        "quantity" : 10.8,
+        "name" : "MichaelisConstant",
+        "evidence" : [ "Koschinski 2017" ],
+        "quantity" : 1.2E-12,
+        "unit" : "nmol/µm³"
+      }, {
+        "type" : "quantitative",
+        "name" : "TurnoverNumber",
+        "evidence" : [ "Koschinski 2017" ],
+        "quantity" : 2.37,
         "unit" : "1/s"
       } ]
     } ]
   },
   "regions" : {
     "regions" : [ {
-      "identifier" : "apical plasma membrane",
-      "go-term" : "GO:0016324",
+      "identifier" : "cytoplasm",
+      "go-term" : "GO:0005737",
       "subsections" : {
-        "membrane" : "apical plasma membrane",
-        "outer" : "lumen",
         "inner" : "cytoplasm"
+      }
+    }, {
+      "identifier" : "vesicle",
+      "go-term" : "GO:0031982",
+      "subsections" : {
+        "membrane" : "vesicle membrane",
+        "inner" : "vesicle lumen"
       }
     } ]
   },
@@ -835,11 +680,11 @@
       "identifier" : "cytoplasm",
       "go-term" : "GO:0005737"
     }, {
-      "identifier" : "lumen",
-      "go-term" : "GO:0005576"
+      "identifier" : "vesicle lumen",
+      "go-term" : "GO:0031983"
     }, {
-      "identifier" : "apical plasma membrane",
-      "go-term" : "GO:0016324"
+      "identifier" : "vesicle membrane",
+      "go-term" : "GO:0012506"
     } ]
   },
   "evidence" : {
@@ -847,6 +692,10 @@
       "type" : "literature",
       "identifier" : "Ogreid 1982",
       "description" : "Øgreid, Dagfinn, and Stein Ove Døskeland. \"Activation of protein kinase isoenzymes under near physiological conditions: Evidence that both types (A and B) of cAMP binding sites are involved in the activation of protein kinase by cAMP and 8‐N3‐cAMP.\" FEBS letters 150.1 (1982): 161-166."
+    }, {
+      "type" : "literature",
+      "identifier" : "Koschinski 2017",
+      "description" : "Koschinski, Andreas, and Manuela Zaccolo. \"Activation of PKA in cell requires higher concentration of cAMP than in vitro: Implications for compartmentalization of cAMP signalling.\" Scientific reports 7.1 (2017): 14090."
     }, {
       "type" : "literature",
       "identifier" : "Ogreid 1981",
@@ -859,10 +708,6 @@
       "type" : "literature",
       "identifier" : "Shaffer 1999b",
       "description" : "Shaffer, Jennifer, and Joseph A. Adams. \"An ATP-linked structural change in protein kinase A precedes phosphoryl transfer under physiological magnesium concentrations.\" Biochemistry 38.17 (1999): 5572-5581."
-    }, {
-      "type" : "literature",
-      "identifier" : "Sette 1996",
-      "description" : "Sette, Claudio, and Marco Conti. \"Phosphorylation and Activation of a cAMP-specific Phosphodiesterase by the cAMP-dependent Protein Kinase.\" Journal of Biological Chemistry 271.28 (1996): 16526-16534."
     }, {
       "type" : "literature",
       "identifier" : "Binesh 2015",
@@ -887,45 +732,42 @@
     "columns" : 1,
     "nodes" : [ {
       "identifier" : "(0, 0)",
-      "x" : 0.0,
-      "y" : 0.0
+      "x" : 50.0,
+      "y" : 50.0,
+      "region" : "cytoplasm"
     } ],
     "edges" : [ ]
   },
-  "membranes" : {
-    "membranes" : [ {
-      "identifier" : "apical plasma membrane",
-      "inner-region" : "cytoplasm",
-      "membrane-region" : "apical plasma membrane",
-      "regions" : {
-        "apical plasma membrane" : [ {
-          "x" : 100.0,
-          "y" : 50.0
-        }, {
-          "x" : 0.0,
-          "y" : 50.0
-        } ]
-      }
+  "membranes" : { },
+  "filaments" : { },
+  "vesicles" : {
+    "vesicles" : [ {
+      "identifier" : "1",
+      "region" : "vesicle",
+      "position" : {
+        "x" : 50.0,
+        "y" : 50.0
+      },
+      "radius-value" : 0.28209479177387814,
+      "radius-Unit" : "µm"
     } ]
   },
-  "filaments" : { },
-  "vesicles" : { },
   "volumes" : { },
   "concentrations" : {
     "concentrations" : [ {
       "type" : "section",
-      "entity" : "(AQP2:PS)",
+      "entity" : "(AKAP:(PKAC:(PKAR:APS)))",
       "evidence" : "no evidence",
-      "subsection" : "apical plasma membrane",
-      "concentration-value" : 1000.0,
+      "subsection" : "vesicle membrane",
+      "concentration-value" : 200.0,
       "concentration-unit" : "nmol/l"
     }, {
       "type" : "section",
       "entity" : "ATP",
       "evidence" : "no evidence",
       "subsection" : "cytoplasm",
-      "concentration-value" : 5000.0,
-      "concentration-unit" : "nmol/l"
+      "concentration-value" : 2.0,
+      "concentration-unit" : "mmol/l"
     }, {
       "type" : "section",
       "entity" : "CAMP",
@@ -935,24 +777,10 @@
       "concentration-unit" : "nmol/l"
     }, {
       "type" : "section",
-      "entity" : "(AKAP:(PKAC:(PKAR:APS)))",
-      "evidence" : "no evidence",
-      "subsection" : "apical plasma membrane",
-      "concentration-value" : 1000.0,
-      "concentration-unit" : "nmol/l"
-    }, {
-      "type" : "section",
-      "entity" : "PP2B",
-      "evidence" : "no evidence",
-      "subsection" : "cytoplasm",
-      "concentration-value" : 400.0,
-      "concentration-unit" : "nmol/l"
-    }, {
-      "type" : "section",
       "entity" : "(PDE4:PS)",
       "evidence" : "no evidence",
-      "subsection" : "cytoplasm",
-      "concentration-value" : 400.0,
+      "subsection" : "vesicle membrane",
+      "concentration-value" : 200.0,
       "concentration-unit" : "nmol/l"
     } ]
   }

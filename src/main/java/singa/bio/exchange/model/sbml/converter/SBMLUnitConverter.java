@@ -1,7 +1,5 @@
 package singa.bio.exchange.model.sbml.converter;
 
-import bio.singa.features.units.UnitPrefix;
-import bio.singa.features.units.UnitPrefixes;
 import bio.singa.features.units.UnitRegistry;
 import org.sbml.jsbml.ListOf;
 import org.sbml.jsbml.UnitDefinition;
@@ -76,7 +74,7 @@ public class SBMLUnitConverter {
         Unit resultUnit = new ProductUnit();
         for (org.sbml.jsbml.Unit sbmlUnit : unitDefinition.getListOfUnits()) {
             Unit unitComponent = getUnitForKind(sbmlUnit.getKind());
-            UnitPrefix prefix = UnitPrefixes.getUnitPrefixFromScale(sbmlUnit.getScale());
+            UnitPrefix prefix = UnitPrefix.getUnitPrefixFromScale(sbmlUnit.getScale());
             if (prefix != UnitPrefix.NO_PREFIX) {
                 unitComponent = unitComponent.transform(prefix.getCorrespondingConverter());
             }

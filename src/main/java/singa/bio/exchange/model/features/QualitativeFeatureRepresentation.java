@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * @author cl
  */
-public class QualitativeFeatureRepresentation extends FeatureRepresentation {
+public class QualitativeFeatureRepresentation extends FeatureRepresentation<String> {
 
     @JsonProperty
     private String content;

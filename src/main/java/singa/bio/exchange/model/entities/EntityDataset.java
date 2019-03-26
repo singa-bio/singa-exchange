@@ -4,7 +4,7 @@ import bio.singa.chemistry.entities.ChemicalEntities;
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.DynamicChemicalEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import singa.bio.exchange.model.Jasonizable;
+import singa.bio.exchange.model.Jsonizable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author cl
  */
-public class EntityDataset implements Jasonizable {
+public class EntityDataset implements Jsonizable {
 
     @JsonProperty
     private List<EntityRepresentation> entities;

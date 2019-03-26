@@ -5,6 +5,8 @@ import bio.singa.mathematics.topology.grids.rectangular.RectangularCoordinate;
 import bio.singa.mathematics.vectors.Vector2D;
 import bio.singa.simulation.model.graphs.AutomatonNode;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import singa.bio.exchange.model.sections.RegionCache;
+import singa.bio.exchange.model.sections.RegionRepresentation;
 
 /**
  * @author cl
@@ -20,6 +22,9 @@ public class NodeRepresentation {
     @JsonProperty
     private double y;
 
+    @JsonProperty
+    private String region;
+
     public NodeRepresentation() {
 
     }
@@ -29,12 +34,16 @@ public class NodeRepresentation {
         representation.setIdentifier(node.getIdentifier().toString());
         representation.setX(node.getPosition().getX());
         representation.setY(node.getPosition().getY());
+        representation.setRegion(RegionRepresentation.of(((AutomatonNode)node).getCellRegion()).getIdentifier());
         return representation;
     }
 
     public AutomatonNode toModel() {
         AutomatonNode node = new AutomatonNode(RectangularCoordinate.fromString(getIdentifier()));
         node.setPosition(new Vector2D(getX(), getY()));
+        if (region != null) {
+            node.setCellRegion(RegionCache.get(getRegion()));
+        }
         NodeCache.add(node);
         return node;
     }
@@ -63,4 +72,11 @@ public class NodeRepresentation {
         this.y = y;
     }
 
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
 }

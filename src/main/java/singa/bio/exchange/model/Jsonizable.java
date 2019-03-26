@@ -12,7 +12,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * @author cl
  */
-public interface Jasonizable {
+public interface Jsonizable {
 
     default String toJson() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();

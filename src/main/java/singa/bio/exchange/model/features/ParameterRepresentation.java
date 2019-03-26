@@ -4,6 +4,7 @@ import bio.singa.simulation.model.parameters.Parameter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.evidence.EvidenceCache;
 import singa.bio.exchange.model.evidence.EvidenceRepresentation;
+import singa.bio.exchange.model.variation.Variable;
 import tec.uom.se.quantity.Quantities;
 
 import javax.measure.Unit;
@@ -11,7 +12,7 @@ import javax.measure.Unit;
 /**
  * @author cl
  */
-public class ParameterRepresentation {
+public class ParameterRepresentation extends Variable<Double> {
 
     @JsonProperty
     private String identifier;

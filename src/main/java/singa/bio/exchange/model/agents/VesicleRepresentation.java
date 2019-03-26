@@ -2,6 +2,8 @@ package singa.bio.exchange.model.agents;
 
 import bio.singa.simulation.model.agents.pointlike.Vesicle;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import singa.bio.exchange.model.sections.RegionCache;
+import singa.bio.exchange.model.sections.RegionRepresentation;
 import tec.uom.se.quantity.Quantities;
 
 import javax.measure.Unit;
@@ -14,6 +16,9 @@ public class VesicleRepresentation {
 
     @JsonProperty
     private String identifier;
+
+    @JsonProperty
+    private String region;
 
     @JsonProperty
     private VectorRepresentation position;
@@ -31,6 +36,7 @@ public class VesicleRepresentation {
     public static VesicleRepresentation of(Vesicle agent) {
         VesicleRepresentation representation = new VesicleRepresentation();
         representation.setIdentifier(agent.getStringIdentifier());
+        representation.setRegion(RegionRepresentation.of(agent.getRegion()).getIdentifier());
         representation.setPosition(VectorRepresentation.of(agent.getCurrentPosition()));
         representation.setRadiusValue(agent.getRadius().getValue().doubleValue());
         representation.setRadiusUnit(agent.getRadius().getUnit());
@@ -38,7 +44,11 @@ public class VesicleRepresentation {
     }
 
     public Vesicle toModel() {
-        return new Vesicle(getIdentifier(), getPosition().toModel(), Quantities.getQuantity(getRadiusValue(), getRadiusUnit()));
+        if (region == null) {
+            return new Vesicle(getIdentifier(), getPosition().toModel(), Quantities.getQuantity(getRadiusValue(), getRadiusUnit()));
+        } else {
+            return new Vesicle(getIdentifier(), RegionCache.get(getRegion()), getPosition().toModel(), Quantities.getQuantity(getRadiusValue(), getRadiusUnit()));
+        }
     }
 
     public String getIdentifier() {
@@ -47,6 +57,14 @@ public class VesicleRepresentation {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public VectorRepresentation getPosition() {
