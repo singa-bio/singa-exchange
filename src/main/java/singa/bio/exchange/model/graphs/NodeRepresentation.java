@@ -1,6 +1,5 @@
 package singa.bio.exchange.model.graphs;
 
-import bio.singa.mathematics.graphs.model.Node;
 import bio.singa.mathematics.topology.grids.rectangular.RectangularCoordinate;
 import bio.singa.mathematics.vectors.Vector2D;
 import bio.singa.simulation.model.graphs.AutomatonNode;
@@ -29,12 +28,13 @@ public class NodeRepresentation {
 
     }
 
-    public static NodeRepresentation of(Node<?, Vector2D, ?> node) {
+    public static NodeRepresentation of(AutomatonNode node) {
+        NodeCache.add(node);
         NodeRepresentation representation = new NodeRepresentation();
         representation.setIdentifier(node.getIdentifier().toString());
         representation.setX(node.getPosition().getX());
         representation.setY(node.getPosition().getY());
-        representation.setRegion(RegionRepresentation.of(((AutomatonNode)node).getCellRegion()).getIdentifier());
+        representation.setRegion(RegionRepresentation.of(node.getCellRegion()).getIdentifier());
         return representation;
     }
 

@@ -27,8 +27,8 @@ public class NodeCache {
         cache = new HashMap<>();
     }
 
-    public static void add(AutomatonNode origin) {
-        getInstance().cache.put(origin.getIdentifier().toString(), origin);
+    public static void add(AutomatonNode node) {
+        getInstance().cache.put(node.getIdentifier().toString(), node);
     }
 
     public static AutomatonNode get(String identifier) {
@@ -37,6 +37,10 @@ public class NodeCache {
 
     public static Collection<AutomatonNode> getAll() {
         return getInstance().cache.values();
+    }
+
+    public static boolean contains(String node) {
+        return getInstance().cache.containsKey(node);
     }
 
 }

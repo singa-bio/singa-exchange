@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 class SimulationRunnerTest {
 
     public static void main(String[] args) {
-
         String fileLocation = Resources.getResourceAsFileLocation("pka_regulation.json");
         try {
             Simulation simulation = Converter.getSimulationFrom(String.join("", Files.readAllLines(Paths.get(fileLocation))));

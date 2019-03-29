@@ -33,22 +33,28 @@ public class VesicleRepresentation {
 
     }
 
-    public static VesicleRepresentation of(Vesicle agent) {
+    public static VesicleRepresentation of(Vesicle vesicle) {
+
         VesicleRepresentation representation = new VesicleRepresentation();
-        representation.setIdentifier(agent.getStringIdentifier());
-        representation.setRegion(RegionRepresentation.of(agent.getRegion()).getIdentifier());
-        representation.setPosition(VectorRepresentation.of(agent.getCurrentPosition()));
-        representation.setRadiusValue(agent.getRadius().getValue().doubleValue());
-        representation.setRadiusUnit(agent.getRadius().getUnit());
+        representation.setIdentifier(vesicle.getStringIdentifier());
+        representation.setRegion(RegionRepresentation.of(vesicle.getRegion()).getIdentifier());
+        representation.setPosition(VectorRepresentation.of(vesicle.getCurrentPosition()));
+        representation.setRadiusValue(vesicle.getRadius().getValue().doubleValue());
+        representation.setRadiusUnit(vesicle.getRadius().getUnit());
         return representation;
     }
 
     public Vesicle toModel() {
+        Vesicle vesicle;
         if (region == null) {
-            return new Vesicle(getIdentifier(), getPosition().toModel(), Quantities.getQuantity(getRadiusValue(), getRadiusUnit()));
+            vesicle = new Vesicle(getPosition().toModel(), Quantities.getQuantity(getRadiusValue(), getRadiusUnit()));
+            vesicle.setIdentifier(getIdentifier());
         } else {
-            return new Vesicle(getIdentifier(), RegionCache.get(getRegion()), getPosition().toModel(), Quantities.getQuantity(getRadiusValue(), getRadiusUnit()));
+            vesicle = new Vesicle(RegionCache.get(getRegion()), getPosition().toModel(), Quantities.getQuantity(getRadiusValue(), getRadiusUnit()));
+            vesicle.setIdentifier(getIdentifier());
         }
+        VesicleCache.add(vesicle);
+        return vesicle;
     }
 
     public String getIdentifier() {

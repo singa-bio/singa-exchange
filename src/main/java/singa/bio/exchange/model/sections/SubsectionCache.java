@@ -43,4 +43,8 @@ public class SubsectionCache {
         getInstance().cache.clear();
     }
 
+    public static boolean contains(String subsection) {
+        return getInstance().cache.containsKey(subsection);
+    }
+
 }

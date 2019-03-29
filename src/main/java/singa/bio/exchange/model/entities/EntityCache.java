@@ -39,4 +39,8 @@ public class EntityCache {
         return getInstance().cache.values();
     }
 
+    public static boolean contains(String entity) {
+        return getInstance().cache.containsKey(entity);
+    }
+
 }
