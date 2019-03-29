@@ -143,11 +143,15 @@ public class Converter {
         return representation;
     }
 
-    public static Simulation getSimulationFrom(String json) throws IOException {
-        current = new Simulation();
+    public static SimulationRepresentation getRepresentationFrom(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new UnitJacksonModule());
-        return SimulationRepresentation.to(mapper.readValue(json, SimulationRepresentation.class));
+        return mapper.readValue(json, SimulationRepresentation.class);
+    }
+
+    public static Simulation getSimulationFrom(String json) throws IOException {
+        current = new Simulation();
+        return SimulationRepresentation.to(getRepresentationFrom(json));
     }
 
 }

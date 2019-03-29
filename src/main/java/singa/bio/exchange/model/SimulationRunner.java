@@ -1,20 +1,12 @@
 package singa.bio.exchange.model;
 
-import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.features.formatter.ConcentrationFormatter;
 import bio.singa.features.formatter.GeneralQuantityFormatter;
 import bio.singa.features.formatter.QuantityFormatter;
-import bio.singa.features.quantities.MolarConcentration;
-import bio.singa.features.units.UnitRegistry;
 import bio.singa.mathematics.topology.grids.rectangular.RectangularCoordinate;
 import bio.singa.simulation.events.EpochUpdateWriter;
-import bio.singa.simulation.features.variation.EntityFeatureVariationEntry;
-import bio.singa.simulation.features.variation.ModuleFeatureVariationEntry;
 import bio.singa.simulation.features.variation.VariationSet;
 import bio.singa.simulation.model.graphs.AutomatonNode;
-import bio.singa.simulation.model.modules.UpdateModule;
-import bio.singa.simulation.model.sections.concentration.InitialConcentration;
-import bio.singa.simulation.model.sections.concentration.SectionConcentration;
 import bio.singa.simulation.model.simulation.Simulation;
 import bio.singa.simulation.model.simulation.SimulationManager;
 import bio.singa.simulation.trajectories.TrajectoryObserver;
@@ -24,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tec.uom.se.quantity.Quantities;
 
-import javax.measure.Quantity;
 import javax.measure.quantity.Time;
 import javax.swing.*;
 import java.io.IOException;
@@ -33,7 +24,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -85,19 +79,19 @@ public class SimulationRunner {
         int currentSetIdentifier = 1;
         for (List<?> currentVariationSet : parameterVariations) {
             String identifierString = currentVariationSet.stream()
-                    .map(SimulationRunner::getValueString)
+                    .map(VariationSet::getValueString)
                     .collect(Collectors.joining(","));
             System.out.println("Starting simulation " + currentSetIdentifier + " of " + parameterVariations.size() + " for set " + identifierString);
             // create simulation
             Simulation simulation = Converter.getSimulationFrom(baseSimulationJson);
             simulation.getScheduler().setRecalculationCutoff(0.03);
             // apply variation parameters
-            applyParameters(simulation, currentVariationSet);
+            VariationSet.applyParameters(simulation, currentVariationSet);
             // create folder for this set
             Path currentVariationSetPath = baseSimulation.getParent().resolve("set_" + currentSetIdentifier);
-            createFolderForVariationSet(currentVariationSetPath);
+            VariationSet.createFolderForVariationSet(currentVariationSetPath);
             // write variations
-            writeVariationLog(currentVariationSetPath, currentVariationSet);
+            VariationSet.writeVariationLog(currentVariationSetPath, currentVariationSet);
             // write json
             // writeVariationJson(currentVariationSetPath, simulation);
             // run simulation
@@ -109,75 +103,7 @@ public class SimulationRunner {
             System.out.println("Finished Simulation " + currentSetIdentifier + " of " + parameterVariations.size() + " resulted in " + identifierString + " -> " + result);
             currentSetIdentifier++;
         }
-        writeVariationResults(baseSimulation, variations, resultingValues);
-    }
-
-    private static void applyParameters(Simulation simulation, List<?> parameterVariations) {
-        for (Object parameterVariation : parameterVariations) {
-            if (parameterVariation instanceof InitialConcentration) {
-                // varying concentration
-                simulation.getConcentrationInitializer().addInitialConcentration((InitialConcentration) parameterVariation);
-            } else if (parameterVariation instanceof EntityFeatureVariationEntry) {
-                // varying feature of a entity
-                Collection<ChemicalEntity> chemicalEntities = simulation.getChemicalEntities();
-                EntityFeatureVariationEntry entityVariation = (EntityFeatureVariationEntry) parameterVariation;
-                for (ChemicalEntity chemicalEntity : chemicalEntities) {
-                    if (chemicalEntity.equals(entityVariation.getEntity())) {
-                        chemicalEntity.setFeature(entityVariation.getFeature());
-                        break;
-                    }
-                }
-            } else if (parameterVariation instanceof ModuleFeatureVariationEntry) {
-                // varying feature of a module
-                List<UpdateModule> modules = simulation.getModules();
-                ModuleFeatureVariationEntry moduleVariation = (ModuleFeatureVariationEntry) parameterVariation;
-                for (UpdateModule module : modules) {
-                    if (module.equals(moduleVariation.getModule())) {
-                        module.setFeature(moduleVariation.getFeature());
-                    }
-                }
-            } else {
-                // nonsense variation
-                throw new IllegalStateException("The parameter variation " + parameterVariation + " is invalid.");
-            }
-        }
-    }
-
-    private static String getValueString(Object parameter) {
-        // add membrane concentration
-        if (parameter instanceof SectionConcentration) {
-            // varying concentration
-            return String.valueOf(MolarConcentration.concentrationToMolecules(((SectionConcentration) parameter).getConcentration()
-                    .to(UnitRegistry.getConcentrationUnit()).getValue().doubleValue())
-                    .getValue().doubleValue());
-        } else if (parameter instanceof EntityFeatureVariationEntry) {
-            // varying feature of a entity
-            Object featureContent = ((EntityFeatureVariationEntry) parameter).getFeature().getContent();
-            if (featureContent instanceof Quantity) {
-                return String.valueOf(((Quantity) featureContent).getValue().doubleValue());
-            }
-            return String.valueOf(featureContent);
-        } else if (parameter instanceof ModuleFeatureVariationEntry) {
-            // varying feature of a module
-            Object featureContent = ((ModuleFeatureVariationEntry) parameter).getFeature().getContent();
-            if (featureContent instanceof Quantity) {
-                return String.valueOf(((Quantity) featureContent).getValue().doubleValue());
-            }
-            return String.valueOf(featureContent);
-        } else {
-            // nonsense variation
-            throw new IllegalArgumentException("The parameter " + parameter + " is not a parameter.");
-        }
-    }
-
-    private static void createFolderForVariationSet(Path currentVariationSetPath) {
-        if (!Files.exists(currentVariationSetPath)) {
-            try {
-                Files.createDirectories(currentVariationSetPath);
-            } catch (IOException e) {
-                throw new UncheckedIOException("Unable to create folder " + currentVariationSetPath + " for current simulation variation.", e);
-            }
-        }
+        VariationSet.writeVariationResults(baseSimulation, variations, resultingValues);
     }
 
     private static void writeVariationJson(Path currentVariationSetPath, Simulation simulation) {
@@ -192,34 +118,6 @@ public class SimulationRunner {
             Files.write(currentVariationSetPath.resolve("variation_simulation.json"), json.getBytes());
         } catch (IOException e) {
             throw new UncheckedIOException("Unable to write variation json to " + currentVariationSetPath + ".", e);
-        }
-    }
-
-    private static void writeVariationLog(Path currentVariationSetPath, List<?> currentVariationSet) {
-        String collect = currentVariationSet.stream()
-                .map(Object::toString)
-                .collect(Collectors.joining(System.lineSeparator()));
-        try {
-            Files.write(currentVariationSetPath.resolve("variations.log"), collect.getBytes());
-        } catch (IOException e) {
-            throw new UncheckedIOException("Unable to write variation log to " + currentVariationSetPath + ".", e);
-        }
-    }
-
-    private static void writeVariationResults(Path baseSimulation, VariationSet variations, Map<String, Double> resultingValues) {
-        StringBuilder result = new StringBuilder();
-        result.append(variations.getAffectedParameters())
-                .append(System.lineSeparator());
-        for (Map.Entry<String, Double> entry : resultingValues.entrySet()) {
-            result.append(entry.getKey())
-                    .append(",")
-                    .append(entry.getValue())
-                    .append(System.lineSeparator());
-        }
-        try {
-            Files.write(baseSimulation.getParent().resolve("variations_results.log"), result.toString().getBytes());
-        } catch (IOException e) {
-            throw new UncheckedIOException("Unable to write variation results to " + baseSimulation + ".", e);
         }
     }
 
