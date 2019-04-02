@@ -1,15 +1,15 @@
 package singa.bio.exchange.model;
 
-import bio.singa.features.formatter.ConcentrationFormatter;
 import bio.singa.features.formatter.GeneralQuantityFormatter;
 import bio.singa.features.formatter.QuantityFormatter;
 import bio.singa.mathematics.topology.grids.rectangular.RectangularCoordinate;
-import bio.singa.simulation.events.EpochUpdateWriter;
 import bio.singa.simulation.features.variation.VariationSet;
 import bio.singa.simulation.model.graphs.AutomatonNode;
 import bio.singa.simulation.model.simulation.Simulation;
 import bio.singa.simulation.model.simulation.SimulationManager;
-import bio.singa.simulation.trajectories.TrajectoryObserver;
+import bio.singa.simulation.trajectories.Recorders;
+import bio.singa.simulation.trajectories.flat.FlatUpdateRecorder;
+import bio.singa.simulation.trajectories.nested.NestedUpdateRecorder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.embed.swing.JFXPanel;
 import org.slf4j.Logger;
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,8 +64,8 @@ public class SimulationRunner {
         for (Path simulationFile : simulationFiles) {
             // get simulation
             Simulation simulation = Converter.getSimulationFrom(String.join("", Files.readAllLines(simulationFile)));
-            Path folder = Paths.get(simulationFile.getFileName().toString().replace(".json", ""));
-            runSimulation(simulationPath, folder, simulation, observedNodes);
+            String directory = simulationFile.getFileName().toString().replace(".json", "");
+            runSimulation(simulationPath, directory, simulation, observedNodes);
         }
     }
 
@@ -89,13 +88,13 @@ public class SimulationRunner {
             VariationSet.applyParameters(simulation, currentVariationSet);
             // create folder for this set
             Path currentVariationSetPath = baseSimulation.getParent().resolve("set_" + currentSetIdentifier);
-            VariationSet.createFolderForVariationSet(currentVariationSetPath);
+            Recorders.createDirectories(currentVariationSetPath);
             // write variations
             VariationSet.writeVariationLog(currentVariationSetPath, currentVariationSet);
             // write json
             // writeVariationJson(currentVariationSetPath, simulation);
             // run simulation
-            runSimulation(baseSimulation.getParent(), currentVariationSetPath, simulation, observedNodes);
+            runSimulation(baseSimulation.getParent(), "set_" + currentSetIdentifier, simulation, observedNodes);
             // remember resulting values
 
             Double result = valueExtraction.apply(simulation);
@@ -121,23 +120,21 @@ public class SimulationRunner {
         }
     }
 
-    public static void runSimulation(Path simulationPath, Path simulationFolder, Simulation simulation, List<RectangularCoordinate> observedNodes) throws IOException, InterruptedException {
+    public static void runSimulation(Path simulationPath, String subdirectory, Simulation simulation, List<RectangularCoordinate> observedNodes) throws IOException, InterruptedException {
         simulation.setMaximalTimeStep(Quantities.getQuantity(0.01, SECOND));
         // create writer
-        EpochUpdateWriter epochUpdateWriter = EpochUpdateWriter.create()
+        FlatUpdateRecorder flatRecorder = FlatUpdateRecorder.create()
                 .workspace(simulationPath)
-                .folder(simulationFolder, false)
+                .directory(subdirectory)
                 .simulation(simulation)
-                .allEntities()
-                .allModules()
-                .concentrationFormat(ConcentrationFormatter.forUnit(NANO_MOLE_PER_LITRE))
+                .concentrationUnit(NANO_MOLE_PER_LITRE)
                 .timeFormat(TIME_FORMATTER)
                 .build();
 
         // create manager
         SimulationManager simulationManager = new SimulationManager(simulation);
-        TrajectoryObserver trajectoryObserver = new TrajectoryObserver();
-        simulationManager.addGraphUpdateListener(trajectoryObserver);
+        NestedUpdateRecorder nestedRecorder = new NestedUpdateRecorder();
+        simulationManager.addGraphUpdateListener(nestedRecorder);
 
         // reference latch for termination
         CountDownLatch terminationLatch = new CountDownLatch(1);
@@ -150,12 +147,12 @@ public class SimulationRunner {
         // reference nodes to write
         for (RectangularCoordinate coordinate : observedNodes) {
             AutomatonNode node = simulation.getGraph().getNode(coordinate);
-            epochUpdateWriter.addUpdatableToObserve(node);
+            flatRecorder.addUpdatableToObserve(node);
             simulation.observe(node);
         }
 
         // reference writer
-        simulationManager.addNodeUpdateListener(epochUpdateWriter);
+        simulationManager.addNodeUpdateListener(flatRecorder);
 
         // if you want to use fx tasks you need some magic
         initializeJFXEnvironment();

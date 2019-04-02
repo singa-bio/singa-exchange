@@ -1,9 +1,14 @@
 package singa.bio.exchange.model.variation;
 
+import bio.singa.features.quantities.MolarConcentration;
+import bio.singa.features.units.UnitRegistry;
+import bio.singa.simulation.model.simulation.Updatable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.IllegalConversionException;
 import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.sections.SubsectionCache;
+
+import javax.measure.Quantity;
 
 /**
  * @author cl
@@ -25,10 +30,11 @@ public class Observation {
     public Observation() {
     }
 
-    public static Observation create(String alias, String entity, String compatrment, String updatable) {
+    public static Observation create(String alias, String entity, String subsection, String updatable) {
         Observation observation = new Observation();
+        observation.setAlias(alias);
         observation.setEntity(entity);
-        observation.setSubsection(compatrment);
+        observation.setSubsection(subsection);
         observation.setUpdatable(updatable);
         return observation;
     }
@@ -69,6 +75,14 @@ public class Observation {
         if (!(EntityCache.contains(entity) && SubsectionCache.contains(subsection) && UpdatableCacheManager.isAvailable(updatable))) {
             throw new IllegalConversionException("The observation (entity: " + entity + " subsection: " + subsection + " updatable: " + updatable + ") would not be able to record any data.");
         }
+    }
+
+    public Quantity<MolarConcentration> observe() {
+        Updatable updatable = UpdatableCacheManager.get(this.updatable);
+        if (updatable != null) {
+            return UnitRegistry.concentration(updatable.getConcentrationContainer().get(SubsectionCache.get(subsection), EntityCache.get(entity)));
+        }
+        return null;
     }
 
 }

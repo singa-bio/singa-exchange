@@ -1,8 +1,8 @@
 package singa.bio.exchange.model.trajectories;
 
 import bio.singa.simulation.model.simulation.Updatable;
-import bio.singa.simulation.trajectories.ConcentrationData;
-import bio.singa.simulation.trajectories.TrajectoryData;
+import bio.singa.simulation.trajectories.nested.ConcentrationData;
+import bio.singa.simulation.trajectories.nested.TrajectoryData;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;

@@ -1,8 +1,8 @@
 package singa.bio.exchange.model.trajectories;
 
 import bio.singa.features.quantities.MolarConcentration;
-import bio.singa.simulation.trajectories.Trajectories;
-import bio.singa.simulation.trajectories.TrajectoryData;
+import bio.singa.simulation.trajectories.nested.Trajectories;
+import bio.singa.simulation.trajectories.nested.TrajectoryData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;

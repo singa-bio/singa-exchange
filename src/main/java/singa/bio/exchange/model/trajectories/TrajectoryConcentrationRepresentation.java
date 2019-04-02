@@ -2,7 +2,7 @@ package singa.bio.exchange.model.trajectories;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.simulation.model.sections.CellSubsection;
-import bio.singa.simulation.trajectories.ConcentrationData;
+import bio.singa.simulation.trajectories.nested.ConcentrationData;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
