@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 
 import static bio.singa.features.model.Evidence.SourceType.LITERATURE;
-import static tec.uom.se.unit.Units.SECOND;
+import static tec.units.indriya.unit.Units.SECOND;
 
 /**
  * @author cl

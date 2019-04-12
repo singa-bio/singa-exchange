@@ -1,12 +1,12 @@
 package singa.bio.exchange.model.variation;
 
 import bio.singa.features.quantities.MolarConcentration;
-import bio.singa.simulation.features.variation.ConcentrationVariation;
-import bio.singa.simulation.features.variation.ModuleFeatureVariation;
-import bio.singa.simulation.features.variation.Variation;
-import bio.singa.simulation.features.variation.VariationSet;
+import bio.singa.simulation.features.variation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.SimulationRepresentation;
 import singa.bio.exchange.model.entities.EntityCache;
+import singa.bio.exchange.model.entities.EntityRepresentation;
 import singa.bio.exchange.model.features.FeatureRepresentation;
 import singa.bio.exchange.model.features.QuantitativeFeatureRepresentation;
 import singa.bio.exchange.model.modules.ModuleRepresentation;
@@ -14,7 +14,7 @@ import singa.bio.exchange.model.sections.InitialConcentrationRepresentation;
 import singa.bio.exchange.model.sections.RegionCache;
 import singa.bio.exchange.model.sections.SectionConcentrationRepresentation;
 import singa.bio.exchange.model.sections.SubsectionCache;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 
@@ -23,7 +23,7 @@ import javax.measure.Quantity;
  */
 public class VariationGenerator {
 
-    // TODO apply variations using their representations and an initialized simulation
+    private static final Logger logger = LoggerFactory.getLogger(VariationGenerator.class);
 
     private SimulationRepresentation simulation;
 
@@ -72,6 +72,24 @@ public class VariationGenerator {
                 }
             }
         }
+        // entity features
+        if (variation instanceof EntityFeatureVariation) {
+            EntityFeatureVariation<Type> fv = (EntityFeatureVariation<Type>) variation;
+            for (EntityRepresentation entity : simulation.getEntities().getEntities()) {
+                for (FeatureRepresentation feature : entity.getFeatures()) {
+                    if (feature instanceof QuantitativeFeatureRepresentation) {
+                        QuantitativeFeatureRepresentation qfr = (QuantitativeFeatureRepresentation) feature;
+                        if (featureRepresentationMatches(entity, feature, fv)) {
+                            for (Type type: fv.getVariations()) {
+                                feature.addAlternativeValue(((Quantity) type).to(qfr.getUnit()).getValue().doubleValue());
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        logger.warn("unable to attach variation {}", variation);
     }
 
     private boolean sectionRepresentationMatches(SectionConcentrationRepresentation representation, ConcentrationVariation variation) {
@@ -106,6 +124,16 @@ public class VariationGenerator {
         return representationModule.equals(variationModule) && representationClass.equals(variationClass);
     }
 
+    private boolean featureRepresentationMatches(EntityRepresentation entity, FeatureRepresentation feature, EntityFeatureVariation featureVariation) {
+        String representationEntity = entity.getPrimaryIdentifier();
+        String representationClass = feature.getName();
+
+        String variationEntity = featureVariation.getEntity().getIdentifier().getContent();
+        String variationClass = featureVariation.getFeatureClass().getSimpleName();
+
+        return representationEntity.equals(variationEntity) && representationClass.equals(variationClass);
+    }
+
     public static VariationSet generateVariationSet(SimulationRepresentation simulationRepresentation) {
         VariationGenerator generator = new VariationGenerator(simulationRepresentation);
         return generator.generateVariationSet();
@@ -113,7 +141,7 @@ public class VariationGenerator {
 
     private VariationSet generateVariationSet() {
         VariationSet variations = new VariationSet();
-        // collect all modules
+        // collect all module feature variations
         for (ModuleRepresentation module : simulation.getModules().getModules()) {
             for (FeatureRepresentation feature : module.getFeatures()) {
                 if (!feature.getAlternativeValues().isEmpty()) {
@@ -136,6 +164,20 @@ public class VariationGenerator {
                     variations.addVariation(variation);
                     for (Double alternativeValue : scr.getAlternativeValues()) {
                         variation.addVariation(Quantities.getQuantity(alternativeValue, scr.getConcentrationUnit()));
+                    }
+                }
+            }
+        }
+        // collect all entity feature variations
+        for (EntityRepresentation entity : simulation.getEntities().getEntities()) {
+            for (FeatureRepresentation feature : entity.getFeatures()) {
+                if (!feature.getAlternativeValues().isEmpty()) {
+                    if (feature instanceof QuantitativeFeatureRepresentation) {
+                        Variation variation = new EntityFeatureVariation(entity.toModel(), feature.toModel().getClass());
+                        variations.addVariation(variation);
+                        for (Object alternativeValue : feature.getAlternativeValues()) {
+                            variation.addVariation(Quantities.getQuantity((Double) alternativeValue, ((QuantitativeFeatureRepresentation) feature).getUnit()));
+                        }
                     }
                 }
             }

@@ -25,6 +25,5 @@ class ObservationsTest {
 
         System.out.println(observations.toJson());
 
-
     }
 }

@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.sbml.SBMLParser;
 import singa.bio.exchange.model.units.UnitCache;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.quantity.Quantities;
 
 import javax.measure.Unit;
 
-import static tec.uom.se.AbstractUnit.ONE;
+import static tec.units.indriya.AbstractUnit.ONE;
 
 /**
  * Converts JSBML Parameters to SiNGA Parameters.

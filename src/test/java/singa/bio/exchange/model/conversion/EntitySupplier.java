@@ -11,7 +11,7 @@ import bio.singa.chemistry.features.permeability.OsmoticPermeability;
 import bio.singa.features.identifiers.ChEBIIdentifier;
 import bio.singa.features.identifiers.UniProtIdentifier;
 import bio.singa.structure.features.molarmass.MolarMass;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.quantity.Quantities;
 
 import static bio.singa.chemistry.annotations.AnnotationType.NOTE;
 import static bio.singa.chemistry.features.diffusivity.Diffusivity.SQUARE_CENTIMETRE_PER_SECOND;

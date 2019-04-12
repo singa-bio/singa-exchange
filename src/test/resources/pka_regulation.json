@@ -1,7 +1,7 @@
 {
   "metadata" : {
     "comment" : "automatically created by singa-exchange",
-    "creation-time-stamp" : "2019-03-21T13-49-39Z",
+    "creation-time-stamp" : "2019-04-12T10-06-06Z",
     "simulation-tool" : "SiNGA",
     "simulation-tool-version" : "0.5.0"
   },
@@ -34,16 +34,16 @@
       "type" : "protein",
       "primary-identifier" : "AQP2",
       "features" : [ {
-        "type" : "qualitative",
-        "name" : "UniProtIdentifier",
-        "evidence" : [ "no evidence" ],
-        "content" : "P41181"
-      }, {
         "type" : "quantitative",
         "name" : "OsmoticPermeability",
         "evidence" : [ "Binesh 2015" ],
         "quantity" : 5.31E-14,
-        "unit" : "cm³/s"
+        "unit" : "cm/s3"
+      }, {
+        "type" : "qualitative",
+        "name" : "UniProtIdentifier",
+        "evidence" : [ "no evidence" ],
+        "content" : "P41181"
       } ]
     }, {
       "type" : "small molecule",
@@ -76,16 +76,16 @@
       "type" : "small molecule",
       "primary-identifier" : "CAMP",
       "features" : [ {
-        "type" : "quantitative",
-        "name" : "Diffusivity",
-        "evidence" : [ "no evidence" ],
-        "quantity" : 32.0,
-        "unit" : "µm²/s"
-      }, {
         "type" : "qualitative",
         "name" : "ChEBIIdentifier",
         "evidence" : [ "no evidence" ],
         "content" : "CHEBI:17489"
+      }, {
+        "type" : "quantitative",
+        "name" : "Diffusivity",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 32.0,
+        "unit" : "um/s2"
       } ]
     }, {
       "type" : "small molecule",
@@ -150,12 +150,20 @@
       "components" : [ "PKAR", "APS" ]
     }, {
       "type" : "complex",
+      "primary-identifier" : "(AQP2:PS)",
+      "components" : [ "AQP2", "PS" ]
+    }, {
+      "type" : "complex",
       "primary-identifier" : "(PP1R:(PS:P))",
       "components" : [ "PP1R", "PS", "P" ]
     }, {
       "type" : "complex",
       "primary-identifier" : "(PDE4:PS)",
       "components" : [ "PDE4", "PS" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "((PDE4:(PS:P)):PP2B)",
+      "components" : [ "PDE4", "PS", "P", "PP2B" ]
     }, {
       "type" : "complex",
       "primary-identifier" : "(PKAC:(PKAR:APS))",
@@ -194,6 +202,10 @@
       "components" : [ "PKAC", "PKAR", "APS", "CAMP", "CAMP" ]
     }, {
       "type" : "complex",
+      "primary-identifier" : "((AQP2:(PS:P)):PP2B)",
+      "components" : [ "AQP2", "PS", "P", "PP2B" ]
+    }, {
+      "type" : "complex",
       "primary-identifier" : "(AKAP:(PKAC:((PKAR:APS):CAMP)))",
       "components" : [ "AKAP", "PKAC", "PKAR", "APS", "CAMP" ]
     }, {
@@ -220,6 +232,10 @@
       "type" : "complex",
       "primary-identifier" : "(PKAC:(((PKAR:(APS:P)):CAMP):CAMP))",
       "components" : [ "PKAC", "PKAR", "APS", "P", "CAMP", "CAMP" ]
+    }, {
+      "type" : "complex",
+      "primary-identifier" : "((AKAP:(PKAC:((PKAR:(APS:P)):CAMP))):PP2B)",
+      "components" : [ "AKAP", "PKAC", "PKAR", "APS", "P", "CAMP", "PP2B" ]
     }, {
       "type" : "complex",
       "primary-identifier" : "(AKAP:(PKAC:(((PKAR:(APS:P)):CAMP):CAMP)))",
@@ -260,8 +276,8 @@
         "type" : "quantitative",
         "name" : "SecondOrderForwardsRateConstant",
         "evidence" : [ "Ogreid 1981" ],
-        "quantity" : 4000.0,
-        "unit" : "l/(s·mol)"
+        "quantity" : 20000.0,
+        "unit" : "L/s/mol"
       }, {
         "type" : "quantitative",
         "name" : "FirstOrderBackwardsRateConstant",
@@ -302,8 +318,8 @@
         "type" : "quantitative",
         "name" : "SecondOrderForwardsRateConstant",
         "evidence" : [ "Ogreid 1981" ],
-        "quantity" : 4000.0,
-        "unit" : "l/(s·mol)"
+        "quantity" : 20000.0,
+        "unit" : "L/s/mol"
       }, {
         "type" : "quantitative",
         "name" : "FirstOrderBackwardsRateConstant",
@@ -315,7 +331,7 @@
       "type" : "reaction-based",
       "name" : "Reaction",
       "identifier" : "protein kinase a activation: camp pocket b pkap binding",
-      "reaction" : "(AKAP:(PKAC:(((PKAR:(APS:P)):CAMP):CAMP)))(m) <=> (AKAP:(PKAC:((PKAR:(APS:P)):CAMP)))(m) + CAMP(i)",
+      "reaction" : "(AKAP:(PKAC:((PKAR:(APS:P)):CAMP)))(m) + CAMP(i) <=> (AKAP:(PKAC:(((PKAR:(APS:P)):CAMP):CAMP)))(m)",
       "entity-type" : "static",
       "kinetic-law" : {
         "type" : "predefined",
@@ -323,35 +339,35 @@
       },
       "reactants" : [ {
         "type" : "static",
-        "identifier" : "(AKAP:(PKAC:(((PKAR:(APS:P)):CAMP):CAMP)))",
+        "identifier" : "(AKAP:(PKAC:((PKAR:(APS:P)):CAMP)))",
         "role" : "substrate",
         "preferred-topology" : "membrane",
         "stoichiometric-number" : 1.0
       }, {
         "type" : "static",
-        "identifier" : "(AKAP:(PKAC:((PKAR:(APS:P)):CAMP)))",
-        "role" : "product",
-        "preferred-topology" : "membrane",
+        "identifier" : "CAMP",
+        "role" : "substrate",
+        "preferred-topology" : "inner",
         "stoichiometric-number" : 1.0
       }, {
         "type" : "static",
-        "identifier" : "CAMP",
+        "identifier" : "(AKAP:(PKAC:(((PKAR:(APS:P)):CAMP):CAMP)))",
         "role" : "product",
-        "preferred-topology" : "inner",
+        "preferred-topology" : "membrane",
         "stoichiometric-number" : 1.0
       } ],
       "features" : [ {
         "type" : "quantitative",
-        "name" : "FirstOrderForwardsRateConstant",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "Ogreid 1981" ],
+        "quantity" : 20000.0,
+        "unit" : "L/s/mol"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
         "evidence" : [ "Ogreid 1982" ],
         "quantity" : 2.6E-6,
         "unit" : "1/s"
-      }, {
-        "type" : "quantitative",
-        "name" : "SecondOrderBackwardsRateConstant",
-        "evidence" : [ "Ogreid 1981" ],
-        "quantity" : 4000.0,
-        "unit" : "l/(s·mol)"
       } ]
     }, {
       "type" : "reaction-based",
@@ -393,7 +409,7 @@
         "name" : "SecondOrderForwardsRateConstant",
         "evidence" : [ "Shaffer 1999b" ],
         "quantity" : 4.8,
-        "unit" : "l/(s·mmol)"
+        "unit" : "L/s/mmol"
       } ]
     }, {
       "type" : "reaction-based",
@@ -442,7 +458,7 @@
         "name" : "SecondOrderForwardsRateConstant",
         "evidence" : [ "Shaffer 1999b" ],
         "quantity" : 240.0,
-        "unit" : "l/(s·mmol)"
+        "unit" : "L/s/mmol"
       }, {
         "type" : "quantitative",
         "name" : "FirstOrderBackwardsRateConstant",
@@ -501,7 +517,7 @@
         "name" : "SecondOrderForwardsRateConstant",
         "evidence" : [ "Shaffer 1999b" ],
         "quantity" : 200.0,
-        "unit" : "l/(s·mmol)"
+        "unit" : "L/s/mmol"
       }, {
         "type" : "quantitative",
         "name" : "FirstOrderBackwardsRateConstant",
@@ -568,11 +584,245 @@
         "unit" : "1/s"
       } ],
       "targets" : {
-        "PKAC" : "membrane",
-        "(PP1R:(PS:P))" : "inner",
         "(AQP2:(PS:P))" : "membrane",
-        "(PDE4:(PS:P))" : "membrane"
+        "(PDE4:(PS:P))" : "membrane",
+        "(PP1R:(PS:P))" : "inner",
+        "PKAC" : "membrane"
       }
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "dephosphorylation by PP2B: PKA binding",
+      "reaction" : "PP2B(m) + (AKAP:(PKAC:((PKAR:(APS:P)):CAMP)))(m) <=> ((AKAP:(PKAC:((PKAR:(APS:P)):CAMP))):PP2B)(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "PP2B",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(AKAP:(PKAC:((PKAR:(APS:P)):CAMP)))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((AKAP:(PKAC:((PKAR:(APS:P)):CAMP))):PP2B)",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 100000.0,
+        "unit" : "L/s/mol"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 1.0,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "dephosphorylation by PP2B: PKA dephosphorylation",
+      "reaction" : "((AKAP:(PKAC:((PKAR:(APS:P)):CAMP))):PP2B)(m) -> (AKAP:(PKAC:((PKAR:APS):CAMP)))(m) + PP2B(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "irreversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "((AKAP:(PKAC:((PKAR:(APS:P)):CAMP))):PP2B)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(AKAP:(PKAC:((PKAR:APS):CAMP)))",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "PP2B",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 2.0,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "dephosphorylation by PP2B: PDE4 binding",
+      "reaction" : "PP2B(m) + (PDE4:(PS:P))(m) <=> ((PDE4:(PS:P)):PP2B)(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "PP2B",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(PDE4:(PS:P))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((PDE4:(PS:P)):PP2B)",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 100000.0,
+        "unit" : "L/s/mol"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 1.0,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "dephosphorylation by PP2B: PDE4 dephosphorylation",
+      "reaction" : "((PDE4:(PS:P)):PP2B)(m) -> (PDE4:PS)(m) + PP2B(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "irreversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "((PDE4:(PS:P)):PP2B)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(PDE4:PS)",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "PP2B",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 2.0,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "dephosphorylation by PP2B: AQP2 binding",
+      "reaction" : "PP2B(m) + (AQP2:(PS:P))(m) <=> ((AQP2:(PS:P)):PP2B)(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "reversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "PP2B",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(AQP2:(PS:P))",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "((AQP2:(PS:P)):PP2B)",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "SecondOrderForwardsRateConstant",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 100000.0,
+        "unit" : "L/s/mol"
+      }, {
+        "type" : "quantitative",
+        "name" : "FirstOrderBackwardsRateConstant",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 1.0,
+        "unit" : "1/s"
+      } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "dephosphorylation by PP2B: AQP2 dephosphorylation",
+      "reaction" : "((AQP2:(PS:P)):PP2B)(m) -> (AQP2:PS)(m) + PP2B(m)",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "predefined",
+        "law" : "irreversible"
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "((AQP2:(PS:P)):PP2B)",
+        "role" : "substrate",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "(AQP2:PS)",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "PP2B",
+        "role" : "product",
+        "preferred-topology" : "membrane",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ {
+        "type" : "quantitative",
+        "name" : "FirstOrderForwardsRateConstant",
+        "evidence" : [ "no evidence" ],
+        "quantity" : 2.0,
+        "unit" : "1/s"
+      } ]
     }, {
       "type" : "reaction-based",
       "name" : "Reaction",
@@ -607,7 +857,7 @@
         "name" : "MichaelisConstant",
         "evidence" : [ "Koschinski 2017" ],
         "quantity" : 5.9E-12,
-        "unit" : "nmol/µm³"
+        "unit" : "nmol/um3"
       }, {
         "type" : "quantitative",
         "name" : "TurnoverNumber",
@@ -649,7 +899,7 @@
         "name" : "MichaelisConstant",
         "evidence" : [ "Koschinski 2017" ],
         "quantity" : 1.2E-12,
-        "unit" : "nmol/µm³"
+        "unit" : "nmol/um3"
       }, {
         "type" : "quantitative",
         "name" : "TurnoverNumber",
@@ -657,12 +907,80 @@
         "quantity" : 2.37,
         "unit" : "1/s"
       } ]
+    }, {
+      "type" : "reaction-based",
+      "name" : "Reaction",
+      "identifier" : "camp buffering",
+      "reaction" : "CAMP(i) -  -> AMP(i)}",
+      "entity-type" : "static",
+      "kinetic-law" : {
+        "type" : "dynamic",
+        "law" : "(target-current)*rate",
+        "constants" : {
+          "target" : {
+            "identifier" : "target",
+            "quantity" : 1.0E-12,
+            "unit" : "",
+            "origin" : "no evidence"
+          }
+        },
+        "reactants" : {
+          "AMP" : {
+            "type" : "static",
+            "identifier" : "AMP",
+            "role" : "product",
+            "preferred-topology" : "inner",
+            "stoichiometric-number" : 1.0
+          },
+          "current" : {
+            "type" : "static",
+            "identifier" : "CAMP",
+            "role" : "substrate",
+            "preferred-topology" : "inner",
+            "stoichiometric-number" : 1.0
+          }
+        },
+        "kinetic-features" : {
+          "rate" : {
+            "type" : "quantitative",
+            "name" : "FirstOrderForwardsRateConstant",
+            "evidence" : [ "no evidence" ],
+            "quantity" : -0.01,
+            "unit" : "1/s"
+          }
+        }
+      },
+      "reactants" : [ {
+        "type" : "static",
+        "identifier" : "CAMP",
+        "role" : "substrate",
+        "preferred-topology" : "inner",
+        "stoichiometric-number" : 1.0
+      }, {
+        "type" : "static",
+        "identifier" : "AMP",
+        "role" : "product",
+        "preferred-topology" : "inner",
+        "stoichiometric-number" : 1.0
+      } ],
+      "features" : [ ]
+    }, {
+      "type" : "concentration-based",
+      "name" : "Diffusion",
+      "identifier" : "Diffusion",
+      "features" : [ {
+        "type" : "entity-multi",
+        "name" : "Cargoes",
+        "evidence" : [ "no evidence" ],
+        "entities" : [ "CAMP", "ATP", "ADP", "AMP" ]
+      } ],
+      "affected-entities" : [ "CAMP", "AMP", "ATP", "ADP" ]
     } ]
   },
   "regions" : {
     "regions" : [ {
       "identifier" : "cytoplasm",
-      "go-term" : "GO:0005737",
+      "go-term" : "GO:0005576",
       "subsections" : {
         "inner" : "cytoplasm"
       }
@@ -671,7 +989,7 @@
       "go-term" : "GO:0031982",
       "subsections" : {
         "membrane" : "vesicle membrane",
-        "inner" : "vesicle lumen"
+        "outer" : "vesicle lumen"
       }
     } ]
   },
@@ -716,72 +1034,1382 @@
   },
   "environment" : {
     "node-distance" : 1.0,
-    "node-distance-unit" : "µm",
-    "simulation-extend" : 100.0,
-    "system-extend" : 1.0,
-    "system-extend-unit" : "µm",
+    "node-distance-unit" : "um",
+    "simulation-extend" : 1000.0,
+    "system-extend" : 10.0,
+    "system-extend-unit" : "um",
     "temperature" : 293.0,
     "temperature-unit" : "K",
     "viscosity" : 1.0,
-    "viscosity-unit" : "Pa·s",
+    "viscosity-unit" : "s.mPa",
     "initial-time-step" : 1.0,
-    "initial-time-step-unit" : "µs"
+    "initial-time-step-unit" : "us"
   },
   "graph" : {
-    "rows" : 1,
-    "columns" : 1,
+    "rows" : 10,
+    "columns" : 10,
     "nodes" : [ {
       "identifier" : "(0,0)",
       "x" : 50.0,
       "y" : 50.0,
       "region" : "cytoplasm"
+    }, {
+      "identifier" : "(0,1)",
+      "x" : 50.0,
+      "y" : 150.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(0,2)",
+      "x" : 50.0,
+      "y" : 250.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(0,3)",
+      "x" : 50.0,
+      "y" : 350.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(0,4)",
+      "x" : 50.0,
+      "y" : 450.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(0,5)",
+      "x" : 50.0,
+      "y" : 550.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(0,6)",
+      "x" : 50.0,
+      "y" : 650.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(0,7)",
+      "x" : 50.0,
+      "y" : 750.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(0,8)",
+      "x" : 50.0,
+      "y" : 850.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(0,9)",
+      "x" : 50.0,
+      "y" : 950.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(1,0)",
+      "x" : 150.0,
+      "y" : 50.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(1,1)",
+      "x" : 150.0,
+      "y" : 150.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(1,2)",
+      "x" : 150.0,
+      "y" : 250.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(1,3)",
+      "x" : 150.0,
+      "y" : 350.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(1,4)",
+      "x" : 150.0,
+      "y" : 450.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(1,5)",
+      "x" : 150.0,
+      "y" : 550.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(1,6)",
+      "x" : 150.0,
+      "y" : 650.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(1,7)",
+      "x" : 150.0,
+      "y" : 750.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(1,8)",
+      "x" : 150.0,
+      "y" : 850.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(1,9)",
+      "x" : 150.0,
+      "y" : 950.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(2,0)",
+      "x" : 250.0,
+      "y" : 50.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(2,1)",
+      "x" : 250.0,
+      "y" : 150.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(2,2)",
+      "x" : 250.0,
+      "y" : 250.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(2,3)",
+      "x" : 250.0,
+      "y" : 350.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(2,4)",
+      "x" : 250.0,
+      "y" : 450.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(2,5)",
+      "x" : 250.0,
+      "y" : 550.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(2,6)",
+      "x" : 250.0,
+      "y" : 650.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(2,7)",
+      "x" : 250.0,
+      "y" : 750.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(2,8)",
+      "x" : 250.0,
+      "y" : 850.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(2,9)",
+      "x" : 250.0,
+      "y" : 950.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(3,0)",
+      "x" : 350.0,
+      "y" : 50.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(3,1)",
+      "x" : 350.0,
+      "y" : 150.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(3,2)",
+      "x" : 350.0,
+      "y" : 250.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(3,3)",
+      "x" : 350.0,
+      "y" : 350.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(3,4)",
+      "x" : 350.0,
+      "y" : 450.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(3,5)",
+      "x" : 350.0,
+      "y" : 550.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(3,6)",
+      "x" : 350.0,
+      "y" : 650.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(3,7)",
+      "x" : 350.0,
+      "y" : 750.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(3,8)",
+      "x" : 350.0,
+      "y" : 850.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(3,9)",
+      "x" : 350.0,
+      "y" : 950.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(4,0)",
+      "x" : 450.0,
+      "y" : 50.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(4,1)",
+      "x" : 450.0,
+      "y" : 150.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(4,2)",
+      "x" : 450.0,
+      "y" : 250.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(4,3)",
+      "x" : 450.0,
+      "y" : 350.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(4,4)",
+      "x" : 450.0,
+      "y" : 450.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(4,5)",
+      "x" : 450.0,
+      "y" : 550.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(4,6)",
+      "x" : 450.0,
+      "y" : 650.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(4,7)",
+      "x" : 450.0,
+      "y" : 750.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(4,8)",
+      "x" : 450.0,
+      "y" : 850.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(4,9)",
+      "x" : 450.0,
+      "y" : 950.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(5,0)",
+      "x" : 550.0,
+      "y" : 50.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(5,1)",
+      "x" : 550.0,
+      "y" : 150.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(5,2)",
+      "x" : 550.0,
+      "y" : 250.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(5,3)",
+      "x" : 550.0,
+      "y" : 350.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(5,4)",
+      "x" : 550.0,
+      "y" : 450.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(5,5)",
+      "x" : 550.0,
+      "y" : 550.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(5,6)",
+      "x" : 550.0,
+      "y" : 650.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(5,7)",
+      "x" : 550.0,
+      "y" : 750.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(5,8)",
+      "x" : 550.0,
+      "y" : 850.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(5,9)",
+      "x" : 550.0,
+      "y" : 950.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(6,0)",
+      "x" : 650.0,
+      "y" : 50.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(6,1)",
+      "x" : 650.0,
+      "y" : 150.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(6,2)",
+      "x" : 650.0,
+      "y" : 250.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(6,3)",
+      "x" : 650.0,
+      "y" : 350.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(6,4)",
+      "x" : 650.0,
+      "y" : 450.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(6,5)",
+      "x" : 650.0,
+      "y" : 550.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(6,6)",
+      "x" : 650.0,
+      "y" : 650.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(6,7)",
+      "x" : 650.0,
+      "y" : 750.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(6,8)",
+      "x" : 650.0,
+      "y" : 850.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(6,9)",
+      "x" : 650.0,
+      "y" : 950.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(7,0)",
+      "x" : 750.0,
+      "y" : 50.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(7,1)",
+      "x" : 750.0,
+      "y" : 150.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(7,2)",
+      "x" : 750.0,
+      "y" : 250.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(7,3)",
+      "x" : 750.0,
+      "y" : 350.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(7,4)",
+      "x" : 750.0,
+      "y" : 450.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(7,5)",
+      "x" : 750.0,
+      "y" : 550.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(7,6)",
+      "x" : 750.0,
+      "y" : 650.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(7,7)",
+      "x" : 750.0,
+      "y" : 750.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(7,8)",
+      "x" : 750.0,
+      "y" : 850.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(7,9)",
+      "x" : 750.0,
+      "y" : 950.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(8,0)",
+      "x" : 850.0,
+      "y" : 50.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(8,1)",
+      "x" : 850.0,
+      "y" : 150.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(8,2)",
+      "x" : 850.0,
+      "y" : 250.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(8,3)",
+      "x" : 850.0,
+      "y" : 350.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(8,4)",
+      "x" : 850.0,
+      "y" : 450.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(8,5)",
+      "x" : 850.0,
+      "y" : 550.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(8,6)",
+      "x" : 850.0,
+      "y" : 650.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(8,7)",
+      "x" : 850.0,
+      "y" : 750.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(8,8)",
+      "x" : 850.0,
+      "y" : 850.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(8,9)",
+      "x" : 850.0,
+      "y" : 950.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(9,0)",
+      "x" : 950.0,
+      "y" : 50.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(9,1)",
+      "x" : 950.0,
+      "y" : 150.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(9,2)",
+      "x" : 950.0,
+      "y" : 250.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(9,3)",
+      "x" : 950.0,
+      "y" : 350.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(9,4)",
+      "x" : 950.0,
+      "y" : 450.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(9,5)",
+      "x" : 950.0,
+      "y" : 550.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(9,6)",
+      "x" : 950.0,
+      "y" : 650.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(9,7)",
+      "x" : 950.0,
+      "y" : 750.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(9,8)",
+      "x" : 950.0,
+      "y" : 850.0,
+      "region" : "cytoplasm"
+    }, {
+      "identifier" : "(9,9)",
+      "x" : 950.0,
+      "y" : 950.0,
+      "region" : "cytoplasm"
     } ],
-    "edges" : [ ]
+    "edges" : [ {
+      "identifier" : 0,
+      "source" : "(0,0)",
+      "target" : "(1,0)"
+    }, {
+      "identifier" : 2,
+      "source" : "(0,0)",
+      "target" : "(0,1)"
+    }, {
+      "identifier" : 3,
+      "source" : "(0,1)",
+      "target" : "(1,1)"
+    }, {
+      "identifier" : 4,
+      "source" : "(0,1)",
+      "target" : "(0,2)"
+    }, {
+      "identifier" : 5,
+      "source" : "(0,2)",
+      "target" : "(1,2)"
+    }, {
+      "identifier" : 6,
+      "source" : "(0,2)",
+      "target" : "(0,3)"
+    }, {
+      "identifier" : 7,
+      "source" : "(0,3)",
+      "target" : "(1,3)"
+    }, {
+      "identifier" : 8,
+      "source" : "(0,3)",
+      "target" : "(0,4)"
+    }, {
+      "identifier" : 9,
+      "source" : "(0,4)",
+      "target" : "(1,4)"
+    }, {
+      "identifier" : 10,
+      "source" : "(0,4)",
+      "target" : "(0,5)"
+    }, {
+      "identifier" : 11,
+      "source" : "(0,5)",
+      "target" : "(1,5)"
+    }, {
+      "identifier" : 12,
+      "source" : "(0,5)",
+      "target" : "(0,6)"
+    }, {
+      "identifier" : 13,
+      "source" : "(0,6)",
+      "target" : "(1,6)"
+    }, {
+      "identifier" : 14,
+      "source" : "(0,6)",
+      "target" : "(0,7)"
+    }, {
+      "identifier" : 15,
+      "source" : "(0,7)",
+      "target" : "(1,7)"
+    }, {
+      "identifier" : 16,
+      "source" : "(0,7)",
+      "target" : "(0,8)"
+    }, {
+      "identifier" : 17,
+      "source" : "(0,8)",
+      "target" : "(1,8)"
+    }, {
+      "identifier" : 18,
+      "source" : "(0,8)",
+      "target" : "(0,9)"
+    }, {
+      "identifier" : 19,
+      "source" : "(0,9)",
+      "target" : "(1,9)"
+    }, {
+      "identifier" : 20,
+      "source" : "(1,0)",
+      "target" : "(2,0)"
+    }, {
+      "identifier" : 21,
+      "source" : "(1,0)",
+      "target" : "(1,1)"
+    }, {
+      "identifier" : 22,
+      "source" : "(1,1)",
+      "target" : "(2,1)"
+    }, {
+      "identifier" : 23,
+      "source" : "(1,1)",
+      "target" : "(1,2)"
+    }, {
+      "identifier" : 24,
+      "source" : "(1,2)",
+      "target" : "(2,2)"
+    }, {
+      "identifier" : 25,
+      "source" : "(1,2)",
+      "target" : "(1,3)"
+    }, {
+      "identifier" : 26,
+      "source" : "(1,3)",
+      "target" : "(2,3)"
+    }, {
+      "identifier" : 27,
+      "source" : "(1,3)",
+      "target" : "(1,4)"
+    }, {
+      "identifier" : 28,
+      "source" : "(1,4)",
+      "target" : "(2,4)"
+    }, {
+      "identifier" : 29,
+      "source" : "(1,4)",
+      "target" : "(1,5)"
+    }, {
+      "identifier" : 30,
+      "source" : "(1,5)",
+      "target" : "(2,5)"
+    }, {
+      "identifier" : 31,
+      "source" : "(1,5)",
+      "target" : "(1,6)"
+    }, {
+      "identifier" : 32,
+      "source" : "(1,6)",
+      "target" : "(2,6)"
+    }, {
+      "identifier" : 33,
+      "source" : "(1,6)",
+      "target" : "(1,7)"
+    }, {
+      "identifier" : 34,
+      "source" : "(1,7)",
+      "target" : "(2,7)"
+    }, {
+      "identifier" : 35,
+      "source" : "(1,7)",
+      "target" : "(1,8)"
+    }, {
+      "identifier" : 36,
+      "source" : "(1,8)",
+      "target" : "(2,8)"
+    }, {
+      "identifier" : 37,
+      "source" : "(1,8)",
+      "target" : "(1,9)"
+    }, {
+      "identifier" : 38,
+      "source" : "(1,9)",
+      "target" : "(2,9)"
+    }, {
+      "identifier" : 39,
+      "source" : "(2,0)",
+      "target" : "(3,0)"
+    }, {
+      "identifier" : 40,
+      "source" : "(2,0)",
+      "target" : "(2,1)"
+    }, {
+      "identifier" : 41,
+      "source" : "(2,1)",
+      "target" : "(3,1)"
+    }, {
+      "identifier" : 42,
+      "source" : "(2,1)",
+      "target" : "(2,2)"
+    }, {
+      "identifier" : 43,
+      "source" : "(2,2)",
+      "target" : "(3,2)"
+    }, {
+      "identifier" : 44,
+      "source" : "(2,2)",
+      "target" : "(2,3)"
+    }, {
+      "identifier" : 45,
+      "source" : "(2,3)",
+      "target" : "(3,3)"
+    }, {
+      "identifier" : 46,
+      "source" : "(2,3)",
+      "target" : "(2,4)"
+    }, {
+      "identifier" : 47,
+      "source" : "(2,4)",
+      "target" : "(3,4)"
+    }, {
+      "identifier" : 48,
+      "source" : "(2,4)",
+      "target" : "(2,5)"
+    }, {
+      "identifier" : 49,
+      "source" : "(2,5)",
+      "target" : "(3,5)"
+    }, {
+      "identifier" : 50,
+      "source" : "(2,5)",
+      "target" : "(2,6)"
+    }, {
+      "identifier" : 51,
+      "source" : "(2,6)",
+      "target" : "(3,6)"
+    }, {
+      "identifier" : 52,
+      "source" : "(2,6)",
+      "target" : "(2,7)"
+    }, {
+      "identifier" : 53,
+      "source" : "(2,7)",
+      "target" : "(3,7)"
+    }, {
+      "identifier" : 54,
+      "source" : "(2,7)",
+      "target" : "(2,8)"
+    }, {
+      "identifier" : 55,
+      "source" : "(2,8)",
+      "target" : "(3,8)"
+    }, {
+      "identifier" : 56,
+      "source" : "(2,8)",
+      "target" : "(2,9)"
+    }, {
+      "identifier" : 57,
+      "source" : "(2,9)",
+      "target" : "(3,9)"
+    }, {
+      "identifier" : 58,
+      "source" : "(3,0)",
+      "target" : "(4,0)"
+    }, {
+      "identifier" : 59,
+      "source" : "(3,0)",
+      "target" : "(3,1)"
+    }, {
+      "identifier" : 60,
+      "source" : "(3,1)",
+      "target" : "(4,1)"
+    }, {
+      "identifier" : 61,
+      "source" : "(3,1)",
+      "target" : "(3,2)"
+    }, {
+      "identifier" : 62,
+      "source" : "(3,2)",
+      "target" : "(4,2)"
+    }, {
+      "identifier" : 63,
+      "source" : "(3,2)",
+      "target" : "(3,3)"
+    }, {
+      "identifier" : 64,
+      "source" : "(3,3)",
+      "target" : "(4,3)"
+    }, {
+      "identifier" : 65,
+      "source" : "(3,3)",
+      "target" : "(3,4)"
+    }, {
+      "identifier" : 66,
+      "source" : "(3,4)",
+      "target" : "(4,4)"
+    }, {
+      "identifier" : 67,
+      "source" : "(3,4)",
+      "target" : "(3,5)"
+    }, {
+      "identifier" : 68,
+      "source" : "(3,5)",
+      "target" : "(4,5)"
+    }, {
+      "identifier" : 69,
+      "source" : "(3,5)",
+      "target" : "(3,6)"
+    }, {
+      "identifier" : 70,
+      "source" : "(3,6)",
+      "target" : "(4,6)"
+    }, {
+      "identifier" : 71,
+      "source" : "(3,6)",
+      "target" : "(3,7)"
+    }, {
+      "identifier" : 72,
+      "source" : "(3,7)",
+      "target" : "(4,7)"
+    }, {
+      "identifier" : 73,
+      "source" : "(3,7)",
+      "target" : "(3,8)"
+    }, {
+      "identifier" : 74,
+      "source" : "(3,8)",
+      "target" : "(4,8)"
+    }, {
+      "identifier" : 75,
+      "source" : "(3,8)",
+      "target" : "(3,9)"
+    }, {
+      "identifier" : 76,
+      "source" : "(3,9)",
+      "target" : "(4,9)"
+    }, {
+      "identifier" : 77,
+      "source" : "(4,0)",
+      "target" : "(5,0)"
+    }, {
+      "identifier" : 78,
+      "source" : "(4,0)",
+      "target" : "(4,1)"
+    }, {
+      "identifier" : 79,
+      "source" : "(4,1)",
+      "target" : "(5,1)"
+    }, {
+      "identifier" : 80,
+      "source" : "(4,1)",
+      "target" : "(4,2)"
+    }, {
+      "identifier" : 81,
+      "source" : "(4,2)",
+      "target" : "(5,2)"
+    }, {
+      "identifier" : 82,
+      "source" : "(4,2)",
+      "target" : "(4,3)"
+    }, {
+      "identifier" : 83,
+      "source" : "(4,3)",
+      "target" : "(5,3)"
+    }, {
+      "identifier" : 84,
+      "source" : "(4,3)",
+      "target" : "(4,4)"
+    }, {
+      "identifier" : 85,
+      "source" : "(4,4)",
+      "target" : "(5,4)"
+    }, {
+      "identifier" : 86,
+      "source" : "(4,4)",
+      "target" : "(4,5)"
+    }, {
+      "identifier" : 87,
+      "source" : "(4,5)",
+      "target" : "(5,5)"
+    }, {
+      "identifier" : 88,
+      "source" : "(4,5)",
+      "target" : "(4,6)"
+    }, {
+      "identifier" : 89,
+      "source" : "(4,6)",
+      "target" : "(5,6)"
+    }, {
+      "identifier" : 90,
+      "source" : "(4,6)",
+      "target" : "(4,7)"
+    }, {
+      "identifier" : 91,
+      "source" : "(4,7)",
+      "target" : "(5,7)"
+    }, {
+      "identifier" : 92,
+      "source" : "(4,7)",
+      "target" : "(4,8)"
+    }, {
+      "identifier" : 93,
+      "source" : "(4,8)",
+      "target" : "(5,8)"
+    }, {
+      "identifier" : 94,
+      "source" : "(4,8)",
+      "target" : "(4,9)"
+    }, {
+      "identifier" : 95,
+      "source" : "(4,9)",
+      "target" : "(5,9)"
+    }, {
+      "identifier" : 96,
+      "source" : "(5,0)",
+      "target" : "(6,0)"
+    }, {
+      "identifier" : 97,
+      "source" : "(5,0)",
+      "target" : "(5,1)"
+    }, {
+      "identifier" : 98,
+      "source" : "(5,1)",
+      "target" : "(6,1)"
+    }, {
+      "identifier" : 99,
+      "source" : "(5,1)",
+      "target" : "(5,2)"
+    }, {
+      "identifier" : 100,
+      "source" : "(5,2)",
+      "target" : "(6,2)"
+    }, {
+      "identifier" : 101,
+      "source" : "(5,2)",
+      "target" : "(5,3)"
+    }, {
+      "identifier" : 102,
+      "source" : "(5,3)",
+      "target" : "(6,3)"
+    }, {
+      "identifier" : 103,
+      "source" : "(5,3)",
+      "target" : "(5,4)"
+    }, {
+      "identifier" : 104,
+      "source" : "(5,4)",
+      "target" : "(6,4)"
+    }, {
+      "identifier" : 105,
+      "source" : "(5,4)",
+      "target" : "(5,5)"
+    }, {
+      "identifier" : 106,
+      "source" : "(5,5)",
+      "target" : "(6,5)"
+    }, {
+      "identifier" : 107,
+      "source" : "(5,5)",
+      "target" : "(5,6)"
+    }, {
+      "identifier" : 108,
+      "source" : "(5,6)",
+      "target" : "(6,6)"
+    }, {
+      "identifier" : 109,
+      "source" : "(5,6)",
+      "target" : "(5,7)"
+    }, {
+      "identifier" : 110,
+      "source" : "(5,7)",
+      "target" : "(6,7)"
+    }, {
+      "identifier" : 111,
+      "source" : "(5,7)",
+      "target" : "(5,8)"
+    }, {
+      "identifier" : 112,
+      "source" : "(5,8)",
+      "target" : "(6,8)"
+    }, {
+      "identifier" : 113,
+      "source" : "(5,8)",
+      "target" : "(5,9)"
+    }, {
+      "identifier" : 114,
+      "source" : "(5,9)",
+      "target" : "(6,9)"
+    }, {
+      "identifier" : 115,
+      "source" : "(6,0)",
+      "target" : "(7,0)"
+    }, {
+      "identifier" : 116,
+      "source" : "(6,0)",
+      "target" : "(6,1)"
+    }, {
+      "identifier" : 117,
+      "source" : "(6,1)",
+      "target" : "(7,1)"
+    }, {
+      "identifier" : 118,
+      "source" : "(6,1)",
+      "target" : "(6,2)"
+    }, {
+      "identifier" : 119,
+      "source" : "(6,2)",
+      "target" : "(7,2)"
+    }, {
+      "identifier" : 120,
+      "source" : "(6,2)",
+      "target" : "(6,3)"
+    }, {
+      "identifier" : 121,
+      "source" : "(6,3)",
+      "target" : "(7,3)"
+    }, {
+      "identifier" : 122,
+      "source" : "(6,3)",
+      "target" : "(6,4)"
+    }, {
+      "identifier" : 123,
+      "source" : "(6,4)",
+      "target" : "(7,4)"
+    }, {
+      "identifier" : 124,
+      "source" : "(6,4)",
+      "target" : "(6,5)"
+    }, {
+      "identifier" : 125,
+      "source" : "(6,5)",
+      "target" : "(7,5)"
+    }, {
+      "identifier" : 126,
+      "source" : "(6,5)",
+      "target" : "(6,6)"
+    }, {
+      "identifier" : 127,
+      "source" : "(6,6)",
+      "target" : "(7,6)"
+    }, {
+      "identifier" : 128,
+      "source" : "(6,6)",
+      "target" : "(6,7)"
+    }, {
+      "identifier" : 129,
+      "source" : "(6,7)",
+      "target" : "(7,7)"
+    }, {
+      "identifier" : 130,
+      "source" : "(6,7)",
+      "target" : "(6,8)"
+    }, {
+      "identifier" : 131,
+      "source" : "(6,8)",
+      "target" : "(7,8)"
+    }, {
+      "identifier" : 132,
+      "source" : "(6,8)",
+      "target" : "(6,9)"
+    }, {
+      "identifier" : 133,
+      "source" : "(6,9)",
+      "target" : "(7,9)"
+    }, {
+      "identifier" : 134,
+      "source" : "(7,0)",
+      "target" : "(8,0)"
+    }, {
+      "identifier" : 135,
+      "source" : "(7,0)",
+      "target" : "(7,1)"
+    }, {
+      "identifier" : 136,
+      "source" : "(7,1)",
+      "target" : "(8,1)"
+    }, {
+      "identifier" : 137,
+      "source" : "(7,1)",
+      "target" : "(7,2)"
+    }, {
+      "identifier" : 138,
+      "source" : "(7,2)",
+      "target" : "(8,2)"
+    }, {
+      "identifier" : 139,
+      "source" : "(7,2)",
+      "target" : "(7,3)"
+    }, {
+      "identifier" : 140,
+      "source" : "(7,3)",
+      "target" : "(8,3)"
+    }, {
+      "identifier" : 141,
+      "source" : "(7,3)",
+      "target" : "(7,4)"
+    }, {
+      "identifier" : 142,
+      "source" : "(7,4)",
+      "target" : "(8,4)"
+    }, {
+      "identifier" : 143,
+      "source" : "(7,4)",
+      "target" : "(7,5)"
+    }, {
+      "identifier" : 144,
+      "source" : "(7,5)",
+      "target" : "(8,5)"
+    }, {
+      "identifier" : 145,
+      "source" : "(7,5)",
+      "target" : "(7,6)"
+    }, {
+      "identifier" : 146,
+      "source" : "(7,6)",
+      "target" : "(8,6)"
+    }, {
+      "identifier" : 147,
+      "source" : "(7,6)",
+      "target" : "(7,7)"
+    }, {
+      "identifier" : 148,
+      "source" : "(7,7)",
+      "target" : "(8,7)"
+    }, {
+      "identifier" : 149,
+      "source" : "(7,7)",
+      "target" : "(7,8)"
+    }, {
+      "identifier" : 150,
+      "source" : "(7,8)",
+      "target" : "(8,8)"
+    }, {
+      "identifier" : 151,
+      "source" : "(7,8)",
+      "target" : "(7,9)"
+    }, {
+      "identifier" : 152,
+      "source" : "(7,9)",
+      "target" : "(8,9)"
+    }, {
+      "identifier" : 153,
+      "source" : "(8,0)",
+      "target" : "(9,0)"
+    }, {
+      "identifier" : 154,
+      "source" : "(8,0)",
+      "target" : "(8,1)"
+    }, {
+      "identifier" : 155,
+      "source" : "(8,1)",
+      "target" : "(9,1)"
+    }, {
+      "identifier" : 156,
+      "source" : "(8,1)",
+      "target" : "(8,2)"
+    }, {
+      "identifier" : 157,
+      "source" : "(8,2)",
+      "target" : "(9,2)"
+    }, {
+      "identifier" : 158,
+      "source" : "(8,2)",
+      "target" : "(8,3)"
+    }, {
+      "identifier" : 159,
+      "source" : "(8,3)",
+      "target" : "(9,3)"
+    }, {
+      "identifier" : 160,
+      "source" : "(8,3)",
+      "target" : "(8,4)"
+    }, {
+      "identifier" : 161,
+      "source" : "(8,4)",
+      "target" : "(9,4)"
+    }, {
+      "identifier" : 162,
+      "source" : "(8,4)",
+      "target" : "(8,5)"
+    }, {
+      "identifier" : 163,
+      "source" : "(8,5)",
+      "target" : "(9,5)"
+    }, {
+      "identifier" : 164,
+      "source" : "(8,5)",
+      "target" : "(8,6)"
+    }, {
+      "identifier" : 165,
+      "source" : "(8,6)",
+      "target" : "(9,6)"
+    }, {
+      "identifier" : 166,
+      "source" : "(8,6)",
+      "target" : "(8,7)"
+    }, {
+      "identifier" : 167,
+      "source" : "(8,7)",
+      "target" : "(9,7)"
+    }, {
+      "identifier" : 168,
+      "source" : "(8,7)",
+      "target" : "(8,8)"
+    }, {
+      "identifier" : 169,
+      "source" : "(8,8)",
+      "target" : "(9,8)"
+    }, {
+      "identifier" : 170,
+      "source" : "(8,8)",
+      "target" : "(8,9)"
+    }, {
+      "identifier" : 171,
+      "source" : "(8,9)",
+      "target" : "(9,9)"
+    }, {
+      "identifier" : 172,
+      "source" : "(9,0)",
+      "target" : "(9,1)"
+    }, {
+      "identifier" : 173,
+      "source" : "(9,1)",
+      "target" : "(9,2)"
+    }, {
+      "identifier" : 174,
+      "source" : "(9,2)",
+      "target" : "(9,3)"
+    }, {
+      "identifier" : 175,
+      "source" : "(9,3)",
+      "target" : "(9,4)"
+    }, {
+      "identifier" : 176,
+      "source" : "(9,4)",
+      "target" : "(9,5)"
+    }, {
+      "identifier" : 177,
+      "source" : "(9,5)",
+      "target" : "(9,6)"
+    }, {
+      "identifier" : 178,
+      "source" : "(9,6)",
+      "target" : "(9,7)"
+    }, {
+      "identifier" : 179,
+      "source" : "(9,7)",
+      "target" : "(9,8)"
+    }, {
+      "identifier" : 180,
+      "source" : "(9,8)",
+      "target" : "(9,9)"
+    } ]
   },
   "membranes" : { },
   "filaments" : { },
   "vesicles" : {
     "vesicles" : [ {
+      "identifier" : "v0",
+      "region" : "vesicle",
+      "position" : {
+        "x" : 536.3744361626921,
+        "y" : 314.35581366946917
+      },
+      "radius-value" : 0.05305475493744631,
+      "radius-Unit" : "um"
+    }, {
       "identifier" : "v1",
       "region" : "vesicle",
       "position" : {
-        "x" : 50.0,
-        "y" : 50.0
+        "x" : 563.0844832789307,
+        "y" : 611.8928929950498
       },
-      "radius-value" : 0.28209479177387814,
-      "radius-Unit" : "µm"
+      "radius-value" : 0.05608779789773409,
+      "radius-Unit" : "um"
+    }, {
+      "identifier" : "v2",
+      "region" : "vesicle",
+      "position" : {
+        "x" : 515.8439721788297,
+        "y" : 389.3900045799211
+      },
+      "radius-value" : 0.05772688901613399,
+      "radius-Unit" : "um"
+    }, {
+      "identifier" : "v3",
+      "region" : "vesicle",
+      "position" : {
+        "x" : 523.2851783778094,
+        "y" : 520.3824959740004
+      },
+      "radius-value" : 0.04211152701165395,
+      "radius-Unit" : "um"
+    }, {
+      "identifier" : "v4",
+      "region" : "vesicle",
+      "position" : {
+        "x" : 529.6629704255834,
+        "y" : 359.69172443821304
+      },
+      "radius-value" : 0.053145440262347146,
+      "radius-Unit" : "um"
+    }, {
+      "identifier" : "v5",
+      "region" : "vesicle",
+      "position" : {
+        "x" : 431.76887150479564,
+        "y" : 446.4393333986972
+      },
+      "radius-value" : 0.04850800197032951,
+      "radius-Unit" : "um"
+    }, {
+      "identifier" : "v6",
+      "region" : "vesicle",
+      "position" : {
+        "x" : 384.8874261165241,
+        "y" : 348.9206640225992
+      },
+      "radius-value" : 0.055766838801486605,
+      "radius-Unit" : "um"
+    }, {
+      "identifier" : "v7",
+      "region" : "vesicle",
+      "position" : {
+        "x" : 432.2228956041434,
+        "y" : 630.0254931129689
+      },
+      "radius-value" : 0.05000697028830479,
+      "radius-Unit" : "um"
+    }, {
+      "identifier" : "v8",
+      "region" : "vesicle",
+      "position" : {
+        "x" : 483.82206199149823,
+        "y" : 643.1849112708832
+      },
+      "radius-value" : 0.04466047846536293,
+      "radius-Unit" : "um"
+    }, {
+      "identifier" : "v9",
+      "region" : "vesicle",
+      "position" : {
+        "x" : 562.8777346209158,
+        "y" : 399.8734426424646
+      },
+      "radius-value" : 0.04157557483032107,
+      "radius-Unit" : "um"
     } ]
   },
   "volumes" : { },
   "concentrations" : {
     "concentrations" : [ {
       "type" : "section",
-      "entity" : "(AKAP:(PKAC:(PKAR:APS)))",
-      "evidence" : "no evidence",
-      "subsection" : "vesicle membrane",
-      "concentration-value" : 200.0,
-      "concentration-unit" : "nmol/l"
-    }, {
-      "type" : "section",
       "entity" : "ATP",
       "evidence" : "no evidence",
       "subsection" : "cytoplasm",
       "concentration-value" : 2.0,
-      "concentration-unit" : "mmol/l"
+      "concentration-unit" : "mmol/L"
+    }, {
+      "type" : "section",
+      "entity" : "(AKAP:(PKAC:(PKAR:APS)))",
+      "evidence" : "no evidence",
+      "subsection" : "vesicle membrane",
+      "concentration-value" : 0.2,
+      "concentration-unit" : "umol/L"
+    }, {
+      "type" : "section",
+      "entity" : "(AQP2:PS)",
+      "evidence" : "no evidence",
+      "subsection" : "vesicle membrane",
+      "concentration-value" : 8.302695202135821E-13,
+      "concentration-unit" : "nmol/um3"
     }, {
       "type" : "section",
       "entity" : "CAMP",
       "evidence" : "no evidence",
       "subsection" : "cytoplasm",
-      "concentration-value" : 2000.0,
-      "concentration-unit" : "nmol/l"
+      "concentration-value" : 1.0,
+      "concentration-unit" : "umol/L"
     }, {
       "type" : "section",
       "entity" : "(PDE4:PS)",
       "evidence" : "no evidence",
       "subsection" : "vesicle membrane",
-      "concentration-value" : 200.0,
-      "concentration-unit" : "nmol/l"
+      "concentration-value" : 0.2,
+      "concentration-unit" : "umol/L"
+    }, {
+      "type" : "section",
+      "entity" : "PP2B",
+      "evidence" : "no evidence",
+      "subsection" : "vesicle membrane",
+      "concentration-value" : 0.2,
+      "concentration-unit" : "umol/L"
     } ]
   }
 }

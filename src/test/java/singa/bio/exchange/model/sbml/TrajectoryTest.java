@@ -8,7 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import singa.bio.exchange.model.Converter;
 import singa.bio.exchange.model.trajectories.TrajectoryDataset;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.quantity.Quantities;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,9 +17,8 @@ import java.util.concurrent.CountDownLatch;
 
 import static bio.singa.features.units.UnitProvider.NANO_MOLE_PER_LITRE;
 import static org.junit.jupiter.api.Assertions.fail;
-import static singa.bio.exchange.model.SimulationRunner.initializeJFXEnvironment;
-import static tec.uom.se.unit.MetricPrefix.MILLI;
-import static tec.uom.se.unit.Units.SECOND;
+import static tec.units.indriya.unit.MetricPrefix.MILLI;
+import static tec.units.indriya.unit.Units.SECOND;
 
 /**
  * @author cl
@@ -43,7 +42,7 @@ public class TrajectoryTest {
         // create manager
         SimulationManager simulationManager = new SimulationManager(simulation);
         // reference trajectory observer
-        NestedUpdateRecorder observer = new NestedUpdateRecorder(MILLI(SECOND), NANO_MOLE_PER_LITRE);
+        NestedUpdateRecorder observer = new NestedUpdateRecorder(simulation, MILLI(SECOND), NANO_MOLE_PER_LITRE);
         simulationManager.addGraphUpdateListener(observer);
 
         // reference latch for termination
@@ -53,9 +52,6 @@ public class TrajectoryTest {
         // set termination condition
         simulationManager.setSimulationTerminationToTime(Quantities.getQuantity(10, SECOND));
         simulationManager.setUpdateEmissionToTimePassed(Quantities.getQuantity(10, MILLI(SECOND)));
-
-        // if you want to use fx tasks you need some magic
-        initializeJFXEnvironment();
 
         // start
         Thread thread = new Thread(simulationManager);

@@ -18,8 +18,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import singa.bio.exchange.model.Converter;
 import singa.bio.exchange.model.SimulationRepresentation;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.ComparableQuantity;
+import tec.units.indriya.quantity.Quantities;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
@@ -29,8 +29,8 @@ import java.util.List;
 import static bio.singa.features.units.UnitProvider.MOLE_PER_LITRE;
 import static singa.bio.exchange.model.conversion.Constants.BOUNDING_BOX;
 import static singa.bio.exchange.model.conversion.Constants.YANG1997;
-import static tec.uom.se.unit.MetricPrefix.MICRO;
-import static tec.uom.se.unit.Units.METRE;
+import static tec.units.indriya.unit.MetricPrefix.MICRO;
+import static tec.units.indriya.unit.Units.METRE;
 
 /**
  * @author cl

@@ -6,7 +6,7 @@ import bio.singa.features.units.UnitRegistry;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.quantity.Quantities;
 
 import javax.measure.Unit;
 import javax.measure.quantity.Length;

@@ -20,8 +20,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import singa.bio.exchange.model.Converter;
 import singa.bio.exchange.model.SimulationRepresentation;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.ComparableQuantity;
+import tec.units.indriya.quantity.Quantities;
 
 import javax.measure.quantity.Area;
 import java.io.IOException;
@@ -31,8 +31,8 @@ import static bio.singa.features.model.Evidence.SourceType.PREDICTION;
 import static bio.singa.features.units.UnitProvider.MICRO_MOLE_PER_LITRE;
 import static bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.ReactantRole.*;
 import static bio.singa.simulation.model.sections.CellTopology.MEMBRANE;
-import static tec.uom.se.unit.MetricPrefix.MICRO;
-import static tec.uom.se.unit.Units.*;
+import static tec.units.indriya.unit.MetricPrefix.MICRO;
+import static tec.units.indriya.unit.Units.*;
 
 /**
  * @author cl

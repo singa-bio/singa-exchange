@@ -4,6 +4,7 @@ import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.features.model.Feature;
 import bio.singa.features.quantities.MolarConcentration;
 import bio.singa.simulation.features.variation.ConcentrationVariation;
+import bio.singa.simulation.features.variation.EntityFeatureVariation;
 import bio.singa.simulation.features.variation.ModuleFeatureVariation;
 import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.sections.CellRegion;
@@ -12,7 +13,7 @@ import bio.singa.simulation.model.simulation.Simulation;
 import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.sections.RegionCache;
 import singa.bio.exchange.model.sections.SubsectionCache;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -22,15 +23,11 @@ import javax.measure.Unit;
  */
 public class VariationBuilder {
 
-    public static EntityVariationStep entityVariation() {
-        return new EntityVariationBuilder();
+    public static EntityConcentrationVariationStep entityConcentrationVariation() {
+        return new EntityConcentrationVariationBuilder();
     }
 
-    public static ModuleFeatureVariationStep featureVariation(Simulation simulation) {
-        return new ModuleFeatureVariationBuilder(simulation);
-    }
-
-    public interface EntityVariationStep {
+    public interface EntityConcentrationVariationStep {
         SubsectionStep entity(String chemicalEntity);
     }
 
@@ -56,28 +53,7 @@ public class VariationBuilder {
         ConcentrationVariation build();
     }
 
-
-    public interface ModuleFeatureVariationStep {
-        FeatureClassStep module(String moduleIdentifier);
-    }
-
-    public interface FeatureClassStep {
-        <T extends Feature> QuantityStep featureClass(Class<T> featureClass);
-    }
-
-    public interface QuantityStep {
-        QuantityUnitStep quantityValues(double... values);
-    }
-
-    public interface QuantityUnitStep {
-        <T extends Quantity<T>> ModuleFeatureVariationBuildStep unit(Unit<?> unit, Class<T> unitType);
-    }
-
-    public interface ModuleFeatureVariationBuildStep<T> {
-        ModuleFeatureVariation<T> build();
-    }
-
-    public static class EntityVariationBuilder implements EntityVariationStep, SubsectionStep, RegionStep, ConcentrationStep, ConcentrationUnitStep, EntityVariationBuildStep {
+    public static class EntityConcentrationVariationBuilder implements EntityConcentrationVariationStep, SubsectionStep, RegionStep, ConcentrationStep, ConcentrationUnitStep, EntityVariationBuildStep {
 
         private String entityIdentifier;
         private String subsectionIdentifier;
@@ -152,7 +128,32 @@ public class VariationBuilder {
         }
     }
 
-    public static class ModuleFeatureVariationBuilder implements ModuleFeatureVariationStep, FeatureClassStep, QuantityStep, QuantityUnitStep, ModuleFeatureVariationBuildStep {
+
+    public static ModuleFeatureVariationStep moduleFeatureVariation(Simulation simulation) {
+        return new ModuleFeatureVariationBuilder(simulation);
+    }
+
+    public interface ModuleFeatureVariationStep {
+        ModuleFeatureClassStep module(String moduleIdentifier);
+    }
+
+    public interface ModuleFeatureClassStep {
+        <T extends Feature> ModuleQuantityStep featureClass(Class<T> featureClass);
+    }
+
+    public interface ModuleQuantityStep {
+        ModuleQuantityUnitStep quantityValues(double... values);
+    }
+
+    public interface ModuleQuantityUnitStep {
+        <T extends Quantity<T>> ModuleFeatureVariationBuildStep unit(Unit<?> unit, Class<T> unitType);
+    }
+
+    public interface ModuleFeatureVariationBuildStep<T> {
+        ModuleFeatureVariation<T> build();
+    }
+
+    public static class ModuleFeatureVariationBuilder implements ModuleFeatureVariationStep, ModuleFeatureClassStep, ModuleQuantityStep, ModuleQuantityUnitStep, ModuleFeatureVariationBuildStep {
 
         private Simulation simulation;
 
@@ -168,19 +169,19 @@ public class VariationBuilder {
         }
 
         @Override
-        public FeatureClassStep module(String moduleIdentifier) {
+        public ModuleFeatureClassStep module(String moduleIdentifier) {
             this.moduleIdentifier = moduleIdentifier;
             return this;
         }
 
         @Override
-        public <T extends Feature> QuantityStep featureClass(Class<T> featureClass) {
+        public <T extends Feature> ModuleQuantityStep featureClass(Class<T> featureClass) {
             this.featureClass = featureClass;
             return this;
         }
 
         @Override
-        public QuantityUnitStep quantityValues(double... values) {
+        public ModuleQuantityUnitStep quantityValues(double... values) {
             this.values = values;
             return this;
         }
@@ -219,6 +220,87 @@ public class VariationBuilder {
             return Quantities.getQuantity(value, unit).asType(unitType);
         }
 
+    }
+
+
+    public static EntityFeatureVariationStep entityFeatureVariation() {
+        return new EntityFeatureVariationBuilder();
+    }
+
+    public interface EntityFeatureVariationStep {
+        EntityFeatureClassStep entity(String moduleIdentifier);
+    }
+
+    public interface EntityFeatureClassStep {
+        <T extends Feature> EntityQuantityStep featureClass(Class<T> featureClass);
+    }
+
+    public interface EntityQuantityStep {
+        EntityQuantityUnitStep quantityValues(double... values);
+    }
+
+    public interface EntityQuantityUnitStep {
+        <T extends Quantity<T>> EntityFeatureVariationBuildStep unit(Unit<?> unit, Class<T> unitType);
+    }
+
+    public interface EntityFeatureVariationBuildStep<T> {
+        EntityFeatureVariation<T> build();
+    }
+
+
+    public static class EntityFeatureVariationBuilder implements EntityFeatureVariationStep, EntityFeatureClassStep, EntityQuantityStep, EntityQuantityUnitStep, EntityFeatureVariationBuildStep {
+
+        private String entityIdentifier;
+        private Class<? extends Feature> featureClass;
+        private double[] values;
+        private Unit<? extends Quantity> unit;
+        private Class<? extends Quantity> unitType;
+
+        public EntityFeatureVariationBuilder() {
+        }
+
+        @Override
+        public EntityFeatureClassStep entity(String entityIdentifier) {
+            this.entityIdentifier = entityIdentifier;
+            return this;
+        }
+
+        @Override
+        public <T extends Feature> EntityQuantityStep featureClass(Class<T> featureClass) {
+            this.featureClass = featureClass;
+            return this;
+        }
+
+        @Override
+        public EntityQuantityUnitStep quantityValues(double... values) {
+            this.values = values;
+            return this;
+        }
+
+        @Override
+        public <T extends Quantity<T>> EntityFeatureVariationBuildStep unit(Unit<?> unit, Class<T> unitType) {
+            this.unit = unit;
+            this.unitType = unitType;
+            return this;
+        }
+
+        @Override
+        public EntityFeatureVariation build() {
+            ChemicalEntity entity = EntityCache.get(entityIdentifier);
+            if (entity == null) {
+                throw new IllegalArgumentException("No entity with the identifier \"" + entityIdentifier + "\" could not be found in the parsed simulation.");
+            }
+            EntityFeatureVariation entityFeatureVariation = new EntityFeatureVariation(entity, featureClass);
+            for (double value : values) {
+                entityFeatureVariation.addVariation(createQuantity(value));
+            }
+            return entityFeatureVariation;
+        }
+
+        @SuppressWarnings("unchecked")
+        private Quantity<?> createQuantity(double value) {
+            return Quantities.getQuantity(value, unit).asType(unitType);
+        }
     }
 
 }

@@ -1,12 +1,12 @@
 package singa.bio.exchange.model.trajectories;
 
 import bio.singa.simulation.model.simulation.Updatable;
-import bio.singa.simulation.trajectories.nested.ConcentrationData;
+import bio.singa.simulation.trajectories.nested.TrajactoryDataPoint;
 import bio.singa.simulation.trajectories.nested.TrajectoryData;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author cl
@@ -14,27 +14,27 @@ import java.util.Map;
 
 public class TrajectoryRepresentation {
 
-    @JsonProperty("concentration-data")
-    private Map<String, TrajectoryConcentrationRepresentation> concentrationData;
+    @JsonProperty("data")
+    private Map<String, TrajectoryDatapointRepresentation> data;
 
     private TrajectoryRepresentation() {
-        concentrationData = new HashMap<>();
+        data = new TreeMap<>();
     }
 
     public static TrajectoryRepresentation of(TrajectoryData trajectoryData) {
         TrajectoryRepresentation representation = new TrajectoryRepresentation();
-        for (Map.Entry<Updatable, ConcentrationData> entry : trajectoryData.getConcentrationData().entrySet()) {
-            representation.concentrationData.put(entry.getKey().getStringIdentifier(), TrajectoryConcentrationRepresentation.of(entry.getValue()));
+        for (Map.Entry<Updatable, TrajactoryDataPoint> entry : trajectoryData.getConcentrationData().entrySet()) {
+            representation.data.put(entry.getKey().getStringIdentifier(), TrajectoryDatapointRepresentation.of(entry.getValue()));
         }
         return representation;
     }
 
-    public Map<String, TrajectoryConcentrationRepresentation> getConcentrationData() {
-        return concentrationData;
+    public Map<String, TrajectoryDatapointRepresentation> getData() {
+        return data;
     }
 
-    public void setConcentrationData(Map<String, TrajectoryConcentrationRepresentation> concentrationData) {
-        this.concentrationData = concentrationData;
+    public void setData(Map<String, TrajectoryDatapointRepresentation> data) {
+        this.data = data;
     }
 
 }

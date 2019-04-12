@@ -19,6 +19,7 @@ public interface Jsonizable {
         mapper.registerModule(new UnitJacksonModule());
         mapper.setSerializationInclusion(Include.NON_NULL);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
         mapper.enable(JsonParser.Feature.ALLOW_COMMENTS);
         mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
         return mapper.writeValueAsString(this);

@@ -2,27 +2,32 @@ package singa.bio.exchange.model.trajectories;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.simulation.model.sections.CellSubsection;
-import bio.singa.simulation.trajectories.nested.ConcentrationData;
+import bio.singa.simulation.trajectories.nested.TrajactoryDataPoint;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import singa.bio.exchange.model.agents.VectorRepresentation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author cl
  */
-public class TrajectoryConcentrationRepresentation {
+public class TrajectoryDatapointRepresentation {
 
     @JsonProperty
     private Map<String, Map<String, Double>> concentrations;
 
-    private TrajectoryConcentrationRepresentation() {
-        concentrations = new HashMap<>();
+    @JsonProperty
+    private VectorRepresentation position;
+
+    private TrajectoryDatapointRepresentation() {
+        concentrations = new TreeMap<>();
     }
 
-    public static TrajectoryConcentrationRepresentation of(ConcentrationData concentrationData) {
-        TrajectoryConcentrationRepresentation representation = new TrajectoryConcentrationRepresentation();
-        for (Map.Entry<CellSubsection, Map<ChemicalEntity, Double>> subsectionEntry : concentrationData.getConcentrations().entrySet()) {
+    public static TrajectoryDatapointRepresentation of(TrajactoryDataPoint dataPoint) {
+        TrajectoryDatapointRepresentation representation = new TrajectoryDatapointRepresentation();
+        for (Map.Entry<CellSubsection, Map<ChemicalEntity, Double>> subsectionEntry : dataPoint.getConcentrations().entrySet()) {
             String subsection = subsectionEntry.getKey().getIdentifier();
             Map<String, Double> concentrationMap = new HashMap<>();
             for (Map.Entry<ChemicalEntity, Double> concentrationEntry : subsectionEntry.getValue().entrySet()) {
@@ -30,6 +35,7 @@ public class TrajectoryConcentrationRepresentation {
             }
             representation.concentrations.put(subsection, concentrationMap);
         }
+        representation.setPosition(VectorRepresentation.of(dataPoint.getPosition()));
         return representation;
     }
 
@@ -41,4 +47,11 @@ public class TrajectoryConcentrationRepresentation {
         this.concentrations = concentrations;
     }
 
+    public VectorRepresentation getPosition() {
+        return position;
+    }
+
+    public void setPosition(VectorRepresentation position) {
+        this.position = position;
+    }
 }

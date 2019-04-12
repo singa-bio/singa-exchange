@@ -71,6 +71,7 @@ public class SimulationRepresentation implements Jsonizable {
     }
 
     public static Simulation to(SimulationRepresentation representation) {
+        Converter.current = new Simulation();
         // initialize environment
         representation.getEnvironment().setEnvironment();
         Converter.current.setSimulationRegion(new Rectangle(representation.getEnvironment().getSimulationExtend(), representation.getEnvironment().getSimulationExtend()));

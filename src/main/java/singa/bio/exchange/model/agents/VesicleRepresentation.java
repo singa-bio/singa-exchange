@@ -4,7 +4,7 @@ import bio.singa.simulation.model.agents.pointlike.Vesicle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.sections.RegionCache;
 import singa.bio.exchange.model.sections.RegionRepresentation;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.quantity.Quantities;
 
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
@@ -34,11 +34,10 @@ public class VesicleRepresentation {
     }
 
     public static VesicleRepresentation of(Vesicle vesicle) {
-
         VesicleRepresentation representation = new VesicleRepresentation();
         representation.setIdentifier(vesicle.getStringIdentifier());
         representation.setRegion(RegionRepresentation.of(vesicle.getRegion()).getIdentifier());
-        representation.setPosition(VectorRepresentation.of(vesicle.getCurrentPosition()));
+        representation.setPosition(VectorRepresentation.of(vesicle.getPosition()));
         representation.setRadiusValue(vesicle.getRadius().getValue().doubleValue());
         representation.setRadiusUnit(vesicle.getRadius().getUnit());
         return representation;

@@ -4,6 +4,7 @@ import bio.singa.mathematics.topology.grids.rectangular.NeumannRectangularDirect
 import bio.singa.mathematics.vectors.Vector2D;
 import bio.singa.simulation.model.agents.surfacelike.Membrane;
 import bio.singa.simulation.model.agents.surfacelike.MembraneFactory;
+import bio.singa.simulation.model.agents.surfacelike.MembraneSegment;
 import bio.singa.simulation.model.sections.CellRegion;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -19,6 +20,9 @@ import java.util.stream.Collectors;
 @JsonPropertyOrder({"identifier", "inner-region", "membrane-region", "regions"})
 public class MembraneRepresentation {
 
+    private static String INNER_IS_WEST = "INNER_IS_WEST";
+    private static String INNER_IS_EAST = "INNER_IS_EAST";
+
     @JsonProperty
     private String identifier;
 
@@ -31,8 +35,12 @@ public class MembraneRepresentation {
     @JsonProperty
     private Map<String, List<VectorRepresentation>> regions;
 
+    @JsonProperty("topological-hints")
+    private List<String> topologicalHints;
+
     public MembraneRepresentation() {
         regions = new HashMap<>();
+        topologicalHints = new ArrayList<>();
     }
 
     public static MembraneRepresentation of(Membrane membrane) {
@@ -40,14 +48,44 @@ public class MembraneRepresentation {
         representation.setIdentifier(membrane.getIdentifier());
         representation.setInnerRegion(membrane.getInnerRegion().getIdentifier());
         representation.setMembraneRegion(membrane.getMembraneRegion().getIdentifier());
-        Map<CellRegion, Set<Vector2D>> regionMap = membrane.getRegionMap();
-        for (Map.Entry<CellRegion, Set<Vector2D>> entry : regionMap.entrySet()) {
-            ArrayList<VectorRepresentation> vectors = new ArrayList<>();
-            for (Vector2D vector : entry.getValue()) {
-                vectors.add(VectorRepresentation.of(vector));
+        // add rendering hints
+        if (membrane.getInnerDirection() != null) {
+            NeumannRectangularDirection innerDirection = membrane.getInnerDirection();
+            if (innerDirection == NeumannRectangularDirection.EAST) {
+                representation.getTopologicalHints().add(INNER_IS_EAST);
+            } else if (innerDirection == NeumannRectangularDirection.WEST) {
+                representation.getTopologicalHints().add(INNER_IS_WEST);
             }
-            RegionCache.add(entry.getKey());
-            representation.addRegion(entry.getKey().getIdentifier(), vectors);
+        }
+        if (membrane.getRegionMap() != null) {
+            // generate region map when present
+            Map<CellRegion, Set<Vector2D>> regionMap = membrane.getRegionMap();
+            for (Map.Entry<CellRegion, Set<Vector2D>> entry : regionMap.entrySet()) {
+                ArrayList<VectorRepresentation> vectors = new ArrayList<>();
+                for (Vector2D vector : entry.getValue()) {
+                    vectors.add(VectorRepresentation.of(vector));
+                }
+                RegionCache.add(entry.getKey());
+                representation.addRegion(entry.getKey().getIdentifier(), vectors);
+            }
+        } else {
+            // reconstruct region map from nodes if possible
+            Map<String, List<VectorRepresentation>> regions = representation.getRegions();
+            for (MembraneSegment segment : membrane.getSegments()) {
+                String region = segment.getNode().getCellRegion().getIdentifier();
+                if (!regions.containsKey(region)) {
+                    regions.put(region, new ArrayList<>());
+                }
+                List<VectorRepresentation> associatedNodes = regions.get(region);
+                VectorRepresentation start = VectorRepresentation.of(segment.getStartingPoint());
+                if (!associatedNodes.contains(start)) {
+                    associatedNodes.add(start);
+                }
+                VectorRepresentation end = VectorRepresentation.of(segment.getEndingPoint());
+                if (!associatedNodes.contains(end)) {
+                    associatedNodes.add(end);
+                }
+            }
         }
         return representation;
     }
@@ -70,8 +108,15 @@ public class MembraneRepresentation {
             return MembraneFactory.createClosedMembrane(vectors, RegionCache.get(getInnerRegion()),
                     RegionCache.get(getMembraneRegion()), Converter.current.getGraph(), mapping);
         } else {
+            List<String> topologicalHints = getTopologicalHints();
+            NeumannRectangularDirection innerDirection;
+            if (topologicalHints.contains(INNER_IS_EAST)) {
+                innerDirection = NeumannRectangularDirection.EAST;
+            } else {
+                innerDirection = NeumannRectangularDirection.WEST;
+            }
             return MembraneFactory.createLinearMembrane(vectors, RegionCache.get(getInnerRegion()),
-                    RegionCache.get(getMembraneRegion()), NeumannRectangularDirection.EAST,
+                    RegionCache.get(getMembraneRegion()), innerDirection,
                     Converter.current.getGraph(), mapping, Converter.current.getSimulationRegion());
         }
 
@@ -111,5 +156,13 @@ public class MembraneRepresentation {
 
     public void setMembraneRegion(String membraneRegion) {
         this.membraneRegion = membraneRegion;
+    }
+
+    public List<String> getTopologicalHints() {
+        return topologicalHints;
+    }
+
+    public void setTopologicalHints(List<String> topologicalHints) {
+        this.topologicalHints = topologicalHints;
     }
 }

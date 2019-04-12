@@ -39,9 +39,9 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
+import systems.uom.ucum.format.UCUMFormat;
 
 import javax.measure.Unit;
-import javax.measure.spi.ServiceProvider;
 import java.io.IOException;
 
 /**
@@ -72,7 +72,9 @@ public class UnitJacksonModule extends SimpleModule {
             if (unit == null) {
                 jgen.writeNull();
             } else {
-                jgen.writeString(ServiceProvider.current().getUnitFormatService().getUnitFormat("EBNF").format(unit, new StringBuilder()).toString());
+                String unitString = UCUMFormat.getInstance(UCUMFormat.Variant.CASE_SENSITIVE).format(unit, new StringBuilder()).toString();
+                // System.out.println(unitString);
+                jgen.writeString(unitString);
             }
         }
     }
@@ -90,7 +92,7 @@ public class UnitJacksonModule extends SimpleModule {
         public Unit deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             JsonToken currentToken = jsonParser.getCurrentToken();
             if (currentToken == JsonToken.VALUE_STRING) {
-                return ServiceProvider.current().getUnitFormatService().getUnitFormat("EBNF").parse(jsonParser.getText());
+                return UCUMFormat.getInstance(UCUMFormat.Variant.CASE_SENSITIVE).parse(jsonParser.getText());
             }
             throw deserializationContext.wrongTokenException(jsonParser,
                     JsonToken.VALUE_STRING, "Expected unit value in String format");

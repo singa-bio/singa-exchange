@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import singa.bio.exchange.model.Converter;
 import singa.bio.exchange.model.SimulationRepresentation;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.quantity.Quantities;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,7 +24,7 @@ import static bio.singa.features.units.UnitProvider.NANO_MOLE_PER_LITRE;
 import static bio.singa.simulation.model.sections.CellTopology.MEMBRANE;
 import static bio.singa.simulation.model.sections.CellTopology.OUTER;
 import static singa.bio.exchange.model.conversion.Constants.BUSH2016;
-import static tec.uom.se.unit.Units.SECOND;
+import static tec.units.indriya.unit.Units.SECOND;
 
 /**
  * @author cl

@@ -13,7 +13,7 @@ import singa.bio.exchange.model.IllegalConversionException;
 import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.evidence.EvidenceCache;
 import singa.bio.exchange.model.sections.RegionCache;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 import java.lang.reflect.Constructor;

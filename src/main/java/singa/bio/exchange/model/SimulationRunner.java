@@ -11,13 +11,11 @@ import bio.singa.simulation.trajectories.Recorders;
 import bio.singa.simulation.trajectories.flat.FlatUpdateRecorder;
 import bio.singa.simulation.trajectories.nested.NestedUpdateRecorder;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import javafx.embed.swing.JFXPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tec.uom.se.quantity.Quantities;
+import tec.units.indriya.quantity.Quantities;
 
 import javax.measure.quantity.Time;
-import javax.swing.*;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -32,9 +30,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static bio.singa.features.units.UnitProvider.NANO_MOLE_PER_LITRE;
-import static tec.uom.se.unit.MetricPrefix.MILLI;
-import static tec.uom.se.unit.Units.MINUTE;
-import static tec.uom.se.unit.Units.SECOND;
+import static tec.units.indriya.unit.MetricPrefix.MILLI;
+import static tec.units.indriya.unit.Units.MINUTE;
+import static tec.units.indriya.unit.Units.SECOND;
 
 /**
  * @author cl
@@ -133,7 +131,7 @@ public class SimulationRunner {
 
         // create manager
         SimulationManager simulationManager = new SimulationManager(simulation);
-        NestedUpdateRecorder nestedRecorder = new NestedUpdateRecorder();
+        NestedUpdateRecorder nestedRecorder = new NestedUpdateRecorder(simulation);
         simulationManager.addGraphUpdateListener(nestedRecorder);
 
         // reference latch for termination
@@ -154,9 +152,6 @@ public class SimulationRunner {
         // reference writer
         simulationManager.addNodeUpdateListener(flatRecorder);
 
-        // if you want to use fx tasks you need some magic
-        initializeJFXEnvironment();
-
         // start
         Thread thread = new Thread(simulationManager);
         thread.setDaemon(true);
@@ -166,19 +161,6 @@ public class SimulationRunner {
         terminationLatch.await();
 //        TrajectoryDataset trajectoryDataset = TrajectoryDataset.of(trajectoryObserver.getTrajectories());
 //        System.out.println(trajectoryDataset.toJson());
-    }
-
-    public static void initializeJFXEnvironment() {
-        final CountDownLatch latch = new CountDownLatch(1);
-        SwingUtilities.invokeLater(() -> {
-            new JFXPanel();
-            latch.countDown();
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
 }

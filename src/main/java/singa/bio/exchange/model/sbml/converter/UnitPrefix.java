@@ -1,8 +1,8 @@
 package singa.bio.exchange.model.sbml.converter;
 
 
-import tec.uom.se.AbstractConverter;
-import tec.uom.se.unit.MetricPrefix;
+import tec.units.indriya.AbstractConverter;
+import tec.units.indriya.unit.MetricPrefix;
 
 import javax.measure.UnitConverter;
 

@@ -4,7 +4,8 @@ import bio.singa.features.quantities.MolarConcentration;
 import bio.singa.features.units.UnitRegistry;
 import bio.singa.simulation.model.simulation.Updatable;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import singa.bio.exchange.model.IllegalConversionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.sections.SubsectionCache;
 
@@ -14,6 +15,8 @@ import javax.measure.Quantity;
  * @author cl
  */
 public class Observation {
+
+    private static final Logger logger = LoggerFactory.getLogger(Observation.class);
 
     @JsonProperty
     private String alias;
@@ -73,7 +76,7 @@ public class Observation {
 
     public void validate() {
         if (!(EntityCache.contains(entity) && SubsectionCache.contains(subsection) && UpdatableCacheManager.isAvailable(updatable))) {
-            throw new IllegalConversionException("The observation (entity: " + entity + " subsection: " + subsection + " updatable: " + updatable + ") would not be able to record any data.");
+            logger.warn("The observation (entity: " + entity + " subsection: " + subsection + " updatable: " + updatable + ") might not be able to record any data.");
         }
     }
 
@@ -85,4 +88,11 @@ public class Observation {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return alias + ": " +
+                "E = " + entity + " " +
+                "S = " + subsection + " " +
+                "U = " + updatable;
+    }
 }
