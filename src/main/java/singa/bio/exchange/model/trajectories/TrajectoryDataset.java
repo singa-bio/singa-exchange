@@ -28,6 +28,12 @@ public class TrajectoryDataset {
     @JsonProperty("concentration-unit")
     private Unit<MolarConcentration> concentrationUnit;
 
+    @JsonProperty("simulation-width")
+    private double simulationWidth;
+
+    @JsonProperty("simulation-height")
+    private double simulationHeight;
+
     @JsonProperty("trajectory-data")
     private Map<Double, TrajectoryRepresentation> trajectoryData;
 
@@ -39,6 +45,8 @@ public class TrajectoryDataset {
         TrajectoryDataset dataset = new TrajectoryDataset();
         dataset.setTimeUnit(trajectories.getTimeUnit());
         dataset.setConcentrationUnit(trajectories.getConcentrationUnit());
+        dataset.setSimulationWidth(trajectories.getSimulationWidth());
+        dataset.setSimulationHeight(trajectories.getSimulationHeight());
         for (Map.Entry<Double, TrajectoryData> entry : trajectories.getTrajectoryData().entrySet()) {
             dataset.trajectoryData.put(entry.getKey(), TrajectoryRepresentation.of(entry.getValue()));
         }
@@ -67,6 +75,22 @@ public class TrajectoryDataset {
 
     public void setTrajectoryData(Map<Double, TrajectoryRepresentation> trajectoryData) {
         this.trajectoryData = trajectoryData;
+    }
+
+    public double getSimulationWidth() {
+        return simulationWidth;
+    }
+
+    public void setSimulationWidth(double simulationWidth) {
+        this.simulationWidth = simulationWidth;
+    }
+
+    public double getSimulationHeight() {
+        return simulationHeight;
+    }
+
+    public void setSimulationHeight(double simulationHeight) {
+        this.simulationHeight = simulationHeight;
     }
 
     public String toJson() throws JsonProcessingException {

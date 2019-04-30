@@ -1,8 +1,8 @@
 package singa.bio.exchange.model.agents;
 
-import bio.singa.mathematics.topology.grids.rectangular.NeumannRectangularDirection;
 import bio.singa.mathematics.vectors.Vector2D;
 import bio.singa.simulation.model.agents.surfacelike.Membrane;
+import bio.singa.simulation.model.agents.surfacelike.MembraneBuilder;
 import bio.singa.simulation.model.agents.surfacelike.MembraneFactory;
 import bio.singa.simulation.model.agents.surfacelike.MembraneSegment;
 import bio.singa.simulation.model.sections.CellRegion;
@@ -17,11 +17,8 @@ import java.util.stream.Collectors;
 /**
  * @author cl
  */
-@JsonPropertyOrder({"identifier", "inner-region", "membrane-region", "regions"})
+@JsonPropertyOrder({"identifier", "inner-region","inner-point", "membrane-region", "regions"})
 public class MembraneRepresentation {
-
-    private static String INNER_IS_WEST = "INNER_IS_WEST";
-    private static String INNER_IS_EAST = "INNER_IS_EAST";
 
     @JsonProperty
     private String identifier;
@@ -35,12 +32,11 @@ public class MembraneRepresentation {
     @JsonProperty
     private Map<String, List<VectorRepresentation>> regions;
 
-    @JsonProperty("topological-hints")
-    private List<String> topologicalHints;
+    @JsonProperty("inner-point")
+    private VectorRepresentation innerPoint;
 
     public MembraneRepresentation() {
         regions = new HashMap<>();
-        topologicalHints = new ArrayList<>();
     }
 
     public static MembraneRepresentation of(Membrane membrane) {
@@ -48,15 +44,7 @@ public class MembraneRepresentation {
         representation.setIdentifier(membrane.getIdentifier());
         representation.setInnerRegion(membrane.getInnerRegion().getIdentifier());
         representation.setMembraneRegion(membrane.getMembraneRegion().getIdentifier());
-        // add rendering hints
-        if (membrane.getInnerDirection() != null) {
-            NeumannRectangularDirection innerDirection = membrane.getInnerDirection();
-            if (innerDirection == NeumannRectangularDirection.EAST) {
-                representation.getTopologicalHints().add(INNER_IS_EAST);
-            } else if (innerDirection == NeumannRectangularDirection.WEST) {
-                representation.getTopologicalHints().add(INNER_IS_WEST);
-            }
-        }
+        representation.setInnerPoint(VectorRepresentation.of(membrane.getInnerPoint()));
         if (membrane.getRegionMap() != null) {
             // generate region map when present
             Map<CellRegion, Set<Vector2D>> regionMap = membrane.getRegionMap();
@@ -108,16 +96,12 @@ public class MembraneRepresentation {
             return MembraneFactory.createClosedMembrane(vectors, RegionCache.get(getInnerRegion()),
                     RegionCache.get(getMembraneRegion()), Converter.current.getGraph(), mapping);
         } else {
-            List<String> topologicalHints = getTopologicalHints();
-            NeumannRectangularDirection innerDirection;
-            if (topologicalHints.contains(INNER_IS_EAST)) {
-                innerDirection = NeumannRectangularDirection.EAST;
-            } else {
-                innerDirection = NeumannRectangularDirection.WEST;
-            }
-            return MembraneFactory.createLinearMembrane(vectors, RegionCache.get(getInnerRegion()),
-                    RegionCache.get(getMembraneRegion()), innerDirection,
-                    Converter.current.getGraph(), mapping, Converter.current.getSimulationRegion());
+            return MembraneBuilder.linear()
+                    .vectors(vectors)
+                    .innerPoint(getInnerPoint().toModel())
+                    .graph(Converter.current.getGraph())
+                    .membraneRegion(RegionCache.get(getInnerRegion()), RegionCache.get(getMembraneRegion()))
+                    .build();
         }
 
     }
@@ -158,11 +142,11 @@ public class MembraneRepresentation {
         this.membraneRegion = membraneRegion;
     }
 
-    public List<String> getTopologicalHints() {
-        return topologicalHints;
+    public VectorRepresentation getInnerPoint() {
+        return innerPoint;
     }
 
-    public void setTopologicalHints(List<String> topologicalHints) {
-        this.topologicalHints = topologicalHints;
+    public void setInnerPoint(VectorRepresentation innerPoint) {
+        this.innerPoint = innerPoint;
     }
 }
