@@ -5,7 +5,6 @@ import bio.singa.simulation.trajectories.nested.Trajectories;
 import bio.singa.simulation.trajectories.nested.TrajectoryData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -14,6 +13,7 @@ import singa.bio.exchange.model.units.UnitJacksonModule;
 
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -51,6 +51,18 @@ public class TrajectoryDataset {
             dataset.trajectoryData.put(entry.getKey(), TrajectoryRepresentation.of(entry.getValue()));
         }
         return dataset;
+    }
+
+    public Trajectories toModel() {
+        Trajectories trajectories = new Trajectories(getTimeUnit(), getConcentrationUnit());
+        trajectories.setSimulationWidth(getSimulationWidth());
+        trajectories.setSimulationHeight(getSimulationHeight());
+        for (Map.Entry<Double, TrajectoryRepresentation> entry : trajectoryData.entrySet()) {
+            double timestep = entry.getKey();
+            TrajectoryRepresentation trajectory = entry.getValue();
+            trajectories.addTrajectoryData(timestep, trajectory.toModel());
+        }
+        return trajectories;
     }
 
     public Unit<Time> getTimeUnit() {
@@ -98,9 +110,14 @@ public class TrajectoryDataset {
         mapper.registerModule(new UnitJacksonModule());
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        mapper.enable(JsonParser.Feature.ALLOW_COMMENTS);
         mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
         return mapper.writeValueAsString(this);
+    }
+
+    public static TrajectoryDataset fromJson(String json) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new UnitJacksonModule());
+        return mapper.readValue(json, TrajectoryDataset.class);
     }
 
 }

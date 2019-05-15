@@ -8,8 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.sections.SubsectionCache;
+import singa.bio.exchange.model.trajectories.TrajectoryDataset;
+import tec.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
+import javax.measure.quantity.Time;
+import java.util.AbstractMap;
+import java.util.Map;
 
 /**
  * @author cl
@@ -80,12 +85,45 @@ public class Observation {
         }
     }
 
+    /**
+     * Observes the the current value in the simulation.
+     *
+     * @return The concentration related to this observation.
+     */
     public Quantity<MolarConcentration> observe() {
         Updatable updatable = UpdatableCacheManager.get(this.updatable);
         if (updatable != null) {
             return UnitRegistry.concentration(updatable.getConcentrationContainer().get(SubsectionCache.get(subsection), EntityCache.get(entity)));
         }
         return null;
+    }
+
+    /**
+     * Observes this observation in a trajectory at the given time.
+     *
+     * @param trajectory
+     * @return
+     */
+    public Map.Entry<Quantity<Time>, Quantity<MolarConcentration>> observe(TrajectoryDataset trajectory, Quantity<Time> extractionTime) {
+        // get best matching time step
+        double extractionValue = extractionTime.to(trajectory.getTimeUnit()).getValue().doubleValue();
+        double minimalDeviation = Double.MAX_VALUE;
+        double optimalTimestep = -1.0;
+        for (double currentTimestep : trajectory.getTrajectoryData().keySet()) {
+            double currentDeviation = Math.abs(currentTimestep - extractionValue);
+            if (currentDeviation < minimalDeviation) {
+                minimalDeviation = currentDeviation;
+                optimalTimestep = currentTimestep;
+            }
+        }
+        // retrieve the concentration
+        Double concentration = trajectory.getTrajectoryData().get(optimalTimestep)
+                .getData().get(getUpdatable())
+                .getSubsections().get(getSubsection())
+                .getConcentrations().get(getEntity());
+        // return with annotated units
+        return new AbstractMap.SimpleEntry<>(Quantities.getQuantity(optimalTimestep, trajectory.getTimeUnit()),
+                Quantities.getQuantity(concentration, trajectory.getConcentrationUnit()));
     }
 
     @Override

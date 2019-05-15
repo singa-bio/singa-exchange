@@ -28,12 +28,12 @@ public class ObservationRecorder {
     private List<String> recordedVariations;
     private List<String> recordedObservations;
 
-    public ObservationRecorder(Observations observations, Unit<MolarConcentration> molarConcentration, VariationSet variationSet) {
+    public ObservationRecorder(Observations observations, Unit<MolarConcentration> concentrationUnit, VariationSet variationSet) {
         this.observations = observations;
         observedAliases = new ArrayList<>();
         recordedVariations = new ArrayList<>();
         recordedObservations = new ArrayList<>();
-        formatter = ConcentrationFormatter.create(molarConcentration);
+        formatter = ConcentrationFormatter.create(concentrationUnit);
         createObservationHeader();
         createVariationHeader(variationSet);
     }
@@ -58,6 +58,10 @@ public class ObservationRecorder {
                 .map(VariationSet::getValueString)
                 .collect(Collectors.joining(","));
         recordedVariations.add(variationsLine);
+    }
+
+    public void recordVariations() {
+
     }
 
     public void recordObservations() {

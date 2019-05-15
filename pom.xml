@@ -86,12 +86,12 @@
         <dependency>
             <groupId>systems.uom</groupId>
             <artifactId>systems-ucum</artifactId>
-            <version>0.9</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>systems.uom</groupId>
             <artifactId>systems-quantity</artifactId>
-            <version>0.9</version>
+            <version>1.0</version>
         </dependency>
         <!-- json -->
         <dependency>

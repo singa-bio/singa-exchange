@@ -4,6 +4,7 @@ import bio.singa.simulation.model.simulation.Updatable;
 import bio.singa.simulation.trajectories.nested.TrajactoryDataPoint;
 import bio.singa.simulation.trajectories.nested.TrajectoryData;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import singa.bio.exchange.model.variation.UpdatableCacheManager;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -27,6 +28,14 @@ public class TrajectoryRepresentation {
             representation.data.put(entry.getKey().getStringIdentifier(), TrajectoryDatapointRepresentation.of(entry.getValue()));
         }
         return representation;
+    }
+
+    public TrajectoryData toModel() {
+        TrajectoryData trajectory = new TrajectoryData();
+        for (Map.Entry<String, TrajectoryDatapointRepresentation> entry : data.entrySet()) {
+            trajectory.put(UpdatableCacheManager.get(entry.getKey()), entry.getValue().toModel());
+        }
+        return trajectory;
     }
 
     public Map<String, TrajectoryDatapointRepresentation> getData() {
