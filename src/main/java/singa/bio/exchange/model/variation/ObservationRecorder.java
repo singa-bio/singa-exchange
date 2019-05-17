@@ -17,18 +17,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * Records observations from running simulations.
+ *
  * @author cl
  */
 public class ObservationRecorder {
 
     private List<String> observedAliases;
-    private Observations observations;
+    private ObservationSpecifications observations;
     private ConcentrationFormatter formatter;
 
     private List<String> recordedVariations;
     private List<String> recordedObservations;
 
-    public ObservationRecorder(Observations observations, Unit<MolarConcentration> concentrationUnit, VariationSet variationSet) {
+    public ObservationRecorder(ObservationSpecifications observations, Unit<MolarConcentration> concentrationUnit, VariationSet variationSet) {
         this.observations = observations;
         observedAliases = new ArrayList<>();
         recordedVariations = new ArrayList<>();
@@ -44,7 +46,7 @@ public class ObservationRecorder {
     }
 
     private void collectAliases() {
-        for (Observation observation : observations.getObservations()) {
+        for (ObservationSpecification observation : observations.getObservations()) {
             observedAliases.add(observation.getAlias());
         }
     }
@@ -66,7 +68,7 @@ public class ObservationRecorder {
 
     public void recordObservations() {
         Map<String, Quantity<MolarConcentration>> concentrations = new HashMap<>();
-        for (Observation observation : observations.getObservations()) {
+        for (ObservationSpecification observation : observations.getObservations()) {
             Quantity<MolarConcentration> concentration = observation.observe();
             concentrations.put(observation.getAlias(), concentration);
         }
@@ -84,7 +86,7 @@ public class ObservationRecorder {
         return recordedObservations.get(recordedObservations.size() - 1);
     }
 
-    public Observations getObservations() {
+    public ObservationSpecifications getObservations() {
         return observations;
     }
 

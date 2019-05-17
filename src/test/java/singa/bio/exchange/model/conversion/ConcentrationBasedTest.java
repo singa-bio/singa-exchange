@@ -96,10 +96,7 @@ public class ConcentrationBasedTest {
         initializer.addInitialConcentration(new SectionConcentration(regions.interstitium, entities.water, Quantities.getQuantity(53.11, MOLE_PER_LITRE)));
         initializer.addInitialConcentration(new SectionConcentration(regions.interstitium, entities.solute, Quantities.getQuantity(0.5, MOLE_PER_LITRE)));
         simulation.setConcentrationInitializer(initializer);
-        // sources
-        graph.getNode(0, 0).getConcentrationManager().setConcentrationFixed(true);
-        // sinks
-        graph.getNode(24, 0).getConcentrationManager().setConcentrationFixed(true);
+
 
         // free diffusion
         Diffusion.inSimulation(simulation)

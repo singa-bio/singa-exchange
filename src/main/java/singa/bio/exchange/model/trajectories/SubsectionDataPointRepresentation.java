@@ -3,7 +3,7 @@ package singa.bio.exchange.model.trajectories;
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.chemistry.entities.SmallMolecule;
 import bio.singa.mathematics.vectors.Vector2D;
-import bio.singa.simulation.trajectories.nested.TrajactoryDataPoint;
+import bio.singa.simulation.trajectories.nested.TrajectoryDataPoint;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.agents.VectorRepresentation;
 import singa.bio.exchange.model.entities.EntityCache;
@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * @author cl
  */
-public class SubsectionDatapointRepresentation {
+public class SubsectionDataPointRepresentation {
 
     @JsonProperty
     private Map<String, Double> concentrations;
@@ -24,13 +24,13 @@ public class SubsectionDatapointRepresentation {
     @JsonProperty
     private List<VectorRepresentation> positions;
 
-    public SubsectionDatapointRepresentation() {
+    public SubsectionDataPointRepresentation() {
         concentrations = new HashMap<>();
         positions = new ArrayList<>();
     }
 
-    public static SubsectionDatapointRepresentation of(TrajactoryDataPoint.SubsectionDatapoint subsectionData) {
-        SubsectionDatapointRepresentation representation = new SubsectionDatapointRepresentation();
+    public static SubsectionDataPointRepresentation of(TrajectoryDataPoint.SubsectionDataPoint subsectionData) {
+        SubsectionDataPointRepresentation representation = new SubsectionDataPointRepresentation();
         for (Map.Entry<ChemicalEntity, Double> concentrationEntry : subsectionData.getConcentrations().entrySet()) {
             representation.concentrations.put(concentrationEntry.getKey().getIdentifier().toString(), concentrationEntry.getValue());
         }
@@ -40,19 +40,19 @@ public class SubsectionDatapointRepresentation {
         return representation;
     }
 
-    public TrajactoryDataPoint.SubsectionDatapoint toModel() {
-        TrajactoryDataPoint.SubsectionDatapoint subsectionDatapoint = new TrajactoryDataPoint.SubsectionDatapoint();
+    public TrajectoryDataPoint.SubsectionDataPoint toModel() {
+        TrajectoryDataPoint.SubsectionDataPoint SubsectionDataPoint = new TrajectoryDataPoint.SubsectionDataPoint();
         for (Map.Entry<String, Double> entry : concentrations.entrySet()) {
             ChemicalEntity entity = EntityCache.get(entry.getKey());
             if (entity == null) {
                 entity = SmallMolecule.create(entry.getKey()).build();
             }
-            subsectionDatapoint.addConcentration(entity, entry.getValue());
+            SubsectionDataPoint.addConcentration(entity, entry.getValue());
         }
         for (VectorRepresentation position : positions) {
-            subsectionDatapoint.addPosition(position.toModel());
+            SubsectionDataPoint.addPosition(position.toModel());
         }
-        return subsectionDatapoint;
+        return SubsectionDataPoint;
     }
 
     public Map<String, Double> getConcentrations() {
