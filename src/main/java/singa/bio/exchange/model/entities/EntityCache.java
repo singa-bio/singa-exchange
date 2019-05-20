@@ -1,6 +1,7 @@
 package singa.bio.exchange.model.entities;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
+import bio.singa.chemistry.entities.SmallMolecule;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,6 +34,13 @@ public class EntityCache {
 
     public static ChemicalEntity get(String identifier) {
         return getInstance().cache.get(identifier);
+    }
+
+    public static ChemicalEntity draft(String identifier) {
+        if (getInstance().cache.containsKey(identifier)) {
+            return get(identifier);
+        }
+        return SmallMolecule.create(identifier).build();
     }
 
     public static Collection<ChemicalEntity> getAll() {
