@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.evidence.EvidenceCache;
 import singa.bio.exchange.model.evidence.EvidenceRepresentation;
 import singa.bio.exchange.model.variation.Variable;
-import tec.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Unit;
 

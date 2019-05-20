@@ -13,6 +13,7 @@ import singa.bio.exchange.model.units.UnitJacksonModule;
 
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
@@ -112,6 +113,15 @@ public class TrajectoryDataset {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
         return mapper.writeValueAsString(this);
+    }
+
+    public void write(File file) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new UnitJacksonModule());
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+        mapper.writeValue(file,this);
     }
 
     public static TrajectoryDataset fromJson(String json) throws IOException {

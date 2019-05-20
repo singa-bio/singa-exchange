@@ -14,7 +14,7 @@ import singa.bio.exchange.model.sections.InitialConcentrationRepresentation;
 import singa.bio.exchange.model.sections.RegionCache;
 import singa.bio.exchange.model.sections.SectionConcentrationRepresentation;
 import singa.bio.exchange.model.sections.SubsectionCache;
-import tec.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 

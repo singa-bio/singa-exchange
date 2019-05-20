@@ -1,39 +1,35 @@
 package singa.bio.exchange.model.sbml.converter;
 
 
-import tec.units.indriya.AbstractConverter;
-import tec.units.indriya.unit.MetricPrefix;
-
-import javax.measure.UnitConverter;
+import tech.units.indriya.unit.MetricPrefix;
 
 /**
  * The unit prefixes required for SBML. This class provides a mapping between SBML and units of measurement.
  */
 public enum UnitPrefix {
 
-    TERA(12, "T", MetricPrefix.TERA.getConverter()),
-    GIGA(9, "G", MetricPrefix.GIGA.getConverter()),
-    MEGA(6, "M", MetricPrefix.MEGA.getConverter()),
-    KILO(3, "k", MetricPrefix.KILO.getConverter()),
-    HECTO(2, "h", MetricPrefix.HECTO.getConverter()),
-    DECA(1, "da", MetricPrefix.DEKA.getConverter()),
-    DECI(-1, "d", MetricPrefix.DECI.getConverter()),
-    CENTI(-2, "c", MetricPrefix.CENTI.getConverter()),
-    MILLI(-3, "m", MetricPrefix.MILLI.getConverter()),
-    MICRO(-6, "\u00B5", MetricPrefix.MICRO.getConverter()),
-    NANO(-9, "n", MetricPrefix.NANO.getConverter()),
-    PICO(-12, "p", MetricPrefix.PICO.getConverter()),
-    FEMTO(-15, "f", MetricPrefix.FEMTO.getConverter()),
-    NO_PREFIX(0, "", AbstractConverter.IDENTITY);
+    TERA(12, "T", MetricPrefix.TERA),
+    GIGA(9, "G", MetricPrefix.GIGA),
+    MEGA(6, "M", MetricPrefix.MEGA),
+    KILO(3, "k", MetricPrefix.KILO),
+    HECTO(2, "h", MetricPrefix.HECTO),
+    DECA(1, "da", MetricPrefix.DEKA),
+    DECI(-1, "d", MetricPrefix.DECI),
+    CENTI(-2, "c", MetricPrefix.CENTI),
+    MILLI(-3, "m", MetricPrefix.MILLI),
+    MICRO(-6, "\u00B5", MetricPrefix.MICRO),
+    NANO(-9, "n", MetricPrefix.NANO),
+    PICO(-12, "p", MetricPrefix.PICO),
+    FEMTO(-15, "f", MetricPrefix.FEMTO);
 
     private final int scale;
     private final String symbol;
-    private final UnitConverter correspondingConverter;
+    private final MetricPrefix metricPrefix;
 
-    UnitPrefix(int scale, String symbol, UnitConverter correspondingConverter) {
+    UnitPrefix(int scale, String symbol, MetricPrefix prefix) {
         this.scale = scale;
         this.symbol = symbol;
-        this.correspondingConverter = correspondingConverter;
+        this.metricPrefix = prefix;
     }
 
     public int getScale() {
@@ -44,8 +40,8 @@ public enum UnitPrefix {
         return symbol;
     }
 
-    public UnitConverter getCorrespondingConverter() {
-        return correspondingConverter;
+    public MetricPrefix getMetricPrefix() {
+        return metricPrefix;
     }
 
     /**
@@ -55,10 +51,12 @@ public enum UnitPrefix {
      * @return The {@link UnitPrefix}.
      */
     public static UnitPrefix getUnitPrefixFromScale(int exponent) {
-        for (UnitPrefix unitPrefix : UnitPrefix.values())
-            if (exponent == unitPrefix.getScale())
+        for (UnitPrefix unitPrefix : UnitPrefix.values()) {
+            if (exponent == unitPrefix.getScale()) {
                 return unitPrefix;
-        return UnitPrefix.NO_PREFIX;
+            }
+        }
+        return null;
     }
 
 }

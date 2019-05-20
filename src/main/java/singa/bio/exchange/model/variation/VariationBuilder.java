@@ -13,7 +13,7 @@ import bio.singa.simulation.model.simulation.Simulation;
 import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.sections.RegionCache;
 import singa.bio.exchange.model.sections.SubsectionCache;
-import tec.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;

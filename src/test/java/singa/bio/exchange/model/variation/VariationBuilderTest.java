@@ -18,8 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static bio.singa.features.units.UnitProvider.MICRO_MOLE_PER_LITRE;
-import static tec.units.indriya.unit.MetricPrefix.MICRO;
-import static tec.units.indriya.unit.Units.*;
+import static tech.units.indriya.unit.MetricPrefix.MICRO;
+import static tech.units.indriya.unit.Units.*;
 
 /**
  * @author cl

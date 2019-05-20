@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.sections.SubsectionCache;
 import singa.bio.exchange.model.trajectories.TrajectoryDataset;
-import tec.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Time;

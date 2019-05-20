@@ -13,7 +13,7 @@ import bio.singa.simulation.trajectories.nested.NestedUpdateRecorder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tec.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.quantity.Time;
 import java.io.IOException;
@@ -30,9 +30,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static bio.singa.features.units.UnitProvider.NANO_MOLE_PER_LITRE;
-import static tec.units.indriya.unit.MetricPrefix.MILLI;
-import static tec.units.indriya.unit.Units.MINUTE;
-import static tec.units.indriya.unit.Units.SECOND;
+import static tech.units.indriya.unit.MetricPrefix.MILLI;
+import static tech.units.indriya.unit.Units.MINUTE;
+import static tech.units.indriya.unit.Units.SECOND;
 
 /**
  * @author cl

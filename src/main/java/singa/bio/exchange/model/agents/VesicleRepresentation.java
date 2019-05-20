@@ -4,7 +4,7 @@ import bio.singa.simulation.model.agents.pointlike.Vesicle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.sections.RegionCache;
 import singa.bio.exchange.model.sections.RegionRepresentation;
-import tec.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Unit;
 import javax.measure.quantity.Length;

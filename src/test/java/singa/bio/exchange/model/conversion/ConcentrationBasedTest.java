@@ -18,8 +18,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import singa.bio.exchange.model.Converter;
 import singa.bio.exchange.model.SimulationRepresentation;
-import tec.units.indriya.ComparableQuantity;
-import tec.units.indriya.quantity.Quantities;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
@@ -29,8 +29,8 @@ import java.util.List;
 import static bio.singa.features.units.UnitProvider.MOLE_PER_LITRE;
 import static singa.bio.exchange.model.conversion.Constants.BOUNDING_BOX;
 import static singa.bio.exchange.model.conversion.Constants.YANG1997;
-import static tec.units.indriya.unit.MetricPrefix.MICRO;
-import static tec.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.MetricPrefix.MICRO;
+import static tech.units.indriya.unit.Units.METRE;
 
 /**
  * @author cl
@@ -96,10 +96,6 @@ public class ConcentrationBasedTest {
         initializer.addInitialConcentration(new SectionConcentration(regions.interstitium, entities.water, Quantities.getQuantity(53.11, MOLE_PER_LITRE)));
         initializer.addInitialConcentration(new SectionConcentration(regions.interstitium, entities.solute, Quantities.getQuantity(0.5, MOLE_PER_LITRE)));
         simulation.setConcentrationInitializer(initializer);
-        // sources
-        graph.getNode(0, 0).getConcentrationManager().setConcentrationFixed(true);
-        // sinks
-        graph.getNode(24, 0).getConcentrationManager().setConcentrationFixed(true);
 
         // free diffusion
         Diffusion.inSimulation(simulation)

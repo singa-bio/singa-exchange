@@ -6,13 +6,13 @@ import org.sbml.jsbml.UnitDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.units.UnitCache;
-import tec.units.indriya.unit.ProductUnit;
+import tech.units.indriya.unit.ProductUnit;
 
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
 
-import static tec.units.indriya.AbstractUnit.ONE;
-import static tec.units.indriya.unit.Units.*;
+import static tech.units.indriya.AbstractUnit.ONE;
+import static tech.units.indriya.unit.Units.*;
 
 /**
  * Converts JSBML Units to UnitsOfMeasurement Units.
@@ -75,8 +75,8 @@ public class SBMLUnitConverter {
         for (org.sbml.jsbml.Unit sbmlUnit : unitDefinition.getListOfUnits()) {
             Unit unitComponent = getUnitForKind(sbmlUnit.getKind());
             UnitPrefix prefix = UnitPrefix.getUnitPrefixFromScale(sbmlUnit.getScale());
-            if (prefix != UnitPrefix.NO_PREFIX) {
-                unitComponent = unitComponent.transform(prefix.getCorrespondingConverter());
+            if (prefix != null) {
+//                unitComponent = unitComponent.transform(prefix);
             }
             if (unitComponent.equals(SECOND) && sbmlUnit.getMultiplier() == 60.0) {
                 unitComponent = MINUTE;

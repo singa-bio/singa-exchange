@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.entities.EntityRepresentation;
 import singa.bio.exchange.model.evidence.EvidenceCache;
-import tec.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Unit;
 import javax.measure.quantity.Area;

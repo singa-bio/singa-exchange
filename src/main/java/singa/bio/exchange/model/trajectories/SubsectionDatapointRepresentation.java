@@ -3,7 +3,7 @@ package singa.bio.exchange.model.trajectories;
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.chemistry.entities.SmallMolecule;
 import bio.singa.mathematics.vectors.Vector2D;
-import bio.singa.simulation.trajectories.nested.TrajactoryDataPoint;
+import bio.singa.simulation.trajectories.nested.TrajectoryDataPoint;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.agents.VectorRepresentation;
 import singa.bio.exchange.model.entities.EntityCache;
@@ -29,7 +29,7 @@ public class SubsectionDatapointRepresentation {
         positions = new ArrayList<>();
     }
 
-    public static SubsectionDatapointRepresentation of(TrajactoryDataPoint.SubsectionDatapoint subsectionData) {
+    public static SubsectionDatapointRepresentation of(TrajectoryDataPoint.SubsectionDataPoint subsectionData) {
         SubsectionDatapointRepresentation representation = new SubsectionDatapointRepresentation();
         for (Map.Entry<ChemicalEntity, Double> concentrationEntry : subsectionData.getConcentrations().entrySet()) {
             representation.concentrations.put(concentrationEntry.getKey().getIdentifier().toString(), concentrationEntry.getValue());
@@ -40,8 +40,8 @@ public class SubsectionDatapointRepresentation {
         return representation;
     }
 
-    public TrajactoryDataPoint.SubsectionDatapoint toModel() {
-        TrajactoryDataPoint.SubsectionDatapoint subsectionDatapoint = new TrajactoryDataPoint.SubsectionDatapoint();
+    public TrajectoryDataPoint.SubsectionDataPoint toModel() {
+        TrajectoryDataPoint.SubsectionDataPoint subsectionDatapoint = new TrajectoryDataPoint.SubsectionDataPoint();
         for (Map.Entry<String, Double> entry : concentrations.entrySet()) {
             ChemicalEntity entity = EntityCache.get(entry.getKey());
             if (entity == null) {

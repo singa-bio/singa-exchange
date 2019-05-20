@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.sbml.SBMLParser;
 import singa.bio.exchange.model.sections.RegionCache;
 import singa.bio.exchange.model.sections.SubsectionCache;
-import tec.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 import java.util.*;
 
