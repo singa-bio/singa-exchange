@@ -3,7 +3,6 @@ package singa.bio.exchange.model.agents;
 import bio.singa.mathematics.vectors.Vector2D;
 import bio.singa.simulation.model.agents.surfacelike.Membrane;
 import bio.singa.simulation.model.agents.surfacelike.MembraneBuilder;
-import bio.singa.simulation.model.agents.surfacelike.MembraneFactory;
 import bio.singa.simulation.model.agents.surfacelike.MembraneSegment;
 import bio.singa.simulation.model.sections.CellRegion;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -42,13 +41,15 @@ public class MembraneRepresentation {
     public static MembraneRepresentation of(Membrane membrane) {
         MembraneRepresentation representation = new MembraneRepresentation();
         representation.setIdentifier(membrane.getIdentifier());
+        RegionCache.add(membrane.getInnerRegion());
         representation.setInnerRegion(membrane.getInnerRegion().getIdentifier());
+        RegionCache.add(membrane.getMembraneRegion());
         representation.setMembraneRegion(membrane.getMembraneRegion().getIdentifier());
         representation.setInnerPoint(VectorRepresentation.of(membrane.getInnerPoint()));
         if (membrane.getRegionMap() != null) {
             // generate region map when present
-            Map<CellRegion, Set<Vector2D>> regionMap = membrane.getRegionMap();
-            for (Map.Entry<CellRegion, Set<Vector2D>> entry : regionMap.entrySet()) {
+            Map<CellRegion, List<Vector2D>> regionMap = membrane.getRegionMap();
+            for (Map.Entry<CellRegion, List<Vector2D>> entry : regionMap.entrySet()) {
                 ArrayList<VectorRepresentation> vectors = new ArrayList<>();
                 for (Vector2D vector : entry.getValue()) {
                     vectors.add(VectorRepresentation.of(vector));
@@ -84,24 +85,24 @@ public class MembraneRepresentation {
                 .map(VectorRepresentation::toModel)
                 .collect(Collectors.toList());
 
-        Map<Vector2D, CellRegion> mapping = new HashMap<>();
-        for (Map.Entry<String, List<VectorRepresentation>> entry : regions.entrySet()) {
-            CellRegion region = RegionCache.get(entry.getKey());
-            for (VectorRepresentation representation : entry.getValue()) {
-                mapping.put(representation.toModel(), region);
-            }
-        }
-
         if (vectors.get(0).equals(vectors.get(vectors.size() - 1))) {
-            return MembraneFactory.createClosedMembrane(vectors, RegionCache.get(getInnerRegion()),
-                    RegionCache.get(getMembraneRegion()), Converter.current.getGraph(), mapping);
-        } else {
-            return MembraneBuilder.linear()
+            return MembraneBuilder.closed()
                     .vectors(vectors)
-                    .innerPoint(getInnerPoint().toModel())
                     .graph(Converter.current.getGraph())
                     .membraneRegion(RegionCache.get(getInnerRegion()), RegionCache.get(getMembraneRegion()))
                     .build();
+        } else {
+            return MembraneBuilder.closed()
+                    .vectors(vectors)
+                    .graph(Converter.current.getGraph())
+                    .membraneRegion(RegionCache.get(getInnerRegion()), RegionCache.get(getMembraneRegion()))
+                    .build();
+//            return MembraneBuilder.linear()
+//                    .vectors(vectors)
+//                    .innerPoint(getInnerPoint().toModel())
+//                    .graph(Converter.current.getGraph())
+//                    .membraneRegion(RegionCache.get(getInnerRegion()), RegionCache.get(getMembraneRegion()))
+//                    .build();
         }
 
     }

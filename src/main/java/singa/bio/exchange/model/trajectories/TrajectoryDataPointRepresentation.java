@@ -14,7 +14,7 @@ import java.util.TreeMap;
 public class TrajectoryDataPointRepresentation {
 
     @JsonProperty
-    private Map<String, SubsectionDatapointRepresentation> subsections;
+    private Map<String, SubsectionDataPointRepresentation> subsections;
 
     private TrajectoryDataPointRepresentation() {
         subsections = new TreeMap<>();
@@ -23,24 +23,24 @@ public class TrajectoryDataPointRepresentation {
     public static TrajectoryDataPointRepresentation of(TrajectoryDataPoint dataPoint) {
         TrajectoryDataPointRepresentation representation = new TrajectoryDataPointRepresentation();
         for (Map.Entry<CellSubsection, TrajectoryDataPoint.SubsectionDataPoint> entry : dataPoint.getSubsectionData().entrySet()) {
-            representation.subsections.put(entry.getKey().getIdentifier(), SubsectionDatapointRepresentation.of(entry.getValue()));
+            representation.subsections.put(entry.getKey().getIdentifier(), SubsectionDataPointRepresentation.of(entry.getValue()));
         }
         return representation;
     }
 
     public TrajectoryDataPoint toModel() {
         TrajectoryDataPoint datapoint = new TrajectoryDataPoint();
-        for (Map.Entry<String, SubsectionDatapointRepresentation> entry : getSubsections().entrySet()) {
+        for (Map.Entry<String, SubsectionDataPointRepresentation> entry : getSubsections().entrySet()) {
             datapoint.put(SubsectionCache.get(entry.getKey()), entry.getValue().toModel());
         }
         return datapoint;
     }
 
-    public Map<String, SubsectionDatapointRepresentation> getSubsections() {
+    public Map<String, SubsectionDataPointRepresentation> getSubsections() {
         return subsections;
     }
 
-    public void setSubsections(Map<String, SubsectionDatapointRepresentation> subsections) {
+    public void setSubsections(Map<String, SubsectionDataPointRepresentation> subsections) {
         this.subsections = subsections;
     }
 

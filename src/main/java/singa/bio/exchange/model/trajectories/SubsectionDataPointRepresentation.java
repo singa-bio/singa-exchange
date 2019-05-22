@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * @author cl
  */
-public class SubsectionDatapointRepresentation {
+public class SubsectionDataPointRepresentation {
 
     @JsonProperty
     private Map<String, Double> concentrations;
@@ -24,13 +24,13 @@ public class SubsectionDatapointRepresentation {
     @JsonProperty
     private List<VectorRepresentation> positions;
 
-    public SubsectionDatapointRepresentation() {
+    public SubsectionDataPointRepresentation() {
         concentrations = new HashMap<>();
         positions = new ArrayList<>();
     }
 
-    public static SubsectionDatapointRepresentation of(TrajectoryDataPoint.SubsectionDataPoint subsectionData) {
-        SubsectionDatapointRepresentation representation = new SubsectionDatapointRepresentation();
+    public static SubsectionDataPointRepresentation of(TrajectoryDataPoint.SubsectionDataPoint subsectionData) {
+        SubsectionDataPointRepresentation representation = new SubsectionDataPointRepresentation();
         for (Map.Entry<ChemicalEntity, Double> concentrationEntry : subsectionData.getConcentrations().entrySet()) {
             representation.concentrations.put(concentrationEntry.getKey().getIdentifier().toString(), concentrationEntry.getValue());
         }

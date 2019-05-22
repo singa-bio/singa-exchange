@@ -15,6 +15,9 @@ public class SubsectionRepresentation {
     @JsonProperty("go-term")
     private String goTerm;
 
+    @JsonProperty
+    private boolean membrane;
+
     public SubsectionRepresentation() {
 
     }
@@ -22,6 +25,7 @@ public class SubsectionRepresentation {
     public static SubsectionRepresentation of(CellSubsection subsection) {
         SubsectionRepresentation representation = new SubsectionRepresentation();
         representation.setIdentifier(subsection.getIdentifier());
+        representation.setMembrane(subsection.isMembrane());
         if (subsection.getGoTerm() != null) {
             representation.setGoTerm(subsection.getGoTerm().getContent());
         }
@@ -29,10 +33,13 @@ public class SubsectionRepresentation {
     }
 
     public CellSubsection toModel() {
+        CellSubsection cellSubsection = new CellSubsection(getIdentifier());
+        cellSubsection.setMembrane(getMembrane());
         if (getGoTerm() != null) {
-            return new CellSubsection(getIdentifier(), new GoTerm(getGoTerm()));
+            cellSubsection.setGoTerm(new GoTerm(getGoTerm()));
+            return cellSubsection;
         } else {
-            return new CellSubsection(getIdentifier());
+            return cellSubsection;
         }
     }
 
@@ -52,4 +59,11 @@ public class SubsectionRepresentation {
         this.goTerm = goTerm;
     }
 
+    public boolean getMembrane() {
+        return membrane;
+    }
+
+    public void setMembrane(boolean membrane) {
+        this.membrane = membrane;
+    }
 }

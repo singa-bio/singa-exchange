@@ -5,7 +5,7 @@ import bio.singa.mathematics.intervals.Sampler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.trajectories.TrajectoryDataset;
-import tec.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Time;
@@ -89,7 +89,6 @@ public class ObservationExtractor {
         return observation;
     }
 
-
     public static void main(String[] args) {
         List<Quantity<Time>> times = new ArrayList<>();
         List<Double> samples = Sampler.sampleMultiplicative(100, 300000, 25);
@@ -101,7 +100,7 @@ public class ObservationExtractor {
         observations.addObservation("camp_vesicle", times, "CAMP", "cytoplasm", "n(6,3)");
         observations.addObservation("camp_cytoplasm", times, "CAMP", "cytoplasm", "n(0,0)");
 
-        Path observationPath = Paths.get("/home/leberech/git/model-data/raw_data/simulations_non_restricted_diffusion/simulations_01/observations");
+        Path observationPath = Paths.get("/home/leberech/git/model-data/raw_data/simulations_unrestricted_diffusion/simulation_01/observations");
         ObservationExtractor extractor = new ObservationExtractor();
         extractor.aliases.put("Feature:  M = protein kinase a activation: camp pocket a binding F = SecondOrderForwardsRateConstant", "camp_binding");
         extractor.aliases.put("Feature:  M = dephosphorylation by PP2B: AQP2 binding F = SecondOrderForwardsRateConstant", "dephosphorylation");
