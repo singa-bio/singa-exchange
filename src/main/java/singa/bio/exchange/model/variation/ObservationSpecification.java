@@ -137,6 +137,9 @@ public class ObservationSpecification {
                     .getSubsections().get(getSubsection())
                     .getConcentrations()
                     .get(getEntity());
+            if (concentration == null) {
+               concentration = 0.0;
+            }
             observations.put(Quantities.getQuantity(optimalTimestep, trajectory.getTimeUnit()),
                     Quantities.getQuantity(concentration, trajectory.getConcentrationUnit()));
         }

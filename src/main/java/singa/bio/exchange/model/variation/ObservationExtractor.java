@@ -91,20 +91,25 @@ public class ObservationExtractor {
 
     public static void main(String[] args) {
         List<Quantity<Time>> times = new ArrayList<>();
-        List<Double> samples = Sampler.sampleMultiplicative(100, 300000, 25);
+        List<Double> samples = Sampler.sampleMultiplicative(0, 180000, 50);
         for (Double sample : samples) {
             times.add(Quantities.getQuantity(sample, MILLI(SECOND)));
         }
 
         ObservationSpecifications observations = new ObservationSpecifications();
-        observations.addObservation("camp_vesicle", times, "CAMP", "cytoplasm", "n(6,3)");
-        observations.addObservation("camp_cytoplasm", times, "CAMP", "cytoplasm", "n(0,0)");
+        observations.addObservation("camp_vesicle", times, "CAMP", "cytoplasm", "n(1,5)");
+        observations.addObservation("camp_cytoplasm", times, "CAMP", "cytoplasm", "n(15,5)");
 
-        Path observationPath = Paths.get("/home/leberech/git/model-data/raw_data/simulations_unrestricted_diffusion/simulation_01/observations");
+        Path observationPath = Paths.get("/home/leberech/git/model-data/raw_data/camp_sink_development/restricted/observations/");
         ObservationExtractor extractor = new ObservationExtractor();
+//        extractor.aliases.put("Feature:  M = protein kinase a activation: camp pocket a binding F = SecondOrderForwardsRateConstant", "camp_binding");
+//        extractor.aliases.put("Feature:  M = dephosphorylation by PP2B: AQP2 binding F = SecondOrderForwardsRateConstant", "dephosphorylation");
+//        extractor.aliases.put("Feature:  M = camp regulation: cAMP to AMP catalysis by PDE4p F = TurnoverNumber", "camp_hydrolysis");
+//        extractor.aliases.put("Feature:  E = CAMP F = Diffusivity", "diffusivity");
         extractor.aliases.put("Feature:  M = protein kinase a activation: camp pocket a binding F = SecondOrderForwardsRateConstant", "camp_binding");
-        extractor.aliases.put("Feature:  M = dephosphorylation by PP2B: AQP2 binding F = SecondOrderForwardsRateConstant", "dephosphorylation");
         extractor.aliases.put("Feature:  M = camp regulation: cAMP to AMP catalysis by PDE4p F = TurnoverNumber", "camp_hydrolysis");
+        extractor.aliases.put("Concentration:  S = vesicle membrane E = (AKAP:(PKAC:(PKAR:APS))) C", "pka_con");
+        extractor.aliases.put("Concentration:  S = vesicle membrane E = (PDE4:PS) C", "pde_con");
         extractor.aliases.put("Feature:  E = CAMP F = Diffusivity", "diffusivity");
 
         try {

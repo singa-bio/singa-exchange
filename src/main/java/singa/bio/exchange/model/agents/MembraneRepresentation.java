@@ -92,17 +92,17 @@ public class MembraneRepresentation {
                     .membraneRegion(RegionCache.get(getInnerRegion()), RegionCache.get(getMembraneRegion()))
                     .build();
         } else {
-            return MembraneBuilder.closed()
-                    .vectors(vectors)
-                    .graph(Converter.current.getGraph())
-                    .membraneRegion(RegionCache.get(getInnerRegion()), RegionCache.get(getMembraneRegion()))
-                    .build();
-//            return MembraneBuilder.linear()
+//            return MembraneBuilder.closed()
 //                    .vectors(vectors)
-//                    .innerPoint(getInnerPoint().toModel())
 //                    .graph(Converter.current.getGraph())
 //                    .membraneRegion(RegionCache.get(getInnerRegion()), RegionCache.get(getMembraneRegion()))
 //                    .build();
+            return MembraneBuilder.linear()
+                    .vectors(vectors)
+                    .innerPoint(getInnerPoint().toModel())
+                    .graph(Converter.current.getGraph())
+                    .membraneRegion(RegionCache.get(getInnerRegion()), RegionCache.get(getMembraneRegion()))
+                    .build();
         }
 
     }

@@ -1,15 +1,7 @@
 package singa.bio.exchange.model.variation;
 
 import bio.singa.features.quantities.MolarConcentration;
-import bio.singa.features.units.UnitRegistry;
-import bio.singa.simulation.model.simulation.Updatable;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import singa.bio.exchange.model.entities.EntityCache;
-import singa.bio.exchange.model.sections.SubsectionCache;
-import singa.bio.exchange.model.trajectories.TrajectoryDataset;
-import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.ComparableQuantity;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Time;
@@ -28,7 +20,7 @@ public class Observation {
     private List<String> observationIndices;
 
     private Map<String, Double> parameters;
-    private Map<Quantity<Time>, Map<String, Quantity<MolarConcentration>>> observationMap;
+    private Map<ComparableQuantity<Time>, Map<String, Quantity<MolarConcentration>>> observationMap;
 
     private List<String> resultingObservations;
 
@@ -36,7 +28,7 @@ public class Observation {
         parameterIndices = new ArrayList<>();
         observationIndices = new ArrayList<>();
         parameters = new HashMap<>();
-        observationMap = new HashMap<>();
+        observationMap = new TreeMap<>();
         resultingObservations = new ArrayList<>();
     }
 
@@ -58,10 +50,11 @@ public class Observation {
 
     public void addObservations(String alias, Map<Quantity<Time>, Quantity<MolarConcentration>> observations) {
         for (Map.Entry<Quantity<Time>, Quantity<MolarConcentration>> entry : observations.entrySet()) {
-            if (!observationMap.containsKey(entry.getKey())) {
-                observationMap.put(entry.getKey(), new HashMap<>());
+                ComparableQuantity<Time> timestamp = (ComparableQuantity<Time>) entry.getKey();
+            if (!observationMap.containsKey(timestamp)) {
+                observationMap.put(timestamp, new HashMap<>());
             }
-            observationMap.get(entry.getKey()).put(alias, entry.getValue());
+            observationMap.get(timestamp).put(alias, entry.getValue());
         }
     }
 
@@ -91,7 +84,7 @@ public class Observation {
         builder.setLength(0);
 
         for (Quantity<Time> time : observationMap.keySet()) {
-            builder.append(time.getValue().doubleValue());
+            builder.append(time.getValue().doubleValue()).append(",");
             for (String observationIndex : observationIndices) {
                 Quantity<MolarConcentration> observationValue = observationMap.get(time).get(observationIndex);
                 builder.append(observationValue.getValue().doubleValue()).append(",");
