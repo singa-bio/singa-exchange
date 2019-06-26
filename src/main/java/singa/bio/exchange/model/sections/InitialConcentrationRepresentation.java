@@ -1,6 +1,7 @@
 package singa.bio.exchange.model.sections;
 
 import bio.singa.features.model.Evidence;
+import bio.singa.simulation.model.sections.concentration.FixedConcentration;
 import bio.singa.simulation.model.sections.concentration.InitialConcentration;
 import bio.singa.simulation.model.sections.concentration.MembraneConcentration;
 import bio.singa.simulation.model.sections.concentration.SectionConcentration;
@@ -20,13 +21,12 @@ import singa.bio.exchange.model.variation.Variable;
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MembraneConcentrationRepresentation.class, name = "membrane"),
-        @JsonSubTypes.Type(value = SectionConcentrationRepresentation.class, name = "section")
-})
-@JsonPropertyOrder({"entity", "type", "region", "evidence"})
-public abstract class InitialConcentrationRepresentation<Type> extends Variable<Type> {
+        @JsonSubTypes.Type(value = SectionConcentrationRepresentation.class, name = "section"),
+        @JsonSubTypes.Type(value = FixedConcentrationRepresentation.class, name = "fixed")
 
-    @JsonProperty
-    private String region;
+})
+@JsonPropertyOrder({"entity", "type", "evidence"})
+public abstract class InitialConcentrationRepresentation<Type> extends Variable<Type> {
 
     @JsonProperty
     private String entity;
@@ -43,19 +43,13 @@ public abstract class InitialConcentrationRepresentation<Type> extends Variable<
             return SectionConcentrationRepresentation.of((SectionConcentration) initialConcentration);
         } else if (initialConcentration instanceof MembraneConcentration) {
             return MembraneConcentrationRepresentation.of((MembraneConcentration) initialConcentration);
+        } else if (initialConcentration instanceof FixedConcentration) {
+            return FixedConcentrationRepresentation.of(((FixedConcentration) initialConcentration));
         }
         throw new IllegalConversionException("Illegal initial concentration format.");
     }
 
     public abstract InitialConcentration toModel();
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
 
     public String getEntity() {
         return entity;

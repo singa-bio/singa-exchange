@@ -25,6 +25,9 @@ public class MembraneConcentrationRepresentation extends InitialConcentrationRep
     @JsonProperty("area-unit")
     private Unit<Area> areaUnit;
 
+    @JsonProperty
+    private String region;
+
     @JsonProperty("number-of-molecules")
     private double numberOfMolecules;
 
@@ -54,6 +57,14 @@ public class MembraneConcentrationRepresentation extends InitialConcentrationRep
             return new MembraneConcentration(region, entity, null, numberOfMolecules, evidence);
         }
         return new MembraneConcentration(region, entity, Quantities.getQuantity(areaValue, areaUnit), numberOfMolecules, evidence);
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public double getAreaValue() {

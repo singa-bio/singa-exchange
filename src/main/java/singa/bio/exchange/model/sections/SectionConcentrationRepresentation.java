@@ -22,6 +22,9 @@ public class SectionConcentrationRepresentation extends InitialConcentrationRepr
     @JsonProperty
     private String subsection;
 
+    @JsonProperty
+    private String region;
+
     @JsonProperty("concentration-value")
     private double concentrationValue;
 
@@ -68,6 +71,14 @@ public class SectionConcentrationRepresentation extends InitialConcentrationRepr
 
     public void setSubsection(String subsection) {
         this.subsection = subsection;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public double getConcentrationValue() {

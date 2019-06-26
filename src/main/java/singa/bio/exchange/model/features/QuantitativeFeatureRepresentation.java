@@ -2,10 +2,13 @@ package singa.bio.exchange.model.features;
 
 import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
+import bio.singa.features.units.UnitRegistry;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
+
+import static bio.singa.features.units.UnitProvider.MOLE_PER_LITRE;
 
 /**
  * @author cl
@@ -26,6 +29,9 @@ public class QuantitativeFeatureRepresentation extends FeatureRepresentation<Dou
         QuantitativeFeatureRepresentation representation = new QuantitativeFeatureRepresentation();
         representation.setName(feature.getClass().getSimpleName());
         Quantity quantity = (Quantity) feature.getContent();
+        if (quantity.getUnit().isCompatible(MOLE_PER_LITRE)) {
+            quantity = UnitRegistry.humanReadable(quantity);
+        }
         representation.setQuantity(quantity.getValue().doubleValue());
         representation.setUnit(quantity.getUnit());
         representation.addEvidence(feature.getAllEvidence());

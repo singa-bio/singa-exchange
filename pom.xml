@@ -104,6 +104,17 @@
             <artifactId>jackson-databind</artifactId>
             <version>${fasterxml.jackson.version}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.msgpack</groupId>-->
+<!--            <artifactId>jackson-dataformat-msgpack</artifactId>-->
+<!--            <version>0.7.1</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.msgpack</groupId>
+            <artifactId>jackson-dataformat-msgpack</artifactId>
+            <version>0.8.16</version>
+        </dependency>
+
         <!-- sbml -->
         <dependency>
             <groupId>org.sbml.jsbml</groupId>
