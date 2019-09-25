@@ -1,11 +1,11 @@
 package singa.bio.exchange.model.variation;
 
+import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.features.quantities.MolarConcentration;
 import bio.singa.simulation.features.variation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.SimulationRepresentation;
-import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.entities.EntityRepresentation;
 import singa.bio.exchange.model.features.FeatureRepresentation;
 import singa.bio.exchange.model.features.QuantitativeFeatureRepresentation;
@@ -102,7 +102,7 @@ public class VariationGenerator {
             representationRegion = representation.getRegion();
         }
 
-        String variationEntity = variation.getEntity().getIdentifier().getContent();
+        String variationEntity = variation.getEntity().getIdentifier();
         String variationSubsection = variation.getSubsection().getIdentifier();
         String variationRegion;
         if (variation.getCellRegion() == null) {
@@ -128,7 +128,7 @@ public class VariationGenerator {
         String representationEntity = entity.getPrimaryIdentifier();
         String representationClass = feature.getName();
 
-        String variationEntity = featureVariation.getEntity().getIdentifier().getContent();
+        String variationEntity = featureVariation.getEntity().getIdentifier();
         String variationClass = featureVariation.getFeatureClass().getSimpleName();
 
         return representationEntity.equals(variationEntity) && representationClass.equals(variationClass);
@@ -160,7 +160,7 @@ public class VariationGenerator {
             if (concentration instanceof SectionConcentrationRepresentation) {
                 if (!concentration.getAlternativeValues().isEmpty()) {
                     SectionConcentrationRepresentation scr = (SectionConcentrationRepresentation) concentration;
-                    Variation variation = new ConcentrationVariation(RegionCache.get(scr.getRegion()), SubsectionCache.get(scr.getSubsection()), EntityCache.get(scr.getEntity()));
+                    Variation variation = new ConcentrationVariation(RegionCache.get(scr.getRegion()), SubsectionCache.get(scr.getSubsection()), EntityRegistry.get(scr.getEntity()));
                     variations.addVariation(variation);
                     for (Double alternativeValue : scr.getAlternativeValues()) {
                         variation.addVariation(Quantities.getQuantity(alternativeValue, scr.getConcentrationUnit()));

@@ -1,18 +1,17 @@
 package singa.bio.exchange.model.features;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
+import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.features.model.Feature;
 import bio.singa.features.model.StringFeature;
-import bio.singa.simulation.features.EntityFeature;
-import bio.singa.simulation.features.MultiEntityFeature;
-import bio.singa.simulation.features.MultiStringFeature;
-import bio.singa.simulation.features.RegionFeature;
+import bio.singa.simulation.features.*;
 import bio.singa.simulation.model.sections.CellRegion;
+import bio.singa.simulation.model.sections.CellSubsection;
 import org.reflections.Reflections;
 import singa.bio.exchange.model.IllegalConversionException;
-import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.evidence.EvidenceCache;
 import singa.bio.exchange.model.sections.RegionCache;
+import singa.bio.exchange.model.sections.SubsectionCache;
 import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
@@ -68,19 +67,23 @@ public class FeatureFactory {
                 feature = instantiate(featureClass, String.class, content);
             } else if (EntityFeature.class.isAssignableFrom(featureClass)) {
                 // handle entity based features
-                ChemicalEntity content = EntityCache.get(((QualitativeFeatureRepresentation) representation).getContent());
+                ChemicalEntity content = EntityRegistry.get(((QualitativeFeatureRepresentation) representation).getContent());
                 feature = instantiate(featureClass, ChemicalEntity.class, content);
             } else if (RegionFeature.class.isAssignableFrom(featureClass)) {
                 // handle region based features
                 CellRegion content = RegionCache.get(((QualitativeFeatureRepresentation) representation).getContent());
                 feature = instantiate(featureClass, CellRegion.class, content);
+            } else if (AffectedSection.class.isAssignableFrom(featureClass)) {
+                // handle region based features
+                CellSubsection content = SubsectionCache.get(((QualitativeFeatureRepresentation) representation).getContent());
+                feature = instantiate(featureClass, CellSubsection.class, content);
             }
         } else if (MultiEntityFeature.class.isAssignableFrom(featureClass)) {
             // handle multi-entity based features
             MultiEntityFeatureRepresentation multiEntity = (MultiEntityFeatureRepresentation) representation;
             List<ChemicalEntity> entities = new ArrayList<>();
             for (String entity : multiEntity.getEntities()) {
-                entities.add(EntityCache.get(entity));
+                entities.add(EntityRegistry.get(entity));
             }
             feature = instantiate(featureClass, List.class, entities);
         } else if (MultiStringFeature.class.isAssignableFrom(featureClass)) {

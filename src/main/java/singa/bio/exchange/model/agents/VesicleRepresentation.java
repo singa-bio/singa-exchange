@@ -1,6 +1,7 @@
 package singa.bio.exchange.model.agents;
 
 import bio.singa.simulation.model.agents.pointlike.Vesicle;
+import bio.singa.simulation.model.agents.pointlike.VesicleStateRegistry;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.sections.RegionCache;
 import singa.bio.exchange.model.sections.RegionRepresentation;
@@ -21,6 +22,9 @@ public class VesicleRepresentation {
     private String region;
 
     @JsonProperty
+    private String state = VesicleStateRegistry.UNATTACHED;
+
+    @JsonProperty
     private VectorRepresentation position;
 
     @JsonProperty("radius-value")
@@ -37,6 +41,7 @@ public class VesicleRepresentation {
         VesicleRepresentation representation = new VesicleRepresentation();
         representation.setIdentifier(vesicle.getStringIdentifier());
         representation.setRegion(RegionRepresentation.of(vesicle.getRegion()).getIdentifier());
+        representation.setState(vesicle.getState());
         representation.setPosition(VectorRepresentation.of(vesicle.getPosition()));
         representation.setRadiusValue(vesicle.getRadius().getValue().doubleValue());
         representation.setRadiusUnit(vesicle.getRadius().getUnit());
@@ -47,9 +52,11 @@ public class VesicleRepresentation {
         Vesicle vesicle;
         if (region == null) {
             vesicle = new Vesicle(getPosition().toModel(), Quantities.getQuantity(getRadiusValue(), getRadiusUnit()));
+            vesicle.setState(getState());
             vesicle.setIdentifier(getIdentifier());
         } else {
             vesicle = new Vesicle(RegionCache.get(getRegion()), getPosition().toModel(), Quantities.getQuantity(getRadiusValue(), getRadiusUnit()));
+            vesicle.setState(getState());
             vesicle.setIdentifier(getIdentifier());
         }
         VesicleCache.add(vesicle);
@@ -70,6 +77,14 @@ public class VesicleRepresentation {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public VectorRepresentation getPosition() {

@@ -1,6 +1,7 @@
 package singa.bio.exchange.model.variation;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
+import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.features.model.Feature;
 import bio.singa.features.quantities.MolarConcentration;
 import bio.singa.simulation.features.variation.ConcentrationVariation;
@@ -10,7 +11,6 @@ import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.sections.CellRegion;
 import bio.singa.simulation.model.sections.CellSubsection;
 import bio.singa.simulation.model.simulation.Simulation;
-import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.sections.RegionCache;
 import singa.bio.exchange.model.sections.SubsectionCache;
 import tech.units.indriya.quantity.Quantities;
@@ -105,7 +105,7 @@ public class VariationBuilder {
                 throw new IllegalArgumentException("No subsection with the identifier \"" + subsectionIdentifier + "\" could not be found in the subsection cache.");
             }
             // get chemical entity
-            ChemicalEntity chemicalEntity = EntityCache.get(entityIdentifier);
+            ChemicalEntity chemicalEntity = EntityRegistry.get(entityIdentifier);
             if (chemicalEntity == null) {
                 throw new IllegalArgumentException("No entity with the identifier \"" + entityIdentifier + "\" could not be found in the entity cache.");
             }
@@ -286,7 +286,7 @@ public class VariationBuilder {
 
         @Override
         public EntityFeatureVariation build() {
-            ChemicalEntity entity = EntityCache.get(entityIdentifier);
+            ChemicalEntity entity = EntityRegistry.get(entityIdentifier);
             if (entity == null) {
                 throw new IllegalArgumentException("No entity with the identifier \"" + entityIdentifier + "\" could not be found in the parsed simulation.");
             }

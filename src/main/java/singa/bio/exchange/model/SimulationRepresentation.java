@@ -16,7 +16,7 @@ import singa.bio.exchange.model.agents.VesicleDataset;
 import singa.bio.exchange.model.agents.VolumeDataset;
 import singa.bio.exchange.model.entities.EntityDataset;
 import singa.bio.exchange.model.evidence.EvidenceDataset;
-import singa.bio.exchange.model.graphs.GraphRepresentation;
+import singa.bio.exchange.model.graphs.automaton.GraphRepresentation;
 import singa.bio.exchange.model.modules.ModuleDataset;
 import singa.bio.exchange.model.sections.InitialConcentrationDataset;
 import singa.bio.exchange.model.sections.RegionDataset;

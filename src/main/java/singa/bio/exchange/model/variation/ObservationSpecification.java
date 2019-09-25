@@ -1,12 +1,12 @@
 package singa.bio.exchange.model.variation;
 
+import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.features.quantities.MolarConcentration;
 import bio.singa.features.units.UnitRegistry;
 import bio.singa.simulation.model.simulation.Updatable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.sections.SubsectionCache;
 import singa.bio.exchange.model.trajectories.TrajectoryDataset;
 import tech.units.indriya.quantity.Quantities;
@@ -93,7 +93,7 @@ public class ObservationSpecification {
     }
 
     public void validate() {
-        if (!(EntityCache.contains(entity) && SubsectionCache.contains(subsection) && UpdatableCacheManager.isAvailable(updatable))) {
+        if (!(EntityRegistry.contains(entity) && SubsectionCache.contains(subsection) && UpdatableCacheManager.isAvailable(updatable))) {
             logger.warn("The observation (entity: " + entity + " subsection: " + subsection + " updatable: " + updatable + ") might not be able to record any data.");
         }
     }
@@ -106,7 +106,7 @@ public class ObservationSpecification {
     public Quantity<MolarConcentration> observe() {
         Updatable updatable = UpdatableCacheManager.get(this.updatable);
         if (updatable != null) {
-            return UnitRegistry.concentration(updatable.getConcentrationContainer().get(SubsectionCache.get(subsection), EntityCache.get(entity)));
+            return UnitRegistry.concentration(updatable.getConcentrationContainer().get(SubsectionCache.get(subsection), EntityRegistry.get(entity)));
         }
         return null;
     }

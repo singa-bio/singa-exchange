@@ -28,7 +28,7 @@ public class MicrotubuleOrganizingCentreRepresentation {
     }
 
     public MicrotubuleOrganizingCentre toModel() {
-        return new MicrotubuleOrganizingCentre(Converter.current.getMembraneLayer(), new Circle(getCentre().toModel(), getRadius()), 0);
+        return new MicrotubuleOrganizingCentre(Converter.current.getMembraneLayer(), new Circle(getCentre().toModel(), getRadius()));
     }
 
     public VectorRepresentation getCentre() {

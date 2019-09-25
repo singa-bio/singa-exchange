@@ -1,13 +1,13 @@
 package singa.bio.exchange.model.sections;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
+import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.features.model.Evidence;
 import bio.singa.features.quantities.MolarConcentration;
 import bio.singa.simulation.model.sections.CellSubsection;
 import bio.singa.simulation.model.sections.concentration.InitialConcentration;
 import bio.singa.simulation.model.sections.concentration.SectionConcentration;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.entities.EntityRepresentation;
 import singa.bio.exchange.model.evidence.EvidenceCache;
 import tech.units.indriya.quantity.Quantities;
@@ -51,7 +51,7 @@ public class SectionConcentrationRepresentation extends InitialConcentrationRepr
     @Override
     public InitialConcentration toModel() {
         CellSubsection subsection = SubsectionCache.get(getSubsection());
-        ChemicalEntity entity = EntityCache.get(getEntity());
+        ChemicalEntity entity = EntityRegistry.get(getEntity());
         Evidence evidence = EvidenceCache.get(getEvidence());
         String region = getRegion();
         if (region == null || region.isEmpty()) {

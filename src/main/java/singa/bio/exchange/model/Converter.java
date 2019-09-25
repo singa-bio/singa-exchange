@@ -15,7 +15,7 @@ import singa.bio.exchange.model.agents.*;
 import singa.bio.exchange.model.entities.EntityDataset;
 import singa.bio.exchange.model.entities.EntityRepresentation;
 import singa.bio.exchange.model.evidence.EvidenceDataset;
-import singa.bio.exchange.model.graphs.GraphRepresentation;
+import singa.bio.exchange.model.graphs.automaton.GraphRepresentation;
 import singa.bio.exchange.model.modules.ModuleDataset;
 import singa.bio.exchange.model.modules.ModuleRepresentation;
 import singa.bio.exchange.model.sections.InitialConcentrationDataset;
@@ -41,7 +41,7 @@ public class Converter {
 
     public static EntityDataset getEntityDatasetFrom(Simulation simulation) {
         EntityDataset dataset = new EntityDataset();
-        List<ChemicalEntity> sortedEntities = ChemicalEntities.sortByComplexDependencies(new ArrayList<>(simulation.getAllChemicalEntities()));
+        List<ChemicalEntity> sortedEntities = ChemicalEntities.sortByComplexDependencies(new ArrayList<>(simulation.getChemicalEntities()));
         for (ChemicalEntity chemicalEntity : sortedEntities) {
             dataset.addEntity(EntityRepresentation.of(chemicalEntity));
         }

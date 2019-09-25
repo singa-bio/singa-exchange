@@ -51,7 +51,7 @@ public class ModuleFactory {
         ConcentrationModuleRepresentation representation = new ConcentrationModuleRepresentation();
         performBaseSetup(module, representation);
         for (ChemicalEntity referencedEntity : module.getReferencedEntities()) {
-            representation.addAffectedEntity(referencedEntity.getIdentifier().getContent());
+            representation.addAffectedEntity(referencedEntity.getIdentifier());
         }
         return representation;
     }
@@ -149,11 +149,11 @@ public class ModuleFactory {
 
     private static void performBaseModelSetup(ModuleRepresentation representation, UpdateModule module) {
         module.setSimulation(Converter.current);
-        Converter.current.addModule(module);
         // features
         for (FeatureRepresentation feature : representation.getFeatures()) {
             module.setFeature(feature.toModel());
         }
+        Converter.current.addModule(module);
     }
 
 }

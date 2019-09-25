@@ -1,12 +1,12 @@
 package singa.bio.exchange.model.trajectories;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.chemistry.entities.SmallMolecule;
+import bio.singa.chemistry.entities.EntityRegistry;
+import bio.singa.chemistry.entities.simple.SmallMolecule;
 import bio.singa.mathematics.vectors.Vector2D;
 import bio.singa.simulation.trajectories.nested.TrajectoryDataPoint;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.agents.VectorRepresentation;
-import singa.bio.exchange.model.entities.EntityCache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +24,9 @@ public class SubsectionDataPointRepresentation {
     @JsonProperty
     private List<VectorRepresentation> positions;
 
+    @JsonProperty
+    private String state;
+
     public SubsectionDataPointRepresentation() {
         concentrations = new HashMap<>();
         positions = new ArrayList<>();
@@ -32,7 +35,7 @@ public class SubsectionDataPointRepresentation {
     public static SubsectionDataPointRepresentation of(TrajectoryDataPoint.SubsectionDataPoint subsectionData) {
         SubsectionDataPointRepresentation representation = new SubsectionDataPointRepresentation();
         for (Map.Entry<ChemicalEntity, Double> concentrationEntry : subsectionData.getConcentrations().entrySet()) {
-            representation.concentrations.put(concentrationEntry.getKey().getIdentifier().toString(), concentrationEntry.getValue());
+            representation.concentrations.put(concentrationEntry.getKey().getIdentifier(), concentrationEntry.getValue());
         }
         for (Vector2D position : subsectionData.getPositions()) {
             representation.positions.add(VectorRepresentation.of(position));
@@ -43,7 +46,7 @@ public class SubsectionDataPointRepresentation {
     public TrajectoryDataPoint.SubsectionDataPoint toModel() {
         TrajectoryDataPoint.SubsectionDataPoint subsectionDatapoint = new TrajectoryDataPoint.SubsectionDataPoint();
         for (Map.Entry<String, Double> entry : concentrations.entrySet()) {
-            ChemicalEntity entity = EntityCache.get(entry.getKey());
+            ChemicalEntity entity = EntityRegistry.get(entry.getKey());
             if (entity == null) {
                 entity = SmallMolecule.create(entry.getKey()).build();
             }
@@ -69,5 +72,13 @@ public class SubsectionDataPointRepresentation {
 
     public void setPositions(List<VectorRepresentation> positions) {
         this.positions = positions;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

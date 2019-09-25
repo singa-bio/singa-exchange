@@ -3,7 +3,6 @@ package singa.bio.exchange.model.features;
 import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
 import bio.singa.features.model.QualitativeFeature;
-import bio.singa.simulation.features.EntityFeature;
 import bio.singa.simulation.features.MultiEntityFeature;
 import bio.singa.simulation.features.MultiStringFeature;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -50,7 +49,7 @@ public abstract class FeatureRepresentation<Type> extends Variable<Type> {
             return MultiEntityFeatureRepresentation.of(feature);
         } else if (feature instanceof MultiStringFeature) {
             return MultiStringFeatureRepresentation.of(feature);
-        } else if (feature instanceof EntityFeature || feature instanceof QualitativeFeature) {
+        } else if (feature instanceof QualitativeFeature) {
             return QualitativeFeatureRepresentation.of(feature);
         }
         throw new IllegalConversionException("The feature " + feature + " could not be converted to its json representation.");

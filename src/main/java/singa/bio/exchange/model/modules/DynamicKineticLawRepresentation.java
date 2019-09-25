@@ -6,7 +6,7 @@ import bio.singa.simulation.model.modules.concentration.imlementations.reactions
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.Reactant;
 import bio.singa.simulation.model.parameters.Parameter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import singa.bio.exchange.model.entities.StaticReactantRepresentation;
+import singa.bio.exchange.model.entities.ReactantRepresentation;
 import singa.bio.exchange.model.features.FeatureRepresentation;
 import singa.bio.exchange.model.features.ParameterRepresentation;
 
@@ -25,7 +25,7 @@ public class DynamicKineticLawRepresentation extends KineticLawRepresentation {
     private Map<String, FeatureRepresentation> kineticFeatures;
 
     @JsonProperty
-    private Map<String, StaticReactantRepresentation> reactants;
+    private Map<String, ReactantRepresentation> reactants;
 
     public DynamicKineticLawRepresentation() {
         constants = new HashMap<>();
@@ -37,7 +37,7 @@ public class DynamicKineticLawRepresentation extends KineticLawRepresentation {
         DynamicKineticLawRepresentation representation = new DynamicKineticLawRepresentation();
         representation.setLaw(kineitcLaw.getExpressionString());
         for (Map.Entry<String, Reactant> reactantEntry : kineitcLaw.getConcentrationMap().entrySet()) {
-            representation.addReactant(reactantEntry.getKey(), StaticReactantRepresentation.of(reactantEntry.getValue()));
+            representation.addReactant(reactantEntry.getKey(), ReactantRepresentation.of(reactantEntry.getValue()));
         }
         for (Map.Entry<String, Parameter> constantEntry : kineitcLaw.getParameterMap().entrySet()) {
             representation.addConstant(constantEntry.getKey(), ParameterRepresentation.of(constantEntry.getValue()));
@@ -50,7 +50,7 @@ public class DynamicKineticLawRepresentation extends KineticLawRepresentation {
 
     public DynamicKineticLaw toModel(Reaction reaction) {
         DynamicKineticLaw kineticLaw = new DynamicKineticLaw(reaction, getLaw());
-        for (Map.Entry<String, StaticReactantRepresentation> representationEntry : getReactants().entrySet()) {
+        for (Map.Entry<String, ReactantRepresentation> representationEntry : getReactants().entrySet()) {
             kineticLaw.referenceReactant(representationEntry.getKey(), representationEntry.getValue().toModel());
         }
         for (Map.Entry<String, ParameterRepresentation> representationEntry : getConstants().entrySet()) {
@@ -86,15 +86,15 @@ public class DynamicKineticLawRepresentation extends KineticLawRepresentation {
         kineticFeatures.put(identifier, kineticFeature);
     }
 
-    public Map<String, StaticReactantRepresentation> getReactants() {
+    public Map<String, ReactantRepresentation> getReactants() {
         return reactants;
     }
 
-    public void setReactants(Map<String, StaticReactantRepresentation> reactants) {
+    public void setReactants(Map<String, ReactantRepresentation> reactants) {
         this.reactants = reactants;
     }
 
-    public void addReactant(String identifier, StaticReactantRepresentation reactant) {
+    public void addReactant(String identifier, ReactantRepresentation reactant) {
         reactants.put(identifier, reactant);
     }
 

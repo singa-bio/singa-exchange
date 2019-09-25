@@ -1,7 +1,8 @@
 package singa.bio.exchange.model.features;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.chemistry.entities.Protein;
+import bio.singa.chemistry.entities.EntityRegistry;
+import bio.singa.chemistry.entities.simple.Protein;
 import bio.singa.chemistry.features.diffusivity.Diffusivity;
 import bio.singa.features.identifiers.SimpleStringIdentifier;
 import bio.singa.features.model.Evidence;
@@ -13,7 +14,6 @@ import bio.singa.simulation.model.sections.CellRegions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.sections.RegionCache;
 import tech.units.indriya.quantity.Quantities;
 
@@ -41,12 +41,9 @@ class FeatureRepresentationTest {
         evidences.add(new Evidence(Evidence.SourceType.LITERATURE, "test 1", "test 1 publication"));
         evidences.add(new Evidence(Evidence.SourceType.LITERATURE, "test 2", "test 2 publication"));
 
-        dynein = new Protein.Builder("Dynein").build();
-        vamp2 = new Protein.Builder("VAMP2").build();
-        vamp3 = new Protein.Builder("VAMP3").build();
-        EntityCache.add(dynein);
-        EntityCache.add(vamp2);
-        EntityCache.add(vamp3);
+        dynein = Protein.create("Dynein").build();
+        vamp2 = Protein.create("VAMP2").build();
+        vamp3 = Protein.create("VAMP3").build();
 
         region = CellRegions.CYTOPLASM_REGION;
         RegionCache.add(region);
@@ -108,7 +105,7 @@ class FeatureRepresentationTest {
     @Test
     @DisplayName("features - multi string based feature to json")
     void qualitativeMultiStringModelToJson() {
-        BlackListVesicleStates feature = new BlackListVesicleStates(Arrays.asList(VesicleStateRegistry.MEMBRANE_TETHERED, VesicleStateRegistry.ACTIN_TETHERED));
+        BlackListVesicleStates feature = new BlackListVesicleStates(Arrays.asList(VesicleStateRegistry.MEMBRANE_TETHERED, VesicleStateRegistry.TETHERED));
         FeatureRepresentation representation = FeatureRepresentation.of(feature);
 
         assertEquals(feature.getClass().getSimpleName(), representation.getName());
@@ -138,7 +135,7 @@ class FeatureRepresentationTest {
         FeatureRepresentation representation = FeatureRepresentation.of(feature);
 
         assertEquals(feature.getClass().getSimpleName(), representation.getName());
-        assertEquals(feature.getContent(), EntityCache.get(((QualitativeFeatureRepresentation) representation).getContent()));
+        assertEquals(feature.getContent(), EntityRegistry.get(((QualitativeFeatureRepresentation) representation).getContent()));
         assertEquals(feature.getAllEvidence().size(), representation.getEvidence().size());
     }
 
@@ -152,7 +149,7 @@ class FeatureRepresentationTest {
         Feature feature = representation.toModel();
 
         assertEquals(representation.getName(), feature.getClass().getSimpleName());
-        assertEquals(EntityCache.get(representation.getContent()), feature.getContent());
+        assertEquals(EntityRegistry.get(representation.getContent()), feature.getContent());
         assertEquals(representation.getEvidence().size(), feature.getAllEvidence().size());
     }
 
@@ -172,8 +169,8 @@ class FeatureRepresentationTest {
     void qualitativeMultiEntityJsonToModel() {
         MultiEntityFeatureRepresentation representation = new MultiEntityFeatureRepresentation();
         representation.setName(MatchingQSnares.class.getSimpleName());
-        representation.addEntity(vamp2.getIdentifier().toString());
-        representation.addEntity(vamp3.getIdentifier().toString());
+        representation.addEntity(vamp2.getIdentifier());
+        representation.addEntity(vamp3.getIdentifier());
         Feature feature = representation.toModel();
 
         assertEquals(representation.getName(), feature.getClass().getSimpleName());
@@ -205,8 +202,6 @@ class FeatureRepresentationTest {
         assertEquals(RegionCache.get(representation.getContent()), feature.getContent());
         assertEquals(representation.getEvidence().size(), feature.getAllEvidence().size());
     }
-
-
 
 
 }

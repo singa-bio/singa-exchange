@@ -1,11 +1,11 @@
 package singa.bio.exchange.model.sections;
 
+import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.features.quantities.MolarConcentration;
 import bio.singa.simulation.model.sections.concentration.FixedConcentration;
 import bio.singa.simulation.model.sections.concentration.InitialConcentration;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.entities.EntityRepresentation;
 import tech.units.indriya.quantity.Quantities;
 
@@ -61,7 +61,7 @@ public class FixedConcentrationRepresentation extends InitialConcentrationRepres
     public InitialConcentration toModel() {
         FixedConcentration fixedConcentration = new FixedConcentration(getIdentifiers(),
                 SubsectionCache.get(getSubsection()),
-                EntityCache.get(getEntity()),
+                EntityRegistry.get(getEntity()),
                 Quantities.getQuantity(getConcentrationValue(), getConcentrationUnit()));
         if (timeUnit != null) {
             fixedConcentration.setTime(Quantities.getQuantity(getTimeValue(), getTimeUnit()));

@@ -2,7 +2,7 @@ package singa.bio.exchange.model.variation;
 
 import bio.singa.simulation.model.simulation.Updatable;
 import singa.bio.exchange.model.agents.VesicleCache;
-import singa.bio.exchange.model.graphs.NodeCache;
+import singa.bio.exchange.model.graphs.automaton.NodeCache;
 
 /**
  * @author cl

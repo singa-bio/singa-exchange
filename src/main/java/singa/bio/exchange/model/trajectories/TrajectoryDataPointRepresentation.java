@@ -16,6 +16,9 @@ public class TrajectoryDataPointRepresentation {
     @JsonProperty
     private Map<String, SubsectionDataPointRepresentation> subsections;
 
+    @JsonProperty
+    private String state;
+
     private TrajectoryDataPointRepresentation() {
         subsections = new TreeMap<>();
     }
@@ -25,6 +28,7 @@ public class TrajectoryDataPointRepresentation {
         for (Map.Entry<CellSubsection, TrajectoryDataPoint.SubsectionDataPoint> entry : dataPoint.getSubsectionData().entrySet()) {
             representation.subsections.put(entry.getKey().getIdentifier(), SubsectionDataPointRepresentation.of(entry.getValue()));
         }
+        representation.state = dataPoint.getState();
         return representation;
     }
 
@@ -33,6 +37,7 @@ public class TrajectoryDataPointRepresentation {
         for (Map.Entry<String, SubsectionDataPointRepresentation> entry : getSubsections().entrySet()) {
             datapoint.put(SubsectionCache.get(entry.getKey()), entry.getValue().toModel());
         }
+        datapoint.setState(getState());
         return datapoint;
     }
 
@@ -44,4 +49,11 @@ public class TrajectoryDataPointRepresentation {
         this.subsections = subsections;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 }

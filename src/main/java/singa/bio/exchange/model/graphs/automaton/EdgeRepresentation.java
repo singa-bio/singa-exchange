@@ -1,4 +1,4 @@
-package singa.bio.exchange.model.graphs;
+package singa.bio.exchange.model.graphs.automaton;
 
 import bio.singa.mathematics.graphs.model.Edge;
 import com.fasterxml.jackson.annotation.JsonProperty;

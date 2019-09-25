@@ -1,4 +1,4 @@
-package singa.bio.exchange.model.graphs;
+package singa.bio.exchange.model.graphs.automaton;
 
 import bio.singa.mathematics.topology.grids.rectangular.RectangularCoordinate;
 import bio.singa.mathematics.vectors.Vector2D;

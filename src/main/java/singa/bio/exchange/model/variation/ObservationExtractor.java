@@ -91,34 +91,34 @@ public class ObservationExtractor {
 
     public static void main(String[] args) {
         List<Quantity<Time>> times = new ArrayList<>();
-        List<Double> samples = Sampler.sampleMultiplicative(0, 600000, 100);
+        List<Double> samples = Sampler.sampleMultiplicative(0, 180000, 100);
         for (Double sample : samples) {
             times.add(Quantities.getQuantity(sample, MILLI(SECOND)));
         }
 
         ObservationSpecifications observations = new ObservationSpecifications();
-        observations.addObservation("camp_vesicle", times, "CAMP", "cytoplasm", "n(4,5)");
-        observations.addObservation("camp_cytoplasm", times, "CAMP", "cytoplasm", "n(18,5)");
-        observations.addObservation("aqpp", times, "(AQP2:(PS:P))", "vesicle membrane", "v3");
-        observations.addObservation("aqp", times, "(AQP2:PS)", "vesicle membrane", "v3");
-        observations.addObservation("pkap", times, "(AKAP:((PKAC:ATP):(((PKAR:(APS:P)):CAMP):CAMP)))", "vesicle membrane", "v3");
+//        observations.addObservation("camp_vesicle", times, "CAMP", "cytoplasm", "n(4,5)");
+//        observations.addObservation("camp_cytoplasm", times, "CAMP", "cytoplasm", "n(18,5)");
+//        observations.addObservation("aqpp", times, "(AQP2:(PS:P))", "vesicle membrane", "v3");
+//        observations.addObservation("aqp", times, "(AQP2:PS)", "vesicle membrane", "v3");
+//        observations.addObservation("pkap", times, "(AKAP:((PKAC:ATP):(((PKAR:(APS:P)):CAMP):CAMP)))", "vesicle membrane", "v3");
 
 //        observations.addObservation("camp_vesicle", times, "CAMP", "cytoplasm", "n(1,5)");
 //        observations.addObservation("camp_cytoplasm", times, "CAMP", "cytoplasm", "n(15,5)");
 
-//        observations.addObservation("camp_vesicle", times, "CAMP", "cytoplasm", "n(5,5)");
-//        observations.addObservation("camp_cytoplasm", times, "CAMP", "cytoplasm", "n(0,0)");
+        observations.addObservation("camp_vesicle", times, "CAMP", "cytoplasm", "n(5,5)");
+        observations.addObservation("camp_cytoplasm", times, "CAMP", "cytoplasm", "n(0,0)");
 
-        Path observationPath = Paths.get("/home/leberech/git/model-data/raw_data/restricted_diffusion_cortex_microvillus/observations/");
+        Path observationPath = Paths.get("/home/leberech/git/model-data/raw_data/camp_sink_development/unrestricted/2019_06_04/observations");
         ObservationExtractor extractor = new ObservationExtractor();
         extractor.aliases.put("Feature:  M = protein kinase a activation: camp pocket a binding F = SecondOrderForwardsRateConstant", "camp_binding");
         extractor.aliases.put("Feature:  M = camp regulation: cAMP to AMP catalysis by PDE4p F = TurnoverNumber", "camp_hydrolysis");
-        extractor.aliases.put("Concentration: S = vesicle membrane E = (AKAP:(PKAC:(PKAR:APS))) C", "pka_con");
-        extractor.aliases.put("Concentration: S = vesicle membrane E = (PDE4:PS) C", "pde_con");
-        extractor.aliases.put("Concentration: S = vesicle membrane E = (AQP2:PS) C", "aqp_con");
-        extractor.aliases.put("Concentration: S = cytoplasm E = CAMP C", "camp_con");
+//        extractor.aliases.put("Feature:  M = camp diffusion F = Ratio", "restriction");
+        extractor.aliases.put("Concentration:  S = vesicle membrane E = (AKAP:(PKAC:(PKAR:APS))) C", "pka_con");
+        extractor.aliases.put("Concentration:  S = vesicle membrane E = (PDE4:PS) C", "pde_con");
+//        extractor.aliases.put("Concentration: S = vesicle membrane E = (AQP2:PS) C", "aqp_con");
         extractor.aliases.put("Feature:  E = CAMP F = Diffusivity", "diffusivity");
-        extractor.aliases.put("Feature:  M = camp diffusion F = Ratio", "restriction");
+//        extractor.aliases.put("Concentration: S = cytoplasm E = CAMP C", "camp_con");
 
         try {
             Observation observation = extractor.extract(observationPath, observations);

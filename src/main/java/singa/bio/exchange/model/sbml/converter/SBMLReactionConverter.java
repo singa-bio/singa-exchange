@@ -1,5 +1,6 @@
 package singa.bio.exchange.model.sbml.converter;
 
+import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.Reaction;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.ReactionBuilder;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.kineticlaws.DynamicKineticLaw;
@@ -10,7 +11,6 @@ import org.sbml.jsbml.ModifierSpeciesReference;
 import org.sbml.jsbml.SpeciesReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import singa.bio.exchange.model.entities.EntityCache;
 import singa.bio.exchange.model.sbml.SBMLParser;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class SBMLReactionConverter {
         for (SpeciesReference reference : substrates) {
             logger.debug("Assigning entity {} as substrate.", reference.getSpecies());
             String identifier = reference.getSpecies();
-            Reactant reactant = new Reactant(EntityCache.get(identifier), ReactantRole.SUBSTRATE, reference.getStoichiometry());
+            Reactant reactant = new Reactant(EntityRegistry.get(identifier), ReactantRole.SUBSTRATE, reference.getStoichiometry());
             ((DynamicKineticLaw) currentReaction.getKineticLaw()).referenceReactant(identifier, reactant);
             currentReaction.getReactantBehavior().addReactant(reactant);
         }
@@ -70,7 +70,7 @@ public class SBMLReactionConverter {
         for (SpeciesReference reference : products) {
             logger.debug("Assigning entity {} as product.", reference.getSpecies());
             String identifier = reference.getSpecies();
-            Reactant reactant = new Reactant(EntityCache.get(identifier), ReactantRole.PRODUCT, reference.getStoichiometry());
+            Reactant reactant = new Reactant(EntityRegistry.get(identifier), ReactantRole.PRODUCT, reference.getStoichiometry());
             ((DynamicKineticLaw) currentReaction.getKineticLaw()).referenceReactant(identifier, reactant);
             currentReaction.getReactantBehavior().addReactant(reactant);
         }
@@ -80,7 +80,7 @@ public class SBMLReactionConverter {
         for (ModifierSpeciesReference reference : modifiers) {
             logger.debug("Assigning entity {} as catalyst.", reference.getSpecies());
             String identifier = reference.getSpecies();
-            Reactant reactant = new Reactant(EntityCache.get(identifier), ReactantRole.CATALYTIC);
+            Reactant reactant = new Reactant(EntityRegistry.get(identifier), ReactantRole.CATALYTIC);
             ((DynamicKineticLaw) currentReaction.getKineticLaw()).referenceReactant(identifier, reactant);
             currentReaction.getReactantBehavior().addReactant(reactant);
         }

@@ -1,4 +1,4 @@
-package singa.bio.exchange.model.graphs;
+package singa.bio.exchange.model.graphs.automaton;
 
 import bio.singa.simulation.model.graphs.AutomatonEdge;
 import bio.singa.simulation.model.graphs.AutomatonGraph;

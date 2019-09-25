@@ -2,7 +2,7 @@ package singa.bio.exchange.model.entities;
 
 import bio.singa.chemistry.entities.ChemicalEntities;
 import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.DynamicChemicalEntity;
+import bio.singa.chemistry.entities.EntityRegistry;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.Jsonizable;
 
@@ -23,9 +23,8 @@ public class EntityDataset implements Jsonizable {
 
     public static EntityDataset fromCache() {
         EntityDataset dataset = new EntityDataset();
-        List<ChemicalEntity> entities = ChemicalEntities.sortByComplexDependencies(new ArrayList<>(EntityCache.getAll()));
+        List<ChemicalEntity> entities = ChemicalEntities.sortByComplexDependencies(new ArrayList<>(EntityRegistry.getAll()));
         entities.stream()
-                .filter(chemicalEntity -> !(chemicalEntity instanceof DynamicChemicalEntity))
                 .map(EntityRepresentation::of)
                 .forEach(dataset::addEntity);
         return dataset;
