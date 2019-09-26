@@ -6,21 +6,23 @@ import bio.singa.simulation.model.agents.linelike.MicrotubuleOrganizingCentre;
 import bio.singa.simulation.model.agents.pointlike.VesicleLayer;
 import bio.singa.simulation.model.agents.surfacelike.MembraneLayer;
 import bio.singa.simulation.model.agents.volumelike.VolumeLayer;
+import bio.singa.simulation.model.concentrations.InitialConcentration;
 import bio.singa.simulation.model.graphs.AutomatonGraph;
-import bio.singa.simulation.model.sections.concentration.ConcentrationInitializer;
 import bio.singa.simulation.model.simulation.Simulation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import singa.bio.exchange.model.agents.FilamentDataset;
 import singa.bio.exchange.model.agents.MembraneDataset;
 import singa.bio.exchange.model.agents.VesicleDataset;
 import singa.bio.exchange.model.agents.VolumeDataset;
+import singa.bio.exchange.model.concentrations.InitialConcentrationDataset;
 import singa.bio.exchange.model.entities.EntityDataset;
 import singa.bio.exchange.model.evidence.EvidenceDataset;
 import singa.bio.exchange.model.graphs.automaton.GraphRepresentation;
 import singa.bio.exchange.model.modules.ModuleDataset;
-import singa.bio.exchange.model.sections.InitialConcentrationDataset;
 import singa.bio.exchange.model.sections.RegionDataset;
 import singa.bio.exchange.model.sections.SubsectionDataset;
+
+import java.util.List;
 
 /**
  * @author cl
@@ -117,8 +119,8 @@ public class SimulationRepresentation implements Jsonizable {
             Converter.current.getMembraneLayer().setMicrotubuleOrganizingCentre(moc);
         }
         // initialize concentration, requires entities, regions, and subsections
-        ConcentrationInitializer initializer = representation.getConcentrations().toModel();
-        Converter.current.setConcentrationInitializer(initializer);
+        List<InitialConcentration> concentrations = representation.getConcentrations().toModel();
+        Converter.current.setConcentrations(concentrations);
         return Converter.current;
     }
 

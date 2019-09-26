@@ -3,6 +3,7 @@ package singa.bio.exchange.model.features;
 import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
 import bio.singa.features.model.QualitativeFeature;
+import bio.singa.simulation.features.InitialConcentrations;
 import bio.singa.simulation.features.MultiEntityFeature;
 import bio.singa.simulation.features.MultiStringFeature;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,7 +28,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = QuantitativeFeatureRepresentation.class, name = "quantitative"),
         @JsonSubTypes.Type(value = QualitativeFeatureRepresentation.class, name = "qualitative"),
         @JsonSubTypes.Type(value = MultiEntityFeatureRepresentation.class, name = "entity-multi"),
-        @JsonSubTypes.Type(value = MultiStringFeatureRepresentation.class, name = "string-multi")
+        @JsonSubTypes.Type(value = MultiStringFeatureRepresentation.class, name = "string-multi"),
+        @JsonSubTypes.Type(value = MultiStringFeatureRepresentation.class, name = "concentration-multi")
 })
 @JsonPropertyOrder({"name"})
 public abstract class FeatureRepresentation<Type> extends Variable<Type> {
@@ -51,6 +53,8 @@ public abstract class FeatureRepresentation<Type> extends Variable<Type> {
             return MultiStringFeatureRepresentation.of(feature);
         } else if (feature instanceof QualitativeFeature) {
             return QualitativeFeatureRepresentation.of(feature);
+        } else if (feature instanceof InitialConcentrations) {
+            return MultiConcentrationFeatureRepresentation.of(feature);
         }
         throw new IllegalConversionException("The feature " + feature + " could not be converted to its json representation.");
     }

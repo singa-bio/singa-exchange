@@ -9,8 +9,8 @@ import bio.singa.chemistry.entities.simple.SmallMolecule;
 import bio.singa.features.identifiers.ChEBIIdentifier;
 import bio.singa.features.identifiers.UniProtIdentifier;
 import bio.singa.features.units.UnitRegistry;
-import bio.singa.simulation.model.sections.CellSubsection;
-import bio.singa.simulation.model.sections.concentration.ConcentrationInitializer;
+import bio.singa.simulation.model.concentrations.ConcentrationBuilder;
+import bio.singa.simulation.model.concentrations.InitialConcentration;
 import org.sbml.jsbml.CVTerm;
 import org.sbml.jsbml.ListOf;
 import org.sbml.jsbml.Species;
@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.sbml.SBMLParser;
 import singa.bio.exchange.model.sections.SubsectionCache;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import static singa.bio.exchange.model.sbml.SBMLParser.DEFAULT_SBML_ORIGIN;
@@ -106,13 +108,15 @@ public class SBMLSpeciesConverter {
     }
 
     public void convertInitialConcentrations(ListOf<Species> listOfSpecies) {
-        ConcentrationInitializer ci = new ConcentrationInitializer();
+        List<InitialConcentration> initialConcentrations = new ArrayList<>();
         for (Species species : listOfSpecies) {
-            ChemicalEntity entity = EntityRegistry.get(species.getId());
-            CellSubsection subsection = SubsectionCache.get(species.getCompartment());
-            ci.addInitialConcentration(subsection, entity, UnitRegistry.concentration(species.getInitialConcentration()));
+            initialConcentrations.add(ConcentrationBuilder.create()
+                    .entity(EntityRegistry.get(species.getId()))
+                    .subsection(SubsectionCache.get(species.getCompartment()))
+                    .concentration(UnitRegistry.concentration(species.getInitialConcentration()))
+                    .build());
         }
-        SBMLParser.current.setConcentrationInitializer(ci);
+        SBMLParser.current.setConcentrations(initialConcentrations);
     }
 
 }

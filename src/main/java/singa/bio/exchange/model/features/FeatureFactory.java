@@ -5,10 +5,12 @@ import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.features.model.Feature;
 import bio.singa.features.model.StringFeature;
 import bio.singa.simulation.features.*;
+import bio.singa.simulation.model.concentrations.InitialConcentration;
 import bio.singa.simulation.model.sections.CellRegion;
 import bio.singa.simulation.model.sections.CellSubsection;
 import org.reflections.Reflections;
 import singa.bio.exchange.model.IllegalConversionException;
+import singa.bio.exchange.model.concentrations.InitialConcentrationRepresentation;
 import singa.bio.exchange.model.evidence.EvidenceCache;
 import singa.bio.exchange.model.sections.RegionCache;
 import singa.bio.exchange.model.sections.SubsectionCache;
@@ -91,6 +93,14 @@ public class FeatureFactory {
             MultiStringFeatureRepresentation multiEntity = (MultiStringFeatureRepresentation) representation;
             List<String> strings = new ArrayList<>(multiEntity.getStrings());
             feature = instantiate(featureClass, List.class, strings);
+        } else if (MultiConcentrationFeatureRepresentation.class.isAssignableFrom(featureClass)) {
+            // handle multi-entity based features
+            MultiConcentrationFeatureRepresentation multiConcentration = (MultiConcentrationFeatureRepresentation) representation;
+            List<InitialConcentration> entities = new ArrayList<>();
+            for (InitialConcentrationRepresentation concentrationRepresentation : multiConcentration.getConcentrations()) {
+                entities.add(concentrationRepresentation.toModel());
+            }
+            feature = instantiate(featureClass, List.class, entities);
         }
 
         if (feature != null) {

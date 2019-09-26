@@ -6,20 +6,19 @@ import bio.singa.simulation.model.agents.linelike.LineLikeAgent;
 import bio.singa.simulation.model.agents.pointlike.Vesicle;
 import bio.singa.simulation.model.agents.surfacelike.Membrane;
 import bio.singa.simulation.model.agents.volumelike.VolumeLikeAgent;
+import bio.singa.simulation.model.concentrations.InitialConcentration;
 import bio.singa.simulation.model.modules.UpdateModule;
-import bio.singa.simulation.model.sections.concentration.FixedConcentration;
-import bio.singa.simulation.model.sections.concentration.InitialConcentration;
 import bio.singa.simulation.model.simulation.Simulation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import singa.bio.exchange.model.agents.*;
+import singa.bio.exchange.model.concentrations.InitialConcentrationDataset;
+import singa.bio.exchange.model.concentrations.InitialConcentrationRepresentation;
 import singa.bio.exchange.model.entities.EntityDataset;
 import singa.bio.exchange.model.entities.EntityRepresentation;
 import singa.bio.exchange.model.evidence.EvidenceDataset;
 import singa.bio.exchange.model.graphs.automaton.GraphRepresentation;
 import singa.bio.exchange.model.modules.ModuleDataset;
 import singa.bio.exchange.model.modules.ModuleRepresentation;
-import singa.bio.exchange.model.sections.InitialConcentrationDataset;
-import singa.bio.exchange.model.sections.InitialConcentrationRepresentation;
 import singa.bio.exchange.model.sections.RegionDataset;
 import singa.bio.exchange.model.sections.SubsectionDataset;
 import singa.bio.exchange.model.units.UnitJacksonModule;
@@ -105,11 +104,8 @@ public class Converter {
 
     public static InitialConcentrationDataset getConcentrationsFrom(Simulation simulation) {
         InitialConcentrationDataset dataset = new InitialConcentrationDataset();
-        for (InitialConcentration initialConcentration : simulation.getConcentrationInitializer().getInitialConcentrations()) {
+        for (InitialConcentration initialConcentration : simulation.getConcentrations()) {
             dataset.addConcentration(InitialConcentrationRepresentation.of(initialConcentration));
-        }
-        for (FixedConcentration timedConcentration : simulation.getConcentrationInitializer().getTimedConcentrations()) {
-            dataset.addConcentration(InitialConcentrationRepresentation.of(timedConcentration));
         }
         return dataset;
     }

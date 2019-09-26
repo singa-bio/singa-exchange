@@ -1,10 +1,11 @@
-package singa.bio.exchange.model.sections;
+package singa.bio.exchange.model.concentrations;
 
-import bio.singa.simulation.model.sections.concentration.ConcentrationInitializer;
+import bio.singa.simulation.model.concentrations.InitialConcentration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author cl
@@ -18,12 +19,10 @@ public class InitialConcentrationDataset {
         concentrations = new ArrayList<>();
     }
 
-    public ConcentrationInitializer toModel() {
-        ConcentrationInitializer concentrationInitializer = new ConcentrationInitializer();
-        getConcentrations().stream()
+    public List<InitialConcentration> toModel() {
+        return getConcentrations().stream()
                 .map(InitialConcentrationRepresentation::toModel)
-                .forEach(concentrationInitializer::addInitialConcentration);
-        return concentrationInitializer;
+                .collect(Collectors.toList());
     }
 
     public List<InitialConcentrationRepresentation> getConcentrations() {

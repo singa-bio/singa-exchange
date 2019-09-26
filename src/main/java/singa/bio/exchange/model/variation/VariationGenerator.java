@@ -6,13 +6,11 @@ import bio.singa.simulation.features.variation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import singa.bio.exchange.model.SimulationRepresentation;
+import singa.bio.exchange.model.concentrations.InitialConcentrationRepresentation;
 import singa.bio.exchange.model.entities.EntityRepresentation;
 import singa.bio.exchange.model.features.FeatureRepresentation;
 import singa.bio.exchange.model.features.QuantitativeFeatureRepresentation;
 import singa.bio.exchange.model.modules.ModuleRepresentation;
-import singa.bio.exchange.model.sections.InitialConcentrationRepresentation;
-import singa.bio.exchange.model.sections.RegionCache;
-import singa.bio.exchange.model.sections.SectionConcentrationRepresentation;
 import singa.bio.exchange.model.sections.SubsectionCache;
 import tech.units.indriya.quantity.Quantities;
 
@@ -38,19 +36,21 @@ public class VariationGenerator {
         }
     }
 
+    public static VariationSet generateVariationSet(SimulationRepresentation simulationRepresentation) {
+        VariationGenerator generator = new VariationGenerator(simulationRepresentation);
+        return generator.generateVariationSet();
+    }
+
     private <Type> void attachAlternativeValue(Variation<Type> variation) {
         // section concentrations
         if (variation instanceof ConcentrationVariation) {
             ConcentrationVariation cv = (ConcentrationVariation) variation;
             for (InitialConcentrationRepresentation representation : simulation.getConcentrations().getConcentrations()) {
-                if (representation instanceof SectionConcentrationRepresentation) {
-                    SectionConcentrationRepresentation scr = (SectionConcentrationRepresentation) representation;
-                    if (sectionRepresentationMatches(scr, cv)) {
-                        for (MolarConcentration concentration : cv.getVariations()) {
-                            scr.addAlternativeValue(concentration.to(scr.getConcentrationUnit()).getValue().doubleValue());
-                        }
-                        return;
+                if (sectionRepresentationMatches(representation, cv)) {
+                    for (MolarConcentration concentration : cv.getVariations()) {
+                        representation.addAlternativeValue(concentration.to(representation.getConcentrationUnit()).getValue().doubleValue());
                     }
+                    return;
                 }
             }
         }
@@ -80,7 +80,7 @@ public class VariationGenerator {
                     if (feature instanceof QuantitativeFeatureRepresentation) {
                         QuantitativeFeatureRepresentation qfr = (QuantitativeFeatureRepresentation) feature;
                         if (featureRepresentationMatches(entity, feature, fv)) {
-                            for (Type type: fv.getVariations()) {
+                            for (Type type : fv.getVariations()) {
                                 feature.addAlternativeValue(((Quantity) type).to(qfr.getUnit()).getValue().doubleValue());
                             }
                             return;
@@ -92,26 +92,15 @@ public class VariationGenerator {
         logger.warn("unable to attach variation {}", variation);
     }
 
-    private boolean sectionRepresentationMatches(SectionConcentrationRepresentation representation, ConcentrationVariation variation) {
+    private boolean sectionRepresentationMatches(InitialConcentrationRepresentation representation, ConcentrationVariation variation) {
         String representationEntity = representation.getEntity();
         String representationSubsection = representation.getSubsection();
-        String representationRegion;
-        if (representation.getRegion() == null) {
-            representationRegion = "none";
-        } else {
-            representationRegion = representation.getRegion();
-        }
 
         String variationEntity = variation.getEntity().getIdentifier();
         String variationSubsection = variation.getSubsection().getIdentifier();
-        String variationRegion;
-        if (variation.getCellRegion() == null) {
-            variationRegion = "none";
-        } else {
-            variationRegion = variation.getCellRegion().getIdentifier();
-        }
+        // FIXME should compare more values
 
-        return representationEntity.equals(variationEntity) && representationSubsection.equals(variationSubsection) && representationRegion.equals(variationRegion);
+        return representationEntity.equals(variationEntity) && representationSubsection.equals(variationSubsection);
     }
 
     private boolean featureRepresentationMatches(ModuleRepresentation module, FeatureRepresentation feature, ModuleFeatureVariation featureVariation) {
@@ -134,11 +123,6 @@ public class VariationGenerator {
         return representationEntity.equals(variationEntity) && representationClass.equals(variationClass);
     }
 
-    public static VariationSet generateVariationSet(SimulationRepresentation simulationRepresentation) {
-        VariationGenerator generator = new VariationGenerator(simulationRepresentation);
-        return generator.generateVariationSet();
-    }
-
     private VariationSet generateVariationSet() {
         VariationSet variations = new VariationSet();
         // collect all module feature variations
@@ -157,14 +141,11 @@ public class VariationGenerator {
         }
         // collect all concentrations
         for (InitialConcentrationRepresentation concentration : simulation.getConcentrations().getConcentrations()) {
-            if (concentration instanceof SectionConcentrationRepresentation) {
-                if (!concentration.getAlternativeValues().isEmpty()) {
-                    SectionConcentrationRepresentation scr = (SectionConcentrationRepresentation) concentration;
-                    Variation variation = new ConcentrationVariation(RegionCache.get(scr.getRegion()), SubsectionCache.get(scr.getSubsection()), EntityRegistry.get(scr.getEntity()));
-                    variations.addVariation(variation);
-                    for (Double alternativeValue : scr.getAlternativeValues()) {
-                        variation.addVariation(Quantities.getQuantity(alternativeValue, scr.getConcentrationUnit()));
-                    }
+            if (!concentration.getAlternativeValues().isEmpty()) {
+                Variation variation = new ConcentrationVariation(null, SubsectionCache.get(concentration.getSubsection()), EntityRegistry.get(concentration.getEntity()));
+                variations.addVariation(variation);
+                for (Double alternativeValue : concentration.getAlternativeValues()) {
+                    variation.addVariation(Quantities.getQuantity(alternativeValue, concentration.getConcentrationUnit()));
                 }
             }
         }
@@ -184,7 +165,6 @@ public class VariationGenerator {
         }
         return variations;
     }
-
 
 
 }
