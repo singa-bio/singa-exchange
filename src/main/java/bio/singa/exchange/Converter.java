@@ -16,7 +16,6 @@ import bio.singa.simulation.model.concentrations.InitialConcentration;
 import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.simulation.Simulation;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import singa.bio.exchange.model.agents.*;
 import bio.singa.exchange.entities.EntityRepresentation;
 import bio.singa.exchange.evidence.EvidenceDataset;
 import bio.singa.exchange.modules.ModuleDataset;

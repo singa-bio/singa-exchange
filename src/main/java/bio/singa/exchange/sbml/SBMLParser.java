@@ -9,7 +9,6 @@ import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import singa.bio.exchange.model.sbml.converter.*;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;

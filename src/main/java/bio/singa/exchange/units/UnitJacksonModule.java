@@ -29,12 +29,12 @@
  */
 package bio.singa.exchange.units;
 
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -49,8 +49,6 @@ import java.io.IOException;
  */
 public class UnitJacksonModule extends SimpleModule {
 
-    private static final long serialVersionUID = 7601584599518016604L;
-
     public UnitJacksonModule() {
         super("UnitJsonSerializationModule", new Version(1, 3, 3, null,
                 UnitJacksonModule.class.getPackage().getName(), "uom-lib-jackson"));
@@ -58,12 +56,9 @@ public class UnitJacksonModule extends SimpleModule {
         addDeserializer(Unit.class, new UnitJsonDeserializer());
     }
 
-    @SuppressWarnings("rawtypes")
-    private class UnitJsonSerializer extends StdScalarSerializer<Unit> {
+    private static class UnitJsonSerializer extends StdScalarSerializer<Unit> {
 
-        private static final long serialVersionUID = 2500234678114311932L;
-
-        protected UnitJsonSerializer() {
+        UnitJsonSerializer() {
             super(Unit.class);
         }
 
@@ -73,18 +68,14 @@ public class UnitJacksonModule extends SimpleModule {
                 jgen.writeNull();
             } else {
                 String unitString = UCUMFormat.getInstance(UCUMFormat.Variant.CASE_SENSITIVE).format(unit, new StringBuilder()).toString();
-                // System.out.println(unitString);
                 jgen.writeString(unitString);
             }
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    private class UnitJsonDeserializer extends StdScalarDeserializer<Unit> {
+    private static class UnitJsonDeserializer extends StdScalarDeserializer<Unit> {
 
-        private static final long serialVersionUID = -6327531740958676293L;
-
-        protected UnitJsonDeserializer() {
+        UnitJsonDeserializer() {
             super(Unit.class);
         }
 
@@ -94,10 +85,10 @@ public class UnitJacksonModule extends SimpleModule {
             if (currentToken == JsonToken.VALUE_STRING) {
                 return UCUMFormat.getInstance(UCUMFormat.Variant.CASE_SENSITIVE).parse(jsonParser.getText());
             }
-            throw deserializationContext.wrongTokenException(jsonParser,
-                    JsonToken.VALUE_STRING, "Expected unit value in String format");
+            throw new JsonMappingException(jsonParser, "Expected uom unit value as String value");
         }
     }
+
 }
 
 
