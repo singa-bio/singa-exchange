@@ -1,13 +1,10 @@
 package bio.singa.exchange.modules;
 
-import bio.singa.exchange.features.FeatureRepresentation;
+import bio.singa.exchange.features.FeatureCarrier;
 import bio.singa.simulation.model.modules.UpdateModule;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author cl
@@ -21,7 +18,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = ReactionRepresentation.class, name = "reaction-based"),
         @JsonSubTypes.Type(value = QualitativeModuleRepresentation.class, name = "qualitative")
 })
-public abstract class ModuleRepresentation {
+public abstract class ModuleRepresentation extends FeatureCarrier {
 
     @JsonProperty
     private String name;
@@ -29,11 +26,8 @@ public abstract class ModuleRepresentation {
     @JsonProperty
     private String identifier;
 
-    @JsonProperty
-    private List<FeatureRepresentation> features;
-
     public ModuleRepresentation() {
-        features = new ArrayList<>();
+        super();
     }
 
     public static ModuleRepresentation of(UpdateModule module) {
@@ -60,16 +54,6 @@ public abstract class ModuleRepresentation {
         this.identifier = identifier;
     }
 
-    public List<FeatureRepresentation> getFeatures() {
-        return features;
-    }
 
-    public void setFeatures(List<FeatureRepresentation> features) {
-        this.features = features;
-    }
-
-    public void addFeature(FeatureRepresentation feature) {
-        features.add(feature);
-    }
 
 }

@@ -22,7 +22,7 @@ public class MultiConcentrationFeatureRepresentation extends FeatureRepresentati
 
     public static MultiConcentrationFeatureRepresentation of(Feature<?> feature) {
         MultiConcentrationFeatureRepresentation representation = new MultiConcentrationFeatureRepresentation();
-        representation.setName(feature.getClass().getSimpleName());
+        representation.baseSetup(feature);
         ((InitialConcentrations) feature).getContent().stream()
                 .map(InitialConcentrationRepresentation::of)
                 .forEach(representation::addInitialConcentration);
@@ -39,5 +39,10 @@ public class MultiConcentrationFeatureRepresentation extends FeatureRepresentati
 
     public void setConcentrations(List<InitialConcentrationRepresentation> concentrations) {
         this.concentrations = concentrations;
+    }
+
+    @Override
+    public List<InitialConcentrationRepresentation> fetchContent() {
+        return concentrations;
     }
 }

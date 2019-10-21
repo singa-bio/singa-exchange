@@ -8,6 +8,7 @@ import bio.singa.exchange.concentrations.InitialConcentrationDataset;
 import bio.singa.exchange.entities.EntityDataset;
 import bio.singa.exchange.graphs.automaton.GraphRepresentation;
 import bio.singa.exchange.modules.ModuleDataset;
+import bio.singa.features.model.FeatureRegistry;
 import bio.singa.mathematics.geometry.faces.Rectangle;
 import bio.singa.simulation.model.agents.linelike.LineLikeAgentLayer;
 import bio.singa.simulation.model.agents.linelike.MicrotubuleOrganizingCentre;
@@ -74,6 +75,7 @@ public class SimulationRepresentation implements Jsonizable {
 
     public static Simulation to(SimulationRepresentation representation) {
         Converter.current = new Simulation();
+        FeatureRegistry.reinitialize();
         // initialize environment
         representation.getEnvironment().setEnvironment();
         Converter.current.setSimulationRegion(new Rectangle(representation.getEnvironment().getSimulationExtend(), representation.getEnvironment().getSimulationExtend()));

@@ -2,19 +2,21 @@ package bio.singa.exchange.concentrations;
 
 import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.exchange.EnumTransformation;
-import bio.singa.exchange.sections.SubsectionRepresentation;
-import bio.singa.features.quantities.MolarConcentration;
-import bio.singa.simulation.model.concentrations.InitialConcentration;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import bio.singa.exchange.concentrations.conditions.ConditionRepresentation;
 import bio.singa.exchange.entities.EntityRepresentation;
 import bio.singa.exchange.evidence.EvidenceCache;
 import bio.singa.exchange.evidence.EvidenceRepresentation;
 import bio.singa.exchange.sections.SubsectionCache;
+import bio.singa.exchange.sections.SubsectionRepresentation;
 import bio.singa.exchange.variation.Variable;
+import bio.singa.features.model.Evidence;
+import bio.singa.features.quantities.MolarConcentration;
+import bio.singa.simulation.model.concentrations.InitialConcentration;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import tech.units.indriya.quantity.Quantities;
 
+import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
 import java.util.ArrayList;
@@ -24,6 +26,9 @@ import java.util.List;
  * @author cl
  */
 public class InitialConcentrationRepresentation extends Variable<Double> {
+
+    @JsonProperty
+    private int identifier;
 
     @JsonProperty
     private List<ConditionRepresentation> conditions;
@@ -54,14 +59,16 @@ public class InitialConcentrationRepresentation extends Variable<Double> {
     private boolean fixed;
 
     @JsonProperty
-    private String evidence;
+    private List<String> evidence;
 
     public InitialConcentrationRepresentation() {
         conditions = new ArrayList<>();
+        evidence = new ArrayList<>();
     }
 
     public static InitialConcentrationRepresentation of(InitialConcentration initialConcentration) {
         InitialConcentrationRepresentation representation = new InitialConcentrationRepresentation();
+        representation.setIdentifier(initialConcentration.getIdentifier());
         initialConcentration.getConditions().values().stream()
                 .map(ConditionRepresentation::of)
                 .forEach(representation::addCondition);
@@ -77,12 +84,19 @@ public class InitialConcentrationRepresentation extends Variable<Double> {
         representation.setTimeValue(initialConcentration.getTime().getValue().doubleValue());
         representation.setTimeUnit(initialConcentration.getTime().getUnit());
         representation.setFixed(initialConcentration.isFix());
-        representation.setEvidence(EvidenceRepresentation.of(initialConcentration.getEvidence()).getIdentifier());
+        representation.addEvidence(initialConcentration.getAllEvidence());
+        if (representation.getEvidence().isEmpty()) {
+            representation.addEvidence(Evidence.NO_EVIDENCE);
+        }
+        for (Quantity<MolarConcentration> alternativeContent : initialConcentration.getAlternativeContents()) {
+            representation.addAlternativeValue(alternativeContent.to(representation.getConcentrationUnit()).getValue().doubleValue());
+        }
         return representation;
     }
 
     public InitialConcentration toModel() {
         InitialConcentration concentration = new InitialConcentration();
+        concentration.setIdentifier(getIdentifier());
         getConditions().stream()
                 .map(ConditionRepresentation::toModel)
                 .forEach(concentration::addCondition);
@@ -96,8 +110,21 @@ public class InitialConcentrationRepresentation extends Variable<Double> {
         concentration.setConcentration(Quantities.getQuantity(getConcentrationValue(), getConcentrationUnit()));
         concentration.setTime(Quantities.getQuantity(getTimeValue(), getTimeUnit()));
         concentration.setFix(isFixed());
-        concentration.setEvidence(EvidenceCache.get(getEvidence()));
+        for (String evidenceIdentifier : getEvidence()) {
+            concentration.addEvidence(EvidenceCache.get(evidenceIdentifier));
+        }
+        for (Double alternativeValue : getAlternativeValues()) {
+            concentration.addAlternativeContent(Quantities.getQuantity(alternativeValue, getConcentrationUnit()));
+        }
         return concentration;
+    }
+
+    public int getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(int identifier) {
+        this.identifier = identifier;
     }
 
     public List<ConditionRepresentation> getConditions() {
@@ -176,11 +203,22 @@ public class InitialConcentrationRepresentation extends Variable<Double> {
         this.fixed = fixed;
     }
 
-    public String getEvidence() {
+    public List<String> getEvidence() {
         return evidence;
     }
 
-    public void setEvidence(String evidence) {
+    public void setEvidence(List<String> evidence) {
         this.evidence = evidence;
     }
+
+    public void addEvidence(List<Evidence> evidences) {
+        for (Evidence evidence : evidences) {
+            this.evidence.add(EvidenceRepresentation.of(evidence).getIdentifier());
+        }
+    }
+
+    public void addEvidence(Evidence evidence) {
+        this.evidence.add(EvidenceRepresentation.of(evidence).getIdentifier());
+    }
+
 }

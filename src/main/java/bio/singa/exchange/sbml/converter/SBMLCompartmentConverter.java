@@ -30,7 +30,6 @@ public class SBMLCompartmentConverter {
 
     private Map<CellSubsection, String> topology;
     private Map<CellSubsection, Double> size;
-    private Set<CellSubsection> processedSubsections;
 
     public SBMLCompartmentConverter() {
         subsections = new HashMap<>();
@@ -38,7 +37,6 @@ public class SBMLCompartmentConverter {
         parameter = new HashMap<>();
         topology = new HashMap<>();
         size = new HashMap<>();
-        processedSubsections = new HashSet<>();
     }
 
     public static void convert(ListOf<Compartment> compartments) {

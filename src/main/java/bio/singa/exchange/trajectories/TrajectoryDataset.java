@@ -47,6 +47,7 @@ public class TrajectoryDataset {
 
     public TrajectoryDataset() {
         trajectoryData = new TreeMap<>();
+        initializeMapper();
     }
 
     public static TrajectoryDataset of(Trajectories trajectories) {

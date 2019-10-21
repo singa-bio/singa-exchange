@@ -18,8 +18,4 @@ public class UpdatableCacheManager {
         return null;
     }
 
-    public static boolean isAvailable(String updatable) {
-        return NodeCache.contains(updatable) || VesicleCache.contains(updatable);
-    }
-
 }

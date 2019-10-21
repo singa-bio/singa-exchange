@@ -104,8 +104,6 @@ public class SBMLUnitConverter {
                 return CELSIUS;
             case COULOMB:
                 return COULOMB;
-            case DIMENSIONLESS:
-                return ONE;
             case FARAD:
                 return FARAD;
             case GRAM:
@@ -116,8 +114,6 @@ public class SBMLUnitConverter {
                 return HENRY;
             case HERTZ:
                 return HERTZ;
-            case ITEM:
-                return ONE;
             case JOULE:
                 return JOULE;
             case KATAL:
@@ -127,7 +123,6 @@ public class SBMLUnitConverter {
             case KILOGRAM:
                 return KILOGRAM;
             case LITER:
-                return LITRE;
             case LITRE:
                 return LITRE;
             case LUMEN:
@@ -135,7 +130,6 @@ public class SBMLUnitConverter {
             case LUX:
                 return LUX;
             case METER:
-                return METRE;
             case METRE:
                 return METRE;
             case MOLE:
@@ -164,6 +158,7 @@ public class SBMLUnitConverter {
                 return WATT;
             case WEBER:
                 return WEBER;
+            case DIMENSIONLESS:
             default:
                 return ONE;
         }

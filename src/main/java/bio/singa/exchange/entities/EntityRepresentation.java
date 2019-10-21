@@ -5,14 +5,13 @@ import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.chemistry.entities.complex.ComplexEntity;
 import bio.singa.chemistry.entities.simple.Protein;
 import bio.singa.chemistry.entities.simple.SmallMolecule;
-import bio.singa.exchange.features.FeatureRepresentation;
-import bio.singa.exchange.graphs.complex.ComplexEntityRepresentation;
-import bio.singa.features.model.Feature;
-import com.fasterxml.jackson.annotation.*;
 import bio.singa.exchange.IllegalConversionException;
-
-import java.util.ArrayList;
-import java.util.List;
+import bio.singa.exchange.features.FeatureCarrier;
+import bio.singa.exchange.graphs.complex.ComplexEntityRepresentation;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * @author cl
@@ -26,7 +25,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = ComplexEntityRepresentation.class, name = "complex"),
 })
 @JsonPropertyOrder({"primary-identifier", "type"})
-public abstract class EntityRepresentation {
+public abstract class EntityRepresentation extends FeatureCarrier {
 
     @JsonProperty("primary-identifier")
     private String primaryIdentifier;
@@ -34,12 +33,8 @@ public abstract class EntityRepresentation {
     @JsonProperty("membrane-bound")
     private boolean membraneBound;
 
-    @JsonProperty
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<FeatureRepresentation> features;
-
     public EntityRepresentation() {
-        features = new ArrayList<>();
+        super();
     }
 
     public static EntityRepresentation of(ChemicalEntity chemicalEntity) {
@@ -68,13 +63,6 @@ public abstract class EntityRepresentation {
         return entity;
     }
 
-    protected void appendFeatures(ChemicalEntity entity) {
-        for (FeatureRepresentation featureRepresentation : getFeatures()) {
-            Feature feature = featureRepresentation.toModel();
-            entity.setFeature(feature);
-        }
-    }
-
     public String getPrimaryIdentifier() {
         return primaryIdentifier;
     }
@@ -89,18 +77,6 @@ public abstract class EntityRepresentation {
 
     public void setMembraneBound(boolean membraneBound) {
         this.membraneBound = membraneBound;
-    }
-
-    public List<FeatureRepresentation> getFeatures() {
-        return features;
-    }
-
-    public void setFeatures(List<FeatureRepresentation> features) {
-        this.features = features;
-    }
-
-    public void addFeature(FeatureRepresentation feature) {
-        features.add(feature);
     }
 
 }

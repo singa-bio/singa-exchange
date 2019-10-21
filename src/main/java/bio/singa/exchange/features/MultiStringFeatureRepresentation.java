@@ -1,6 +1,5 @@
 package bio.singa.exchange.features;
 
-import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
 import bio.singa.simulation.features.MultiStringFeature;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,13 +21,9 @@ public class MultiStringFeatureRepresentation extends FeatureRepresentation<List
 
     public static MultiStringFeatureRepresentation of(Feature<?> feature) {
         MultiStringFeatureRepresentation representation = new MultiStringFeatureRepresentation();
-        representation.setName(feature.getClass().getSimpleName());
+        representation.baseSetup(feature);
         for (String string : ((MultiStringFeature) feature).getContent()) {
             representation.addString(string);
-        }
-        representation.addEvidence(feature.getAllEvidence());
-        if (representation.getEvidence().isEmpty()) {
-            representation.addEvidence(Evidence.NO_EVIDENCE);
         }
         return representation;
     }
@@ -45,4 +40,8 @@ public class MultiStringFeatureRepresentation extends FeatureRepresentation<List
         this.strings.add(entity);
     }
 
+    @Override
+    public List<String> fetchContent() {
+        return strings;
+    }
 }

@@ -23,7 +23,7 @@ public class SmallMoleculeRepresentation extends EntityRepresentation {
     public SmallMolecule toModel() {
         SmallMolecule entity = SmallMolecule.create(getPrimaryIdentifier()).build();
         entity.setMembraneBound(isMembraneBound());
-        appendFeatures(entity);
+        appendFeaturesTo(entity);
         EntityRegistry.put(entity);
         return entity;
     }

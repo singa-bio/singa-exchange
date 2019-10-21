@@ -84,7 +84,7 @@ class FeatureRepresentationTest {
         FeatureRepresentation representation = FeatureRepresentation.of(feature);
 
         assertEquals(feature.getClass().getSimpleName(), representation.getName());
-        assertEquals(feature.getContent(), ((QualitativeFeatureRepresentation) representation).getContent());
+        assertEquals(feature.getContent(), ((QualitativeFeatureRepresentation) representation).fetchContent());
         assertEquals(1, representation.getEvidence().size());
     }
 
@@ -98,7 +98,7 @@ class FeatureRepresentationTest {
         Feature feature = representation.toModel();
 
         assertEquals(representation.getName(), feature.getClass().getSimpleName());
-        assertEquals(representation.getContent(), feature.getContent().toString());
+        assertEquals(representation.fetchContent(), feature.getContent().toString());
         assertEquals(representation.getEvidence().size(), feature.getAllEvidence().size());
     }
 
@@ -135,7 +135,7 @@ class FeatureRepresentationTest {
         FeatureRepresentation representation = FeatureRepresentation.of(feature);
 
         assertEquals(feature.getClass().getSimpleName(), representation.getName());
-        assertEquals(feature.getContent(), EntityRegistry.get(((QualitativeFeatureRepresentation) representation).getContent()));
+        assertEquals(feature.getContent(), EntityRegistry.get(((QualitativeFeatureRepresentation) representation).fetchContent()));
         assertEquals(feature.getAllEvidence().size(), representation.getEvidence().size());
     }
 
@@ -149,7 +149,7 @@ class FeatureRepresentationTest {
         Feature feature = representation.toModel();
 
         assertEquals(representation.getName(), feature.getClass().getSimpleName());
-        assertEquals(EntityRegistry.get(representation.getContent()), feature.getContent());
+        assertEquals(EntityRegistry.get(representation.fetchContent()), feature.getContent());
         assertEquals(representation.getEvidence().size(), feature.getAllEvidence().size());
     }
 
@@ -185,7 +185,7 @@ class FeatureRepresentationTest {
         FeatureRepresentation representation = FeatureRepresentation.of(feature);
 
         assertEquals(feature.getClass().getSimpleName(), representation.getName());
-        assertEquals(feature.getContent(), RegionCache.get(((QualitativeFeatureRepresentation) representation).getContent()));
+        assertEquals(feature.getContent(), RegionCache.get(((QualitativeFeatureRepresentation) representation).fetchContent()));
         assertEquals(1, representation.getEvidence().size());
     }
 
@@ -199,7 +199,7 @@ class FeatureRepresentationTest {
         Feature feature = representation.toModel();
 
         assertEquals(representation.getName(), feature.getClass().getSimpleName());
-        assertEquals(RegionCache.get(representation.getContent()), feature.getContent());
+        assertEquals(RegionCache.get(representation.fetchContent()), feature.getContent());
         assertEquals(representation.getEvidence().size(), feature.getAllEvidence().size());
     }
 

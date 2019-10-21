@@ -23,7 +23,7 @@ public class ProteinRepresentation extends EntityRepresentation {
     public Protein toModel() {
         Protein entity = Protein.create(getPrimaryIdentifier()).build();
         entity.setMembraneBound(isMembraneBound());
-        appendFeatures(entity);
+        appendFeaturesTo(entity);
         EntityRegistry.put(entity);
         return entity;
     }

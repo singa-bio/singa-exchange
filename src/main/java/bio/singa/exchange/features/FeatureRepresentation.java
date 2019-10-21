@@ -1,5 +1,8 @@
 package bio.singa.exchange.features;
 
+import bio.singa.exchange.IllegalConversionException;
+import bio.singa.exchange.evidence.EvidenceRepresentation;
+import bio.singa.exchange.variation.Variable;
 import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
 import bio.singa.features.model.QualitativeFeature;
@@ -10,9 +13,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import bio.singa.exchange.IllegalConversionException;
-import bio.singa.exchange.evidence.EvidenceRepresentation;
-import bio.singa.exchange.variation.Variable;
 
 import javax.measure.Quantity;
 import java.util.ArrayList;
@@ -35,6 +35,9 @@ import java.util.List;
 public abstract class FeatureRepresentation<Type> extends Variable<Type> {
 
     @JsonProperty
+    private int identifier;
+
+    @JsonProperty
     private String name;
 
     @JsonProperty
@@ -51,16 +54,33 @@ public abstract class FeatureRepresentation<Type> extends Variable<Type> {
             return MultiEntityFeatureRepresentation.of(feature);
         } else if (feature instanceof MultiStringFeature) {
             return MultiStringFeatureRepresentation.of(feature);
-        } else if (feature instanceof QualitativeFeature) {
-            return QualitativeFeatureRepresentation.of(feature);
         } else if (feature instanceof InitialConcentrations) {
             return MultiConcentrationFeatureRepresentation.of(feature);
+        } else if (feature instanceof QualitativeFeature) {
+            return QualitativeFeatureRepresentation.of(feature);
         }
         throw new IllegalConversionException("The feature " + feature + " could not be converted to its json representation.");
     }
 
-    public Feature toModel() {
+    public Feature<?> toModel() {
         return FeatureFactory.create(this);
+    }
+
+    protected void baseSetup(Feature<?> feature) {
+        setIdentifier(feature.getIdentifier());
+        setName(feature.getClass().getSimpleName());
+        addEvidence(feature.getAllEvidence());
+        if (getEvidence().isEmpty()) {
+            addEvidence(Evidence.NO_EVIDENCE);
+        }
+    }
+
+    public int getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(int identifier) {
+        this.identifier = identifier;
     }
 
     public String getName() {
@@ -87,7 +107,8 @@ public abstract class FeatureRepresentation<Type> extends Variable<Type> {
 
     public void addEvidence(Evidence evidence) {
         this.evidence.add(EvidenceRepresentation.of(evidence).getIdentifier());
-
     }
+
+    public abstract Type fetchContent();
 
 }

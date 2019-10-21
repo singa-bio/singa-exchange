@@ -1,6 +1,5 @@
 package bio.singa.exchange.features;
 
-import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
 import bio.singa.features.units.UnitRegistry;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,16 +26,15 @@ public class QuantitativeFeatureRepresentation extends FeatureRepresentation<Dou
 
     public static QuantitativeFeatureRepresentation of(Feature<?> feature) {
         QuantitativeFeatureRepresentation representation = new QuantitativeFeatureRepresentation();
-        representation.setName(feature.getClass().getSimpleName());
+        representation.baseSetup(feature);
         Quantity quantity = (Quantity) feature.getContent();
         if (quantity.getUnit().isCompatible(MOLE_PER_LITRE)) {
             quantity = UnitRegistry.humanReadable(quantity);
         }
         representation.setQuantity(quantity.getValue().doubleValue());
         representation.setUnit(quantity.getUnit());
-        representation.addEvidence(feature.getAllEvidence());
-        if (representation.getEvidence().isEmpty()) {
-            representation.addEvidence(Evidence.NO_EVIDENCE);
+        for (Object alternativeContent : feature.getAlternativeContents()) {
+            representation.addAlternativeValue(((Quantity)alternativeContent).to(representation.getUnit()).getValue().doubleValue());
         }
         return representation;
     }
@@ -57,4 +55,8 @@ public class QuantitativeFeatureRepresentation extends FeatureRepresentation<Dou
         this.unit = unit;
     }
 
+    @Override
+    public Double fetchContent() {
+        return quantity;
+    }
 }

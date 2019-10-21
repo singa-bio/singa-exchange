@@ -2,7 +2,6 @@ package bio.singa.exchange.features;
 
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.exchange.entities.EntityRepresentation;
-import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
 import bio.singa.simulation.features.MultiEntityFeature;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,13 +23,9 @@ public class MultiEntityFeatureRepresentation extends FeatureRepresentation<List
 
     public static MultiEntityFeatureRepresentation of(Feature<?> feature) {
         MultiEntityFeatureRepresentation representation = new MultiEntityFeatureRepresentation();
-        representation.setName(feature.getClass().getSimpleName());
+        representation.baseSetup(feature);
         for (ChemicalEntity chemicalEntity : ((MultiEntityFeature) feature).getContent()) {
             representation.addEntity(EntityRepresentation.of(chemicalEntity).getPrimaryIdentifier());
-        }
-        representation.addEvidence(feature.getAllEvidence());
-        if (representation.getEvidence().isEmpty()) {
-            representation.addEvidence(Evidence.NO_EVIDENCE);
         }
         return representation;
     }
@@ -47,4 +42,8 @@ public class MultiEntityFeatureRepresentation extends FeatureRepresentation<List
         this.entities.add(entity);
     }
 
+    @Override
+    public List<String> fetchContent() {
+        return entities;
+    }
 }

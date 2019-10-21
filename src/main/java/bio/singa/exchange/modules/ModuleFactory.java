@@ -50,7 +50,7 @@ public class ModuleFactory {
         // other concentration based modules
         ConcentrationModuleRepresentation representation = new ConcentrationModuleRepresentation();
         performBaseSetup(module, representation);
-        for (ChemicalEntity referencedEntity : module.getReferencedEntities()) {
+        for (ChemicalEntity referencedEntity : module.getReferencedChemicalEntities()) {
             representation.addAffectedEntity(referencedEntity.getIdentifier());
         }
         return representation;

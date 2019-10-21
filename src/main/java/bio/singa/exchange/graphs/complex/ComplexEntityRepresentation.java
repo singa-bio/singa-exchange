@@ -65,7 +65,7 @@ public class ComplexEntityRepresentation extends EntityRepresentation {
         // set remaining attributes
         entity.setMembraneBound(isMembraneBound());
         entity.update();
-        appendFeatures(entity);
+        appendFeaturesTo(entity);
         EntityRegistry.put(entity);
         return entity;
     }
