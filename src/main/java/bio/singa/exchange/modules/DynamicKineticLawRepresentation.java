@@ -1,14 +1,14 @@
 package bio.singa.exchange.modules;
 
-import bio.singa.features.model.ScalableQuantitativeFeature;
+import bio.singa.exchange.entities.ReactantRepresentation;
+import bio.singa.exchange.features.FeatureRepresentation;
+import bio.singa.exchange.features.ParameterRepresentation;
+import bio.singa.features.model.AbstractScalableQuantitativeFeature;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.Reaction;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.kineticlaws.DynamicKineticLaw;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.Reactant;
 import bio.singa.simulation.model.parameters.Parameter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import bio.singa.exchange.entities.ReactantRepresentation;
-import bio.singa.exchange.features.FeatureRepresentation;
-import bio.singa.exchange.features.ParameterRepresentation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class DynamicKineticLawRepresentation extends KineticLawRepresentation {
         for (Map.Entry<String, Parameter> constantEntry : kineitcLaw.getParameterMap().entrySet()) {
             representation.addConstant(constantEntry.getKey(), ParameterRepresentation.of(constantEntry.getValue()));
         }
-        for (Map.Entry<String, ScalableQuantitativeFeature> featureEntry : kineitcLaw.getFeatureMap().entrySet()) {
+        for (Map.Entry<String, AbstractScalableQuantitativeFeature> featureEntry : kineitcLaw.getFeatureMap().entrySet()) {
             representation.addKineticFeature(featureEntry.getKey(), FeatureRepresentation.of(featureEntry.getValue()));
         }
         return representation;
@@ -57,7 +57,7 @@ public class DynamicKineticLawRepresentation extends KineticLawRepresentation {
             kineticLaw.referenceParameter(representationEntry.getValue().toModel());
         }
         for (Map.Entry<String, FeatureRepresentation> representationEntry : getKineticFeatures().entrySet()) {
-            kineticLaw.referenceFeature(representationEntry.getKey(), (ScalableQuantitativeFeature) representationEntry.getValue().toModel());
+            kineticLaw.referenceFeature(representationEntry.getKey(), (AbstractScalableQuantitativeFeature) representationEntry.getValue().toModel());
         }
         return kineticLaw;
     }
