@@ -1,5 +1,7 @@
 package bio.singa.exchange.entities;
 
+import bio.singa.simulation.export.format.FormatReactionEquation;
+import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.kineticlaws.KineticLaw;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.Reactant;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.ReactantSet;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 public class ReactantSetRepresentation {
 
     @JsonProperty
+    private String reaction;
+    @JsonProperty
     private List<ReactantRepresentation> substrates;
     @JsonProperty
     private List<ReactantRepresentation> products;
@@ -26,7 +30,7 @@ public class ReactantSetRepresentation {
         catalysts = new ArrayList<>();
     }
 
-    public static ReactantSetRepresentation of(ReactantSet reactantSet) {
+    public static ReactantSetRepresentation of(ReactantSet reactantSet, KineticLaw law) {
         ReactantSetRepresentation representation = new ReactantSetRepresentation();
         reactantSet.getSubstrates().stream()
                 .map(ReactantRepresentation::of)
@@ -37,6 +41,7 @@ public class ReactantSetRepresentation {
         reactantSet.getCatalysts().stream()
                 .map(ReactantRepresentation::of)
                 .forEach(representation::addCatalyst);
+        representation.setReaction(FormatReactionEquation.formatASCII(reactantSet.getSubstrates(), reactantSet.getProducts(), reactantSet.getCatalysts(), law));
         return representation;
     }
 
@@ -89,4 +94,11 @@ public class ReactantSetRepresentation {
         catalysts.add(catalyst);
     }
 
+    public String getReaction() {
+        return reaction;
+    }
+
+    public void setReaction(String reaction) {
+        this.reaction = reaction;
+    }
 }

@@ -3,6 +3,7 @@ package bio.singa.exchange.features;
 import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.chemistry.entities.simple.Protein;
+import bio.singa.chemistry.features.diffusivity.ConcentrationDiffusivity;
 import bio.singa.chemistry.features.diffusivity.Diffusivity;
 import bio.singa.exchange.sections.RegionCache;
 import bio.singa.features.identifiers.SimpleStringIdentifier;
@@ -52,12 +53,12 @@ class FeatureRepresentationTest {
     @Test
     @DisplayName("features - quantitative feature to json")
     void quantitativeModelToJson() {
-        Diffusivity feature = new Diffusivity(Quantities.getQuantity(1.0, SQUARE_CENTIMETRE_PER_SECOND), evidences);
+        ConcentrationDiffusivity feature = new ConcentrationDiffusivity(Quantities.getQuantity(1.0, SQUARE_CENTIMETRE_PER_SECOND), evidences);
         FeatureRepresentation representation = FeatureRepresentation.of(feature);
 
         assertEquals(feature.getClass().getSimpleName(), representation.getName());
-        assertEquals(feature.getValue().doubleValue(), ((QuantitativeFeatureRepresentation) representation).getQuantity());
-        assertEquals(feature.getUnit(), ((QuantitativeFeatureRepresentation) representation).getUnit());
+        assertEquals(feature.getContent().getValue().doubleValue(), ((QuantitativeFeatureRepresentation) representation).getQuantity());
+        assertEquals(feature.getContent().getUnit(), ((QuantitativeFeatureRepresentation) representation).getUnit());
         assertEquals(feature.getAllEvidence().size(), representation.getEvidence().size());
     }
 

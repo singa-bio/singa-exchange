@@ -1,10 +1,11 @@
 package bio.singa.exchange.modules;
 
 import bio.singa.exchange.Converter;
+import bio.singa.exchange.concentrations.conditions.ConditionRepresentation;
 import bio.singa.exchange.entities.ReactantRepresentation;
+import bio.singa.exchange.entities.ReactantSetRepresentation;
 import bio.singa.exchange.features.FeatureRepresentation;
 import bio.singa.features.model.Feature;
-import bio.singa.simulation.export.format.FormatReactionEquation;
 import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.Reaction;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.ReactionBuilder;
@@ -14,7 +15,6 @@ import bio.singa.simulation.model.modules.concentration.imlementations.reactions
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.StaticReactantBehavior;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import bio.singa.exchange.entities.ReactantSetRepresentation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,22 +32,25 @@ public class ReactionRepresentation extends ModuleRepresentation {
     private KineticLawRepresentation kineticLaw;
 
     @JsonProperty
-    private String reaction;
+    private List<ConditionRepresentation> conditions;
 
     public ReactionRepresentation() {
         reactants = new ArrayList<>();
+        conditions = new ArrayList<>();
     }
 
     public static ReactionRepresentation of(Reaction reaction) {
         ReactionRepresentation representation = new ReactionRepresentation();
         representation.setIdentifier(reaction.getIdentifier());
         representation.setName(reaction.getClass().getSimpleName());
-        representation.setReaction(FormatReactionEquation.formatASCII(reaction));
         representation.setKineticLaw(fromKineticLaw(reaction.getKineticLaw()));
-        representation.representationFromReactantBehavior(reaction);
+        representation.representationFromReactantBehavior(reaction, reaction.getKineticLaw());
         for (Feature<?> feature : reaction.getFeatures()) {
             representation.addFeature(FeatureRepresentation.of(feature));
         }
+        reaction.getConditions().values().stream()
+                .map(ConditionRepresentation::of)
+                .forEach(representation::addCondition);
         return representation;
     }
 
@@ -96,14 +99,17 @@ public class ReactionRepresentation extends ModuleRepresentation {
         for (FeatureRepresentation feature : getFeatures()) {
             reaction.setFeature(feature.toModel());
         }
+        getConditions().stream()
+                .map(ConditionRepresentation::toModel)
+                .forEach(reaction::addCondition);
         // execute build (calls post construct and adds to referenced simulation)
         builder.build();
         return reaction;
     }
 
-    private void representationFromReactantBehavior(Reaction reaction) {
+    private void representationFromReactantBehavior(Reaction reaction, KineticLaw law) {
         reaction.getReactantBehavior().getReactantSets().stream()
-                .map(ReactantSetRepresentation::of)
+                .map(reactantSet -> ReactantSetRepresentation.of(reactantSet, law))
                 .forEach(reactantSetRepresentation -> reactants.add(reactantSetRepresentation));
     }
 
@@ -137,14 +143,6 @@ public class ReactionRepresentation extends ModuleRepresentation {
         this.reactants = reactants;
     }
 
-    public String getReaction() {
-        return reaction;
-    }
-
-    public void setReaction(String reaction) {
-        this.reaction = reaction;
-    }
-
     public KineticLawRepresentation getKineticLaw() {
         return kineticLaw;
     }
@@ -153,4 +151,15 @@ public class ReactionRepresentation extends ModuleRepresentation {
         this.kineticLaw = kineticLaw;
     }
 
+    public List<ConditionRepresentation> getConditions() {
+        return conditions;
+    }
+
+    public void addCondition(ConditionRepresentation conditionRepresentation) {
+        conditions.add(conditionRepresentation);
+    }
+
+    public void setConditions(List<ConditionRepresentation> conditions) {
+        this.conditions = conditions;
+    }
 }
