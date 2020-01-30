@@ -7,6 +7,8 @@ import bio.singa.exchange.concentrations.InitialConcentrationDataset;
 import bio.singa.exchange.concentrations.InitialConcentrationRepresentation;
 import bio.singa.exchange.entities.EntityDataset;
 import bio.singa.exchange.graphs.automaton.GraphRepresentation;
+import bio.singa.exchange.sections.RegionCache;
+import bio.singa.exchange.sections.SubsectionCache;
 import bio.singa.exchange.units.UnitJacksonModule;
 import bio.singa.simulation.model.agents.linelike.LineLikeAgent;
 import bio.singa.simulation.model.agents.pointlike.Vesicle;
@@ -14,6 +16,7 @@ import bio.singa.simulation.model.agents.surfacelike.Membrane;
 import bio.singa.simulation.model.agents.volumelike.VolumeLikeAgent;
 import bio.singa.simulation.model.concentrations.InitialConcentration;
 import bio.singa.simulation.model.modules.UpdateModule;
+import bio.singa.simulation.model.sections.CellRegions;
 import bio.singa.simulation.model.simulation.Simulation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import bio.singa.exchange.entities.EntityRepresentation;
@@ -88,6 +91,8 @@ public class Converter {
             for (Vesicle vesicle : simulation.getVesicleLayer().getVesicles()) {
                 dataset.addVesicle(VesicleRepresentation.of(vesicle));
             }
+            RegionCache.add(CellRegions.VESICLE_REGION);
+            CellRegions.VESICLE_REGION.getSubsections().forEach(SubsectionCache::add);
         }
         return dataset;
     }
