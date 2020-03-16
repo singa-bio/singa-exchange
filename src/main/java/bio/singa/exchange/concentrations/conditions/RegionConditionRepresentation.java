@@ -6,6 +6,7 @@ import bio.singa.simulation.model.sections.CellRegion;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import bio.singa.exchange.sections.RegionRepresentation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,10 @@ public class RegionConditionRepresentation extends ConditionRepresentation {
 
     @JsonProperty
     private List<String> regions;
+
+    public RegionConditionRepresentation() {
+        this.regions = new ArrayList<>();
+    }
 
     public static RegionConditionRepresentation of(RegionCondition condition) {
         RegionConditionRepresentation representation = new RegionConditionRepresentation();

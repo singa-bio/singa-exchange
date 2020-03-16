@@ -6,8 +6,11 @@ import bio.singa.exchange.agents.VesicleDataset;
 import bio.singa.exchange.agents.VolumeDataset;
 import bio.singa.exchange.concentrations.InitialConcentrationDataset;
 import bio.singa.exchange.entities.EntityDataset;
+import bio.singa.exchange.evidence.EvidenceDataset;
 import bio.singa.exchange.graphs.automaton.GraphRepresentation;
 import bio.singa.exchange.modules.ModuleDataset;
+import bio.singa.exchange.sections.RegionDataset;
+import bio.singa.exchange.sections.SubsectionDataset;
 import bio.singa.features.model.FeatureRegistry;
 import bio.singa.mathematics.geometry.faces.Rectangle;
 import bio.singa.simulation.model.agents.linelike.LineLikeAgentLayer;
@@ -19,9 +22,6 @@ import bio.singa.simulation.model.concentrations.InitialConcentration;
 import bio.singa.simulation.model.graphs.AutomatonGraph;
 import bio.singa.simulation.model.simulation.Simulation;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import bio.singa.exchange.evidence.EvidenceDataset;
-import bio.singa.exchange.sections.RegionDataset;
-import bio.singa.exchange.sections.SubsectionDataset;
 
 import java.util.List;
 
@@ -74,10 +74,11 @@ public class SimulationRepresentation implements Jsonizable {
     }
 
     public static Simulation to(SimulationRepresentation representation) {
-        Converter.current = new Simulation();
         FeatureRegistry.reinitialize();
         // initialize environment
         representation.getEnvironment().setEnvironment();
+        // create simulation
+        Converter.current = new Simulation();
         Converter.current.setSimulationRegion(new Rectangle(representation.getEnvironment().getSimulationExtend(), representation.getEnvironment().getSimulationExtend()));
         // initialize subsections
         representation.getSubsections().cache();
