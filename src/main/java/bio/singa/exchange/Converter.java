@@ -1,15 +1,15 @@
 package bio.singa.exchange;
 
-import bio.singa.chemistry.entities.ChemicalEntities;
-import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.exchange.agents.*;
 import bio.singa.exchange.concentrations.InitialConcentrationDataset;
 import bio.singa.exchange.concentrations.InitialConcentrationRepresentation;
 import bio.singa.exchange.entities.EntityDataset;
-import bio.singa.exchange.graphs.automaton.GraphRepresentation;
+import bio.singa.exchange.graphs.GraphRepresentation;
 import bio.singa.exchange.sections.RegionCache;
 import bio.singa.exchange.sections.SubsectionCache;
 import bio.singa.exchange.units.UnitJacksonModule;
+import bio.singa.simulation.entities.ChemicalEntities;
+import bio.singa.simulation.entities.ChemicalEntity;
 import bio.singa.simulation.model.agents.linelike.LineLikeAgent;
 import bio.singa.simulation.model.agents.pointlike.Vesicle;
 import bio.singa.simulation.model.agents.surfacelike.Membrane;

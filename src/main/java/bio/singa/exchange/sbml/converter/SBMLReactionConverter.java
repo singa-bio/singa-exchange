@@ -1,6 +1,6 @@
 package bio.singa.exchange.sbml.converter;
 
-import bio.singa.chemistry.entities.EntityRegistry;
+import bio.singa.simulation.entities.EntityRegistry;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.Reaction;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.ReactionBuilder;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.kineticlaws.DynamicKineticLaw;

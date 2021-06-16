@@ -1,6 +1,6 @@
-package bio.singa.exchange.graphs.complex;
+package bio.singa.exchange.entities.complex;
 
-import bio.singa.chemistry.entities.complex.GraphComplexEdge;
+import bio.singa.simulation.entities.GraphComplexEdge;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**

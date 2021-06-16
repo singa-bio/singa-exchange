@@ -74,7 +74,7 @@
         <dependency>
             <groupId>bio.singa</groupId>
             <artifactId>singa-simulation</artifactId>
-            <version>0.6.0</version>
+            <version>0.7.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>

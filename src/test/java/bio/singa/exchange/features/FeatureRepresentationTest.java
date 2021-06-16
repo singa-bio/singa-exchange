@@ -1,15 +1,17 @@
 package bio.singa.exchange.features;
 
-import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.chemistry.entities.EntityRegistry;
-import bio.singa.chemistry.entities.simple.Protein;
-import bio.singa.chemistry.features.diffusivity.ConcentrationDiffusivity;
-import bio.singa.chemistry.features.diffusivity.Diffusivity;
 import bio.singa.exchange.sections.RegionCache;
 import bio.singa.features.identifiers.SimpleStringIdentifier;
 import bio.singa.features.model.Evidence;
 import bio.singa.features.model.Feature;
+import bio.singa.features.quantities.ConcentrationDiffusivity;
+import bio.singa.features.quantities.Diffusivity;
+import bio.singa.simulation.entities.ChemicalEntity;
+import bio.singa.simulation.entities.EntityRegistry;
+import bio.singa.simulation.entities.SimpleEntity;
 import bio.singa.simulation.features.*;
+import bio.singa.simulation.features.model.MultiEntityFeature;
+import bio.singa.simulation.features.model.MultiStringFeature;
 import bio.singa.simulation.model.agents.pointlike.VesicleStateRegistry;
 import bio.singa.simulation.model.sections.CellRegion;
 import bio.singa.simulation.model.sections.CellRegions;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static bio.singa.chemistry.features.diffusivity.Diffusivity.SQUARE_CENTIMETRE_PER_SECOND;
+import static bio.singa.features.quantities.Diffusivity.SQUARE_CENTIMETRE_PER_SECOND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -33,8 +35,8 @@ class FeatureRepresentationTest {
     private static List<Evidence> evidences;
     private static ChemicalEntity dynein;
     private static CellRegion region;
-    private static Protein vamp3;
-    private static Protein vamp2;
+    private static ChemicalEntity vamp3;
+    private static ChemicalEntity vamp2;
 
     @BeforeAll
     static void initialize() {
@@ -42,9 +44,9 @@ class FeatureRepresentationTest {
         evidences.add(new Evidence(Evidence.SourceType.LITERATURE, "test 1", "test 1 publication"));
         evidences.add(new Evidence(Evidence.SourceType.LITERATURE, "test 2", "test 2 publication"));
 
-        dynein = Protein.create("Dynein").build();
-        vamp2 = Protein.create("VAMP2").build();
-        vamp3 = Protein.create("VAMP3").build();
+        dynein = SimpleEntity.create("Dynein").build();
+        vamp2 = SimpleEntity.create("VAMP2").build();
+        vamp3 = SimpleEntity.create("VAMP3").build();
 
         region = CellRegions.CYTOPLASM_REGION;
         RegionCache.add(region);
@@ -53,7 +55,9 @@ class FeatureRepresentationTest {
     @Test
     @DisplayName("features - quantitative feature to json")
     void quantitativeModelToJson() {
-        ConcentrationDiffusivity feature = new ConcentrationDiffusivity(Quantities.getQuantity(1.0, SQUARE_CENTIMETRE_PER_SECOND), evidences);
+        ConcentrationDiffusivity feature = ConcentrationDiffusivity.of(Quantities.getQuantity(1.0, SQUARE_CENTIMETRE_PER_SECOND))
+                .evidence(evidences)
+                .build();
         FeatureRepresentation representation = FeatureRepresentation.of(feature);
 
         assertEquals(feature.getClass().getSimpleName(), representation.getName());
@@ -132,7 +136,9 @@ class FeatureRepresentationTest {
     @Test
     @DisplayName("features - entity based feature to json")
     void qualitativeEntityModelToJson() {
-        AttachedMotor feature = new AttachedMotor(dynein, evidences);
+        AttachedMotor feature = AttachedMotor.of(dynein)
+                .evidence(evidences)
+                .build();
         FeatureRepresentation representation = FeatureRepresentation.of(feature);
 
         assertEquals(feature.getClass().getSimpleName(), representation.getName());

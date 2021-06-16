@@ -7,7 +7,7 @@ import bio.singa.exchange.agents.VolumeDataset;
 import bio.singa.exchange.concentrations.InitialConcentrationDataset;
 import bio.singa.exchange.entities.EntityDataset;
 import bio.singa.exchange.evidence.EvidenceDataset;
-import bio.singa.exchange.graphs.automaton.GraphRepresentation;
+import bio.singa.exchange.graphs.GraphRepresentation;
 import bio.singa.exchange.modules.ModuleDataset;
 import bio.singa.exchange.sections.RegionDataset;
 import bio.singa.exchange.sections.SubsectionDataset;

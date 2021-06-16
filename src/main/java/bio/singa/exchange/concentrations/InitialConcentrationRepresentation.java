@@ -1,6 +1,6 @@
 package bio.singa.exchange.concentrations;
 
-import bio.singa.chemistry.entities.EntityRegistry;
+
 import bio.singa.exchange.EnumTransformation;
 import bio.singa.exchange.concentrations.conditions.ConditionRepresentation;
 import bio.singa.exchange.entities.EntityRepresentation;
@@ -11,6 +11,7 @@ import bio.singa.exchange.sections.SubsectionRepresentation;
 import bio.singa.exchange.variation.Variable;
 import bio.singa.features.model.Evidence;
 import bio.singa.features.quantities.MolarConcentration;
+import bio.singa.simulation.entities.EntityRegistry;
 import bio.singa.simulation.model.concentrations.InitialConcentration;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,13 +49,6 @@ public class InitialConcentrationRepresentation extends Variable<Double> {
     @JsonProperty("concentration-unit")
     private Unit<MolarConcentration> concentrationUnit;
 
-    @JsonProperty("time-value")
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    private double timeValue;
-
-    @JsonProperty("time-unit")
-    private Unit<Time> timeUnit;
-
     @JsonProperty
     private boolean fixed;
 
@@ -81,8 +75,6 @@ public class InitialConcentrationRepresentation extends Variable<Double> {
         representation.setEntity(EntityRepresentation.of(initialConcentration.getEntity()).getPrimaryIdentifier());
         representation.setConcentrationValue(initialConcentration.getConcentration().getValue().doubleValue());
         representation.setConcentrationUnit(initialConcentration.getConcentration().getUnit());
-        representation.setTimeValue(initialConcentration.getTime().getValue().doubleValue());
-        representation.setTimeUnit(initialConcentration.getTime().getUnit());
         representation.setFixed(initialConcentration.isFix());
         representation.addEvidence(initialConcentration.getAllEvidence());
         if (representation.getEvidence().isEmpty()) {
@@ -108,7 +100,6 @@ public class InitialConcentrationRepresentation extends Variable<Double> {
         }
         concentration.setEntity(EntityRegistry.get(getEntity()));
         concentration.setConcentration(Quantities.getQuantity(getConcentrationValue(), getConcentrationUnit()));
-        concentration.setTime(Quantities.getQuantity(getTimeValue(), getTimeUnit()));
         concentration.setFix(isFixed());
         for (String evidenceIdentifier : getEvidence()) {
             concentration.addEvidence(EvidenceCache.get(evidenceIdentifier));
@@ -177,22 +168,6 @@ public class InitialConcentrationRepresentation extends Variable<Double> {
 
     public void setConcentrationUnit(Unit<MolarConcentration> concentrationUnit) {
         this.concentrationUnit = concentrationUnit;
-    }
-
-    public double getTimeValue() {
-        return timeValue;
-    }
-
-    public void setTimeValue(double timeValue) {
-        this.timeValue = timeValue;
-    }
-
-    public Unit<Time> getTimeUnit() {
-        return timeUnit;
-    }
-
-    public void setTimeUnit(Unit<Time> timeUnit) {
-        this.timeUnit = timeUnit;
     }
 
     public boolean isFixed() {

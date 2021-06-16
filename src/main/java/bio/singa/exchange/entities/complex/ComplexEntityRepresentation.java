@@ -1,10 +1,6 @@
-package bio.singa.exchange.graphs.complex;
+package bio.singa.exchange.entities.complex;
 
-import bio.singa.chemistry.entities.EntityRegistry;
-import bio.singa.chemistry.entities.complex.BindingSite;
-import bio.singa.chemistry.entities.complex.ComplexEntity;
-import bio.singa.chemistry.entities.complex.GraphComplexEdge;
-import bio.singa.chemistry.entities.complex.GraphComplexNode;
+import bio.singa.simulation.entities.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import bio.singa.exchange.entities.EntityRepresentation;
 import bio.singa.exchange.features.FeatureRepresentation;

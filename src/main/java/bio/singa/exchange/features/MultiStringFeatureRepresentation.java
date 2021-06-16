@@ -1,7 +1,7 @@
 package bio.singa.exchange.features;
 
 import bio.singa.features.model.Feature;
-import bio.singa.simulation.features.MultiStringFeature;
+import bio.singa.simulation.features.model.MultiStringFeature;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;

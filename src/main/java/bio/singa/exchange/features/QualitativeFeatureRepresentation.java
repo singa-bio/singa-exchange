@@ -1,7 +1,7 @@
 package bio.singa.exchange.features;
 
-import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.features.model.Feature;
+import bio.singa.simulation.entities.ChemicalEntity;
 import bio.singa.simulation.model.sections.CellRegion;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

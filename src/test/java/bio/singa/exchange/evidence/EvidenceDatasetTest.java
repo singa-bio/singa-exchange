@@ -1,10 +1,8 @@
 package bio.singa.exchange.evidence;
 
 import bio.singa.chemistry.features.databases.chebi.ChEBIDatabase;
-import bio.singa.chemistry.features.molarvolume.MolarVolumePredictor;
 import bio.singa.core.utility.Resources;
 import bio.singa.features.model.Evidence;
-import bio.singa.simulation.features.DefaultFeatureSources;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,9 +23,7 @@ class EvidenceDatasetTest {
     @DisplayName("evidence - dataset to json")
     void jsonConversion() {
         EvidenceDataset evidenceDataset = new EvidenceDataset();
-        evidenceDataset.addEvidence(EvidenceRepresentation.of(MolarVolumePredictor.OTT1992));
         evidenceDataset.addEvidence(EvidenceRepresentation.of(ChEBIDatabase.DEGTYARENKO2008));
-        evidenceDataset.addEvidence(EvidenceRepresentation.of(DefaultFeatureSources.BINESH2015));
         evidenceDataset.addEvidence(EvidenceRepresentation.of(Evidence.NO_EVIDENCE));
         try {
             String actual = evidenceDataset.toJson();

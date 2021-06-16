@@ -1,7 +1,5 @@
 package bio.singa.exchange.features;
 
-import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.exchange.IllegalConversionException;
 import bio.singa.exchange.concentrations.InitialConcentrationRepresentation;
 import bio.singa.exchange.evidence.EvidenceCache;
@@ -10,7 +8,13 @@ import bio.singa.exchange.sections.SubsectionCache;
 import bio.singa.features.model.Feature;
 import bio.singa.features.model.FeatureRegistry;
 import bio.singa.features.model.StringFeature;
+import bio.singa.simulation.entities.ChemicalEntity;
+import bio.singa.simulation.entities.EntityRegistry;
 import bio.singa.simulation.features.*;
+import bio.singa.simulation.features.model.EntityFeature;
+import bio.singa.simulation.features.model.MultiEntityFeature;
+import bio.singa.simulation.features.model.MultiStringFeature;
+import bio.singa.simulation.features.model.RegionFeature;
 import bio.singa.simulation.model.concentrations.InitialConcentration;
 import bio.singa.simulation.model.sections.CellRegion;
 import bio.singa.simulation.model.sections.CellSubsection;

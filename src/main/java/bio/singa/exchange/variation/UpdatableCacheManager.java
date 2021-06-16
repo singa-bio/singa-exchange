@@ -1,6 +1,6 @@
 package bio.singa.exchange.variation;
 
-import bio.singa.exchange.graphs.automaton.NodeCache;
+import bio.singa.exchange.graphs.NodeCache;
 import bio.singa.simulation.model.simulation.Updatable;
 import bio.singa.exchange.agents.VesicleCache;
 

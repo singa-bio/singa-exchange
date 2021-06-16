@@ -1,4 +1,4 @@
-package bio.singa.exchange.graphs.automaton;
+package bio.singa.exchange.graphs;
 
 import bio.singa.exchange.sections.RegionCache;
 import bio.singa.exchange.sections.RegionRepresentation;

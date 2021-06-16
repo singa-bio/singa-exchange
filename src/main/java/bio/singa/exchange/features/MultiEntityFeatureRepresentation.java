@@ -1,9 +1,9 @@
 package bio.singa.exchange.features;
 
-import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.exchange.entities.EntityRepresentation;
 import bio.singa.features.model.Feature;
-import bio.singa.simulation.features.MultiEntityFeature;
+import bio.singa.simulation.entities.ChemicalEntity;
+import bio.singa.simulation.features.model.MultiEntityFeature;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;

@@ -1,9 +1,10 @@
 package bio.singa.exchange.trajectories;
 
-import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.chemistry.entities.EntityRegistry;
-import bio.singa.chemistry.entities.simple.SmallMolecule;
+import bio.singa.chemistry.model.SmallMolecule;
 import bio.singa.mathematics.vectors.Vector2D;
+import bio.singa.simulation.entities.ChemicalEntity;
+import bio.singa.simulation.entities.EntityRegistry;
+import bio.singa.simulation.entities.SimpleEntity;
 import bio.singa.simulation.trajectories.nested.TrajectoryDataPoint;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import bio.singa.exchange.agents.VectorRepresentation;
@@ -48,7 +49,7 @@ public class SubsectionDataPointRepresentation {
         for (Map.Entry<String, Double> entry : concentrations.entrySet()) {
             ChemicalEntity entity = EntityRegistry.get(entry.getKey());
             if (entity == null) {
-                entity = SmallMolecule.create(entry.getKey()).build();
+                entity = SimpleEntity.create(entry.getKey()).build();
             }
             subsectionDatapoint.addConcentration(entity, entry.getValue());
         }

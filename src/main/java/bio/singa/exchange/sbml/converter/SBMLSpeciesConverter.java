@@ -2,13 +2,13 @@ package bio.singa.exchange.sbml.converter;
 
 import bio.singa.chemistry.annotations.Annotation;
 import bio.singa.chemistry.annotations.AnnotationType;
-import bio.singa.chemistry.entities.ChemicalEntity;
-import bio.singa.chemistry.entities.EntityRegistry;
-import bio.singa.chemistry.entities.simple.Protein;
-import bio.singa.chemistry.entities.simple.SmallMolecule;
 import bio.singa.features.identifiers.ChEBIIdentifier;
 import bio.singa.features.identifiers.UniProtIdentifier;
 import bio.singa.features.units.UnitRegistry;
+import bio.singa.simulation.entities.ChemicalEntity;
+import bio.singa.simulation.entities.ComplexEntityBuilder;
+import bio.singa.simulation.entities.EntityRegistry;
+import bio.singa.simulation.entities.SimpleEntity;
 import bio.singa.simulation.model.concentrations.ConcentrationBuilder;
 import bio.singa.simulation.model.concentrations.InitialConcentration;
 import org.sbml.jsbml.CVTerm;
@@ -48,15 +48,13 @@ public class SBMLSpeciesConverter {
                 for (CVTerm term : species.getAnnotation().getListOfCVTerms()) {
                     if (term.getQualifier() == CVTerm.Qualifier.BQB_IS || term.getQualifier() == CVTerm.Qualifier.BQB_IS_VERSION_OF) {
                         ChemicalEntity entity = createEntity(species.getId(), term);
-                        entity.addAnnotation(new Annotation<>(AnnotationType.NAME,species.getName()));
                         EntityRegistry.put(entity);
                         break;
                     }
                 }
 //            }
             if (EntityRegistry.get(species.getId()) == null) {
-                ChemicalEntity entity = SmallMolecule.create(species.getId()).build();
-                entity.addAnnotation(new Annotation<>(AnnotationType.NAME,species.getName()));
+                ChemicalEntity entity = SimpleEntity.create(species.getId()).build();
                 EntityRegistry.put(entity);
             }
         }
@@ -68,20 +66,20 @@ public class SBMLSpeciesConverter {
             // try to parse as ChEBI
             Matcher matcherChEBI = ChEBIIdentifier.PATTERN.matcher(resource);
             if (matcherChEBI.find()) {
-                return SmallMolecule.create(primaryIdentifier)
+                return SimpleEntity.create(primaryIdentifier)
                         .assignFeature(new ChEBIIdentifier(matcherChEBI.group(0), DEFAULT_SBML_ORIGIN))
                         .build();
             }
             // try to parse as UniProt
             Matcher matcherUniProt = UniProtIdentifier.PATTERN.matcher(resource);
             if (matcherUniProt.find()) {
-                return Protein.create(primaryIdentifier)
+                return SimpleEntity.create(primaryIdentifier)
                         .assignFeature(new UniProtIdentifier(matcherUniProt.group(0), DEFAULT_SBML_ORIGIN))
                         .build();
             }
         }
         // no parser available
-        return SmallMolecule.create(primaryIdentifier)
+        return SimpleEntity.create(primaryIdentifier)
                 .build();
     }
 
@@ -90,20 +88,20 @@ public class SBMLSpeciesConverter {
             // try to parse as ChEBI
             Matcher matcherChEBI = ChEBIIdentifier.PATTERN.matcher(resource);
             if (matcherChEBI.find()) {
-                return SmallMolecule.create(matcherChEBI.group(0))
+                return SimpleEntity.create(matcherChEBI.group(0))
                         .assignFeature(new ChEBIIdentifier(matcherChEBI.group(0), DEFAULT_SBML_ORIGIN))
                         .build();
             }
             // try to parse as UniProt
             Matcher matcherUniProt = UniProtIdentifier.PATTERN.matcher(resource);
             if (matcherUniProt.find()) {
-                return new Protein.Builder(matcherUniProt.group(0))
+                return SimpleEntity.create(matcherUniProt.group(0))
                         .assignFeature(new UniProtIdentifier(matcherUniProt.group(0), DEFAULT_SBML_ORIGIN))
                         .build();
             }
         }
         // no parser available
-        return SmallMolecule.create(term.getResource(0))
+        return SimpleEntity.create(term.getResource(0))
                 .build();
     }
 

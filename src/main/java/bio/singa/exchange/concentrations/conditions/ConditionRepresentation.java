@@ -19,6 +19,7 @@ import bio.singa.exchange.IllegalConversionException;
         @JsonSubTypes.Type(value = RegionConditionRepresentation.class, name = "region"),
         @JsonSubTypes.Type(value = SectionConditionRepresentation.class, name = "subsection"),
         @JsonSubTypes.Type(value = TopologyConditionRepresentation.class, name = "topology"),
+        @JsonSubTypes.Type(value = TimedConditionRepresentation.class, name = "timed")
 })
 @JsonPropertyOrder({"primary-identifier", "type"})
 public abstract class ConditionRepresentation {
@@ -36,6 +37,8 @@ public abstract class ConditionRepresentation {
             return SectionConditionRepresentation.of(((SectionCondition) condition));
         } else if (condition instanceof  TopologyCondition) {
             return TopologyConditionRepresentation.of(((TopologyCondition) condition));
+        } else if (condition instanceof TimedCondition) {
+            return TimedConditionRepresentation.of((TimedCondition) condition);
         }
         throw new IllegalConversionException("Trying to create condition representation from unknown type.");
     }

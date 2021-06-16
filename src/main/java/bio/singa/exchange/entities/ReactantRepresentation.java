@@ -1,7 +1,7 @@
 package bio.singa.exchange.entities;
 
-import bio.singa.chemistry.entities.EntityRegistry;
 import bio.singa.exchange.EnumTransformation;
+import bio.singa.simulation.entities.EntityRegistry;
 import bio.singa.simulation.model.modules.concentration.imlementations.reactions.behaviors.reactants.Reactant;
 import bio.singa.simulation.model.sections.CellTopology;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -60,11 +60,6 @@ public class MembraneRepresentation {
         getSegments().stream()
                 .map(MembraneSegmentRepresentation::toModel)
                 .forEach(membrane::addSegment);
-        // reconstruct mapping
-        List<Vector2D> orderedVectors = Vectors.getVectorsInOrder(membrane.getSegments());
-        Map<CellRegion, List<Vector2D>> regionMap = new HashMap<>();
-        regionMap.put(membraneRegion, orderedVectors);
-        membrane.setRegionMap(regionMap);
         return membrane;
     }
 

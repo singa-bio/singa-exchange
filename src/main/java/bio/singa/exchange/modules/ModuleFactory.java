@@ -1,7 +1,7 @@
 package bio.singa.exchange.modules;
 
-import bio.singa.chemistry.entities.ChemicalEntity;
 import bio.singa.features.model.Feature;
+import bio.singa.simulation.entities.ChemicalEntity;
 import bio.singa.simulation.model.modules.UpdateModule;
 import bio.singa.simulation.model.modules.concentration.ConcentrationBasedModule;
 import bio.singa.simulation.model.modules.concentration.ModuleBuilder;
